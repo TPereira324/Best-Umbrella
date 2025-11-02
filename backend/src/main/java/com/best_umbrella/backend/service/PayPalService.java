@@ -1,120 +1,104 @@
 package com.best_umbrella.backend.service;
 
 import com.best_umbrella.backend.config.PayPalProperties;
-import org.springframework.http.*;
+import com.paypal.core.PayPalEnvironment;
+import com.paypal.core.PayPalHttpClient;
+import com.paypal.http.HttpResponse;
+import com.paypal.orders.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.*;
 
 @Service
 public class PayPalService {
 
     private final PayPalProperties props;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final PayPalHttpClient client;
 
     public PayPalService(PayPalProperties props) {
         this.props = props;
+        PayPalEnvironment environment = "live".equalsIgnoreCase(props.getMode())
+                ? new PayPalEnvironment.Live(props.getClientId(), props.getClientSecret())
+                : new PayPalEnvironment.Sandbox(props.getClientId(), props.getClientSecret());
+        this.client = new PayPalHttpClient(environment);
     }
 
-    public String getAccessToken() {
-        String url = props.getBaseUrl() + "/v1/oauth2/token";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        String basic = Base64.getEncoder().encodeToString(
-                (props.getClientId() + ":" + props.getClientSecret())
-                        .getBytes(StandardCharsets.UTF_8));
-        headers.set("Authorization", "Basic " + basic);
-
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("grant_type", "client_credentials");
-
-        ResponseEntity<Map> resp = restTemplate.postForEntity(url, new HttpEntity<>(form, headers), Map.class);
-        Map body = resp.getBody();
-        if (resp.getStatusCode().is2xxSuccessful() && body != null) {
-            Object token = body.get("access_token");
-            if (token != null) return token.toString();
-        }
-        throw new RuntimeException("Falha ao obter access_token do PayPal.");
-    }
+    // Método removido - o SDK v2 gerencia automaticamente a autenticação
 
     public Map<String, Object> createOrder(String value, String currency) {
-        String token = getAccessToken();
-        String url = props.getBaseUrl() + "/v2/checkout/orders";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Map<String, Object> amount = new HashMap<>();
-        amount.put("currency_code", currency);
-        amount.put("value", value);
-
-        Map<String, Object> purchaseUnit = new HashMap<>();
-        purchaseUnit.put("amount", amount);
-
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("intent", "CAPTURE");
-        payload.put("purchase_units", Collections.singletonList(purchaseUnit));
-
         try {
-            ResponseEntity<Map> resp = restTemplate.postForEntity(url, new HttpEntity<>(payload, headers), Map.class);
-            if (resp.getStatusCode().is2xxSuccessful() && resp.getBody() != null) {
-                Map body = resp.getBody();
-                Object id = body.get("id");
-                String approveHref = null;
-                Object linksObj = body.get("links");
-                if (linksObj instanceof List<?> list) {
-                    for (Object o : list) {
-                        if (o instanceof Map<?, ?> lm) {
-                            Object rel = lm.get("rel");
-                            if (rel != null && "approve".equalsIgnoreCase(rel.toString())) {
-                                Object href = lm.get("href");
-                                if (href != null) {
-                                    approveHref = href.toString();
-                                    break;
-                                }
-                            }
-                        }
+            // Criar o request da ordem usando o SDK v2
+            OrderRequest orderRequest = new OrderRequest();
+            orderRequest.checkoutPaymentIntent("CAPTURE");
+            
+            // Configurar unidade de compra
+            List<PurchaseUnitRequest> purchaseUnits = new ArrayList<>();
+            purchaseUnits.add(new PurchaseUnitRequest()
+                    .amountWithBreakdown(new AmountWithBreakdown()
+                            .currencyCode(currency)
+                            .value(value)));
+            orderRequest.purchaseUnits(purchaseUnits);
+            
+            // Executar request
+            OrdersCreateRequest request = new OrdersCreateRequest().requestBody(orderRequest);
+            HttpResponse<Order> response = client.execute(request);
+            
+            Order order = response.result();
+            
+            // Extrair link de aprovação
+            String approveLink = null;
+            if (order.links() != null) {
+                for (LinkDescription link : order.links()) {
+                    if ("approve".equals(link.rel())) {
+                        approveLink = link.href();
+                        break;
                     }
                 }
-
-                Map<String, Object> result = new HashMap<>();
-                result.put("orderId", id != null ? id.toString() : null);
-                result.put("approveLink", approveHref);
-                return result;
             }
-            throw new RuntimeException("Falha ao criar ordem no PayPal.");
-        } catch (RestClientResponseException e) {
-            throw new RuntimeException("Erro PayPal (create): " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString(), e);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao comunicar com PayPal (create)", e);
+            
+            // Retornar resultado
+            Map<String, Object> result = new HashMap<>();
+            result.put("orderId", order.id());
+            result.put("approveLink", approveLink);
+            return result;
+            
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao criar ordem no PayPal: " + e.getMessage(), e);
         }
     }
 
     public Map<String, Object> captureOrder(String orderId) {
-        String token = getAccessToken();
-        String url = props.getBaseUrl() + "/v2/checkout/orders/" + orderId + "/capture";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         try {
-            ResponseEntity<Map> resp = restTemplate.postForEntity(url, new HttpEntity<>(Collections.emptyMap(), headers), Map.class);
-            if (resp.getStatusCode().is2xxSuccessful() && resp.getBody() != null) {
-                return resp.getBody();
+            // Capturar ordem usando o SDK v2
+            OrdersCaptureRequest request = new OrdersCaptureRequest(orderId);
+            HttpResponse<Order> response = client.execute(request);
+            
+            Order order = response.result();
+            
+            // Converter para Map para manter compatibilidade com o controller
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", order.id());
+            result.put("status", order.status());
+            
+            if (order.purchaseUnits() != null && !order.purchaseUnits().isEmpty()) {
+                PurchaseUnit purchaseUnit = order.purchaseUnits().get(0);
+                if (purchaseUnit.payments() != null && purchaseUnit.payments().captures() != null 
+                    && !purchaseUnit.payments().captures().isEmpty()) {
+                    Capture capture = purchaseUnit.payments().captures().get(0);
+                    result.put("captureId", capture.id());
+                    result.put("captureStatus", capture.status());
+                    if (capture.amount() != null) {
+                        result.put("amount", capture.amount().value());
+                        result.put("currency", capture.amount().currencyCode());
+                    }
+                }
             }
-            throw new RuntimeException("Falha ao capturar ordem no PayPal: " + orderId);
-        } catch (RestClientResponseException e) {
-            throw new RuntimeException("Erro PayPal (capture): " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString(), e);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao comunicar com PayPal (capture)", e);
+            
+            return result;
+            
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao capturar ordem no PayPal: " + orderId + " - " + e.getMessage(), e);
         }
     }
 }

@@ -1,4 +1,9 @@
+server:
+  port: 8080
+
 spring:
+  application:
+    name: backend
   datasource:
     url: jdbc:mysql://localhost:3306/best_umbrella
     username: root
@@ -14,8 +19,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
-server:
-  port: 8080
+# Porta removida - configurada no início do arquivo
 
 logging:
   level:
@@ -26,7 +30,11 @@ google:
   api:
     key: AIzaSyAWOO-efpqfd9rfJ_7z1vsFbtzvtiR4D2E
 
-  
+# Configuração PayPal (corrigida para usar kebab-case)
+paypal:
+  mode: live
+  client-id: AbWHZSjRti6nJOR1llh1bJjDj2GUklE1xT3BeYq4JRlwTKQYz9Ohf8fVUrTe2SwRW0NatLaFxJl1_wV4
+  client-secret: EM1HqI8zcLE-sTUn3xvrZXs4TMN1AYsH55YNQLeYYUCEQD_9-N_QrvbnjXH_6RAK5fushzfHTzJ3tyYc
 
 
   

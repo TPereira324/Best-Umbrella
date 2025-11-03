@@ -198,7 +198,7 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
         <html>
         <head>
           <meta name=viewport content="width=device-width, initial-scale=1" />
-          <script src="https://www.paypal.com/sdk/js?client-id=${BuildConfig.PAYPAL_CLIENT_ID}&currency=EUR"></script>
+          <script src="https://www.paypal.com/sdk/js?client-id=${BuildConfig.PAYPAL_CLIENT_ID}&currency=EUR&disable-funding=card"></script>
           <style> body { font-family: sans-serif; margin: 0; padding: 16px; } </style>
         </head>
         <body>

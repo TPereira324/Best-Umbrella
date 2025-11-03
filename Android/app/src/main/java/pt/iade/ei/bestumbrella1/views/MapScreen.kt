@@ -47,7 +47,6 @@ fun MapScreenWithMarkers(navController: NavController) {
         Station("Parque das Nações", LatLng(38.76800, -9.09400), 6, 10),
         Station("Metro Moscavide", LatLng(38.77639, -9.10169), 8, 10),
         Station("Metro Oriente", LatLng(38.76784, -9.09935), 4, 8),
-        // Novas estações centrais
         Station("Terreiro do Paço", LatLng(38.7073, -9.1367), 10, 15),
         Station("Baixa-Chiado", LatLng(38.7111, -9.1419), 8, 12),
         Station("Marquês de Pombal", LatLng(38.7256, -9.1501), 12, 20),

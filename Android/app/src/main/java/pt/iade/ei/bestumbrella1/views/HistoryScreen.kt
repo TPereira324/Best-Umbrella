@@ -30,9 +30,16 @@ data class RentalEntry(
 @Composable
 fun HistoryScreen(navController: NavController) {
     val entries = listOf(
+        // existentes
         RentalEntry("Hoje, 14:30", "Metro Moscavide", "Parque das Nações", 0.29, "35 min"),
         RentalEntry("Ontem, 09:16", "Vasco da Gama Shopping", "Metro Oriente", 1.00, "1h 15min"),
-        RentalEntry("Há 2 dias", "IADE", "Metro Oriente", 2.50, "27h 40min")
+        RentalEntry("Há 2 dias", "IADE", "Metro Oriente", 2.50, "27h 40min"),
+
+        // novas entradas com base nas novas estações centrais
+        RentalEntry("Hoje, 11:05", "Terreiro do Paço", "Baixa-Chiado", 0.35, "22 min"),
+        RentalEntry("Hoje, 09:20", "Rossio", "Marquês de Pombal", 0.50, "41 min"),
+        RentalEntry("Ontem, 18:10", "Baixa-Chiado", "Rossio", 0.25, "17 min"),
+        RentalEntry("Há 3 dias", "Marquês de Pombal", "Terreiro do Paço", 1.20, "26h 05min")
     )
 
     Scaffold(

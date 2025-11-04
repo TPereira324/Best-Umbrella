@@ -35,9 +35,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         RentalStation(2, "Parque das Nações", 38.76800, -9.09400, 6, 10),
         RentalStation(3, "Metro Moscavide", 38.77639, -9.10169, 8, 10),
         RentalStation(4, "Metro Oriente", 38.76784, -9.09935, 4, 8),
-        RentalStation(1, "Terreiro do Paço", 38.70667, -9.13528, 10, 15),
-        RentalStation(3, "Rossio", 38.713718, -9.139681, 7, 12),
-        RentalStation(4, "Marquês de Pombal", 38.724686, -9.150442, 12, 20)
+        RentalStation(5, "Terreiro do Paço", 38.70667, -9.13528, 10, 15),
+        RentalStation(6, "Rossio", 38.713718, -9.139681, 7, 12),
+        RentalStation(7, "Baixa-Chiado", 38.71056, -9.14000, 8, 12),
+        RentalStation(8, "Marquês de Pombal", 38.724686, -9.150442, 12, 20)
 
 
     )

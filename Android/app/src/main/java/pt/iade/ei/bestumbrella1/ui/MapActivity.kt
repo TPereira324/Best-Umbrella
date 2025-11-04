@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import android.annotation.SuppressLint
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,11 +31,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     
     private val rentalStations = listOf(
-        RentalStation(4, "IADE", 38.7818, -9.10251, 3, 6),
-        RentalStation(3, "Parque das Nações", 38.76800, -9.09400, 6, 10),
-        RentalStation(1, "Metro Moscavide", 38.77639, -9.10169, 8, 10),
-        RentalStation(2, "Metro Oriente", 38.76784, -9.09935, 4, 8)
+        RentalStation(1, "IADE", 38.7818, -9.10251, 3, 6),
+        RentalStation(2, "Parque das Nações", 38.76800, -9.09400, 6, 10),
+        RentalStation(3, "Metro Moscavide", 38.77639, -9.10169, 8, 10),
+        RentalStation(4, "Metro Oriente", 38.76784, -9.09935, 4, 8),
+        RentalStation(1, "Terreiro do Paço", 38.70667, -9.13528, 10, 15),
+        RentalStation(3, "Rossio", 38.713718, -9.139681, 7, 12),
+        RentalStation(4, "Marquês de Pombal", 38.724686, -9.150442, 12, 20)
+
+
     )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,6 +119,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.d("MapActivity", "Todas as estações foram adicionadas ao mapa")
     }
 
+    @RequiresPermission(anyOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,

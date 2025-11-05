@@ -7,11 +7,6 @@ import pt.iade.ei.bestumbrella1.models.SessionManager
 import pt.iade.ei.bestumbrella1.network.RetrofitClient
 import pt.iade.ei.bestumbrella1.viewmodels.AuthViewModel
 import pt.iade.ei.bestumbrella1.viewmodels.WeatherViewModel
-
-/**
- * Classe responsável por fornecer as dependências necessárias para o aplicativo.
- * Esta é uma implementação simples de injeção de dependência manual.
- */
 object AppModule {
     
     private var repository: Repository? = null
@@ -54,6 +49,5 @@ object AppModule {
         repository = null
         authViewModel = null
         weatherViewModel = null
-        // Não limpa o sessionManager pois ele gerencia o estado da sessão
     }
 }

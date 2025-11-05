@@ -106,7 +106,6 @@ class AuthViewModel(private val repository: Repository, private val sessionManag
                 val result = repository.getUserProfile()
                 result.fold(
                     onSuccess = { response ->
-                        // Atualiza as informações do usuário no SessionManager
                         sessionManager.saveName(response.name)
                         sessionManager.saveEmail(response.email)
                     },

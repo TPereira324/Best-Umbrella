@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,7 +17,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -71,19 +75,32 @@ fun LoginScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text("Email", color = Color.Black, fontWeight = FontWeight.Bold) },
                 leadingIcon = { Icon(Icons.Default.MailOutline, contentDescription = null) },
+                colors = TextFieldDefaults.colors(focusedTextColor = Color.Black, unfocusedTextColor = Color.Black, cursorColor = Color.Black, focusedIndicatorColor = Color.Black, unfocusedIndicatorColor = Color.Gray, focusedContainerColor = Color(0xFFBBDEFB), unfocusedContainerColor = Color(0xFFBBDEFB))
+                ,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(16.dp))
 
+            var passwordVisible by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Senha") },
+                label = { Text("Senha", color = Color.Black, fontWeight = FontWeight.Bold) },
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                visualTransformation = PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Ocultar senha" else "Mostrar senha"
+                        )
+                    }
+                },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                colors = TextFieldDefaults.colors(focusedTextColor = Color.Black, unfocusedTextColor = Color.Black, cursorColor = Color.Black, focusedIndicatorColor = Color.Black, unfocusedIndicatorColor = Color.Gray, focusedContainerColor = Color(0xFFBBDEFB), unfocusedContainerColor = Color(0xFFBBDEFB))
+                ,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -98,16 +115,16 @@ fun LoginScreen(
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
             ) {
-                Text(if (isLoading) "Entrando..." else "Entrar", color = Color.White)
+                Text(if (isLoading) "Entrando..." else "Entrar", color = Color.White, fontWeight = FontWeight.Bold)
             }
 
             Spacer(Modifier.height(8.dp))
 
             TextButton(onClick = { navController.navigate("register") }) {
-                Text("Criar conta", color = Color(0xFF1976D2))
+                Text("Criar conta", color = Color(0xFF1976D2), fontWeight = FontWeight.Bold)
             }
 
-            // Navega quando loginResult indica sucesso
+
             loginResult?.let { result ->
                 if (result.success) {
                     onLoginSuccess()
@@ -116,11 +133,11 @@ fun LoginScreen(
                 }
             }
 
-            // Exibe erro do ViewModel
+
             val displayedError = errorState ?: error
             displayedError?.let {
                 Spacer(Modifier.height(8.dp))
-                Text(it, color = MaterialTheme.colorScheme.error)
+                Text(it, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
             }
         }
     }

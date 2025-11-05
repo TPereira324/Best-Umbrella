@@ -81,11 +81,11 @@ A aplicação deve ser compatível com Android 10 ou superior, garantir conformi
 
 ##  Modelo de Domínio  
 
-O modelo inicial é composto por quatro entidades principais que estruturam o sistema:  
-- O **Utilizador**, que possui identificação única, nome, email, password encriptada e um rating associado.  
-- O **GuardaChuva**, identificado por um estado e localização, sendo registado em diferentes pontos da cidade.  
-- O **Aluguer**, que guarda toda a informação relativa ao processo, como as datas de início e fim, custo e associação ao utilizador.  
-- O **Ponto de Aluguer**, que representa o local físico e o parceiro responsável pelo guarda-chuva.  
+ modelo inicial é composto por quatro entidades principais que estruturam o sistema:  
+- **Utilizador**, que possui identificação única, nome, email, password encriptada e um rating associado.  
+- **GuardaChuva**, identificado por um estado e localização, sendo registado em diferentes pontos da cidade.  
+- **Aluguer**, que guarda toda a informação relativa ao processo, como as datas de início e fim, custo e associação ao utilizador.  
+-  **Ponto de Aluguer**, que representa o local físico e o parceiro responsável pelo guarda-chuva.  
 
 Este modelo poderá ser expandido com novas entidades, como notificações personalizadas e sistema de fidelização.  
 
@@ -102,7 +102,8 @@ Para garantir uma experiência simples, rápida e segura, o **Best Umbrella** ap
 ### Modelos de Utilização  
 - **Pay-per-use (pagar por utilização):** o utilizador paga apenas pelo tempo de utilização do guarda-chuva (ex.: 1€ por 24h).  
 - **Depósito reembolsável:** um valor de caução (ex.: 5€) é bloqueado no momento do aluguer e libertado assim que o guarda-chuva é devolvido corretamente. Caso não haja devolução, o depósito cobre o custo de reposição.  
-  - **Campanhas promocionais:** descontos e primeiros minutos grátis, em colaboração com parceiros locais (universidades, cafés, centros comerciais).  
+
+- **Campanhas promocionais:** descontos e primeiros minutos grátis, em colaboração com parceiros locais (universidades, cafés, centros comerciais).  
 
 ### Depósito de Segurança  
 O **depósito reembolsável** é o elemento-chave do sistema:  
@@ -114,6 +115,36 @@ O **depósito reembolsável** é o elemento-chave do sistema:
 Este método cria um equilíbrio entre confiança no utilizador e proteção da infraestrutura, tornando o sistema justo e eficiente.  
 
 ---
+## Base de Dados
+
+A base de dados do projeto Best Umbrella foi desenvolvida em MySQL, adotando um modelo relacional para garantir integridade, consistência e bom desempenho.
+A estrutura foi concebida para suportar todas as funcionalidades centrais da aplicação, incluindo gestão de utilizadores, aluguer de guarda-chuvas, localização de pontos de aluguer, envio de notificações e histórico de transações.
+
+**Estrutura das Entidades**
+
+A modelação da base de dados é composta por cinco entidades principais, interligadas através de chaves primárias e estrangeiras, assegurando coerência e integridade referencial:
+ 
+  **Utilizador**
+
+ **GuardaChuva**
+  
+   **Aluguer**
+
+ **PontoAluguer**
+ 
+  **Notificação**
+
+Utilizador-> Tabela que guarda as informações dos utilizadores, incluindo dados pessoais, credenciais e classificação média.
+
+Ponto de Aluguer->Tabela que representa os locais físicos onde os guarda-chuvas podem ser recolhidos ou devolvidos.
+
+Guarda-Chuva->Tabela que identifica cada guarda-chuva através de um código QR único e armazena o seu estado e características.
+
+Aluguer->Tabela que regista cada transação de aluguer, relacionando o utilizador, guarda-chuva e pontos de recolha/devolução.
+
+Notificação->Tabela responsável por armazenar mensagens e alertas enviados aos utilizadores, como alertas meteorológicos ou confirmações de reserva.
+
+
 
 
 
@@ -127,8 +158,11 @@ Os primeiros protótipos desenvolvidos no Figma apresentam:
 - Um **sistema de notificações**, que alerta para chuva iminente ou promoções de parceiros.
 
   
-![Image](https://github.com/user-attachments/assets/3540fd9e-6439-4426-8761-bca5a1cc97b9)    ![Image](https://github.com/user-attachments/assets/575034e8-ab35-4604-b1c1-d3ffe0d3069a)
-![Image](https://github.com/user-attachments/assets/8b8f09c0-174b-4433-b0c9-070ae1b1d430)   ![Image](https://github.com/user-attachments/assets/71af7c74-99e9-4438-be99-0439fd21a5f2)
+![Image](https://github.com/user-attachments/assets/1b8c5b17-d196-43b8-9fc4-36824bd220b6)
+![Image](https://github.com/user-attachments/assets/e3f869b1-8709-4810-9ccc-105f3af92131)
+![Image](https://github.com/user-attachments/assets/525e4ce8-746c-49c4-8048-9b8f918c87c0)
+![Image](https://github.com/user-attachments/assets/d8fc13cc-7ddc-4e66-bc7b-21356d7f5db6)
+![Image](https://github.com/user-attachments/assets/9873ea8b-089c-4f68-84f1-4bb9b743a8a3)
  
 
 ---

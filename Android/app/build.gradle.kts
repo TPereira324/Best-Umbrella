@@ -18,6 +18,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+        buildConfigField("String", "PAYPAL_CLIENT_ID", "\"ARKU6o3YNxM1l1uqUg1GGFcUZGW_OMBgm8eLBelT1f8hwTC-ONM_4XdEgSpHwIHm84BzbOO1yoD8_DrV\"")
+        buildConfigField("String", "PAYPAL_CLIENT_SECRET", "\"EBFGH2RNBL3V-oheuKNy0oHqJ4qbTSp1k1A8SYEMt72EwT_CIOx082QAzl0YeM6UteBhTbxs8JxnUeBa\"")
+        buildConfigField("String", "PAYPAL_RETURN_URL", "\"https://www.paypal.com/mep/dashboard\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -43,7 +51,7 @@ android {
         compose = true
     }
 
-    // ⚠️ ESSENCIAL para resolver o erro META-INF/INDEX.LIST
+   
     packaging {
         resources {
             excludes += setOf(
@@ -57,8 +65,7 @@ android {
                 "META-INF/ASL2.0",
                 "META-INF/INDEX.LIST"
             )
-            // Corrige conflito: 11 files found with path 'META-INF/io.netty.versions.properties'
-            // Mantém apenas um arquivo para evitar falha no mergeJavaResource
+           
             pickFirsts += setOf(
                 "META-INF/io.netty.versions.properties"
             )
@@ -85,9 +92,6 @@ dependencies {
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
-    implementation(libs.androidx.camera.camera2)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.view)
     implementation(libs.barcode.scanning)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.room.common.jvm)
@@ -108,11 +112,12 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.androidx.compose.runtime.livedata)
     testImplementation(libs.junit)
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    // Ensure IDE resolves MockWebServer correctly without relying on version catalog accessors
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

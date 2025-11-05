@@ -19,48 +19,38 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var registerButton: Button
 
-    // Obtém o ViewModel através do módulo de injeção de dependência
     private val authViewModel by lazy { AppModule.provideAuthViewModel(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Inicializa as views
         emailEditText = findViewById(R.id.emailEditText)
         passwordEditText = findViewById(R.id.passwordEditText)
         loginButton = findViewById(R.id.loginButton)
         registerButton = findViewById(R.id.registerButton)
 
-        // Configura os observadores para os dados do ViewModel
         setupObservers()
 
-        // Configura os listeners de clique
         setupClickListeners()
     }
 
     private fun setupObservers() {
-        // Observa o resultado do login
         authViewModel.loginResult.observe(this, Observer { response ->
             if (response.success) {
-                // Login bem-sucedido, navega para a tela principal
                 Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             } else {
-                // Login falhou, mostra mensagem de erro
                 Toast.makeText(this, response.message, Toast.LENGTH_LONG).show()
             }
         })
 
-        // Observa o estado de carregamento
         authViewModel.isLoading.observe(this, Observer { isLoading ->
-            // Atualiza a UI para mostrar ou esconder o indicador de carregamento
             loginButton.isEnabled = !isLoading
             registerButton.isEnabled = !isLoading
         })
 
-        // Observa erros
         authViewModel.error.observe(this, Observer { errorMessage ->
             Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
         })
@@ -78,7 +68,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         registerButton.setOnClickListener {
-            // Navega para a tela de registro
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }

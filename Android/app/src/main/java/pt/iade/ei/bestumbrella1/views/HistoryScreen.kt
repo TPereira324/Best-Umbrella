@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -29,9 +30,16 @@ data class RentalEntry(
 @Composable
 fun HistoryScreen(navController: NavController) {
     val entries = listOf(
+        // existentes
         RentalEntry("Hoje, 14:30", "Metro Moscavide", "Parque das Nações", 0.29, "35 min"),
         RentalEntry("Ontem, 09:16", "Vasco da Gama Shopping", "Metro Oriente", 1.00, "1h 15min"),
-        RentalEntry("Há 2 dias", "IADE", "Metro Oriente", 2.50, "27h 40min") // > 24h → multa
+        RentalEntry("Há 2 dias", "IADE", "Metro Oriente", 2.50, "27h 40min"),
+
+        // novas entradas com base nas novas estações centrais
+        RentalEntry("Hoje, 11:05", "Terreiro do Paço", "Baixa-Chiado", 0.35, "22 min"),
+        RentalEntry("Hoje, 09:20", "Rossio", "Marquês de Pombal", 0.50, "41 min"),
+        RentalEntry("Ontem, 18:10", "Baixa-Chiado", "Rossio", 0.25, "17 min"),
+        RentalEntry("Há 3 dias", "Marquês de Pombal", "Terreiro do Paço", 1.20, "26h 05min")
     )
 
     Scaffold(
@@ -41,31 +49,31 @@ fun HistoryScreen(navController: NavController) {
                     selected = false,
                     onClick = { navController.navigate("map") },
                     icon = { Icon(Icons.Default.Map, null) },
-                    label = { Text("Mapa") }
+                    label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate("qrscanner") },
                     icon = { Icon(Icons.Default.QrCodeScanner, null) },
-                    label = { Text("Scanner") }
+                    label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate("weather") },
                     icon = { Icon(Icons.Default.Cloud, contentDescription = null) },
-                    label = { Text("Tempo") }
+                    label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
                 )
                 NavigationBarItem(
                     selected = true,
                     onClick = {},
                     icon = { Icon(Icons.Default.History, null) },
-                    label = { Text("Histórico") }
+                    label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate("profile") },
                     icon = { Icon(Icons.Default.Person, null) },
-                    label = { Text("Perfil") }
+                    label = { Text("Perfil", color = Color.Black, fontWeight = FontWeight.Bold) }
                 )
             }
         }
@@ -77,8 +85,8 @@ fun HistoryScreen(navController: NavController) {
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFF2196F3).copy(alpha = 0.6f), // Azul topo
-                            Color(0xFFE3F2FD)                      // Branco azulado
+                            Color(0xFF2196F3).copy(alpha = 0.6f),
+                            Color(0xFFE3F2FD)
                         )
                     )
                 )
@@ -91,13 +99,14 @@ fun HistoryScreen(navController: NavController) {
                 Text(
                     "Histórico",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(16.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
                 ) {
                     Row(
                         modifier = Modifier
@@ -106,16 +115,16 @@ fun HistoryScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("7", style = MaterialTheme.typography.titleLarge)
-                            Text("Usos", style = MaterialTheme.typography.bodySmall)
+                            Text("7", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text("Usos", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("5h 45min", style = MaterialTheme.typography.titleLarge)
-                            Text("Tempo Total", style = MaterialTheme.typography.bodySmall)
+                            Text("5h 45min", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text("Tempo Total", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("€2.88", style = MaterialTheme.typography.titleLarge)
-                            Text("Gasto Total", style = MaterialTheme.typography.bodySmall)
+                            Text("€2.88", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text("Gasto Total", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -132,13 +141,14 @@ fun HistoryScreen(navController: NavController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     "${entry.date} — Concluído",
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = Color(0xFF1565C0)
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -148,7 +158,7 @@ fun HistoryScreen(navController: NavController) {
                                         contentDescription = null
                                     )
                                     Spacer(Modifier.width(4.dp))
-                                    Text("De: ${entry.from}", style = MaterialTheme.typography.bodyMedium)
+                                    Text("De: ${entry.from}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                                 }
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
@@ -157,27 +167,27 @@ fun HistoryScreen(navController: NavController) {
                                         contentDescription = null
                                     )
                                     Spacer(Modifier.width(4.dp))
-                                    Text("Para: ${entry.to}", style = MaterialTheme.typography.bodyMedium)
+                                    Text("Para: ${entry.to}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                                 }
                                 Spacer(Modifier.height(4.dp))
-                                Text("Duração: ${entry.duration}", style = MaterialTheme.typography.bodyMedium)
-                                Text("Custo base: €${"%.2f".format(entry.cost)}", style = MaterialTheme.typography.bodyMedium)
+                                Text("Duração: ${entry.duration}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                                Text("Custo base: €${"%.2f".format(entry.cost)}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
 
                                 if (multa > 0) {
                                     Spacer(Modifier.height(4.dp))
                                     Text(
                                         "⚠️ Multa aplicada: €100 — Guarda-chuva não devolvido após 24h!",
                                         color = Color.Red,
-                                        style = MaterialTheme.typography.bodySmall
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = FontWeight.Bold
                                     )
                                 }
 
-
-
                                 Text(
                                     "💰 Total: €${"%.2f".format(totalCost)}",
-                                    color = Color(0xFF1565C0),
-                                    style = MaterialTheme.typography.bodyLarge
+                                    color = Color.Black,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
                         }
@@ -201,3 +211,4 @@ fun PreviewHistoryScreen() {
     val navController = rememberNavController()
     HistoryScreen(navController)
 }
+

@@ -25,11 +25,9 @@ fun RentalDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalhes do Aluguer", color = Color.White) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF2196F3)
+                title = { Text("Detalhes do Aluguer", color = Color.Black, fontWeight = FontWeight.Bold) },
                 )
-            )
+
         }
     ) { padding ->
         Box(
@@ -55,9 +53,9 @@ fun RentalDetailsScreen(
                 Text(
                     "Resumo do Aluguer",
                     style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0D47A1)
-                    )
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = Color.Black
                 )
 
                 HorizontalDivider(
@@ -65,7 +63,6 @@ fun RentalDetailsScreen(
                     thickness = 2.dp,
                     color = Color(0xFF90CAF9)
                 )
-
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
@@ -75,14 +72,14 @@ fun RentalDetailsScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("Código do Guarda-Chuva:", fontWeight = FontWeight.Bold)
-                        Text(qrCode, color = Color(0xFF1976D2), fontSize = 18.sp)
+                        Text("Código do Guarda-Chuva:", fontWeight = FontWeight.Bold, color = Color.Black)
+                        Text(qrCode, color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
                         Spacer(Modifier.height(8.dp))
 
-                        Text("Localização: Moscavide Central", style = MaterialTheme.typography.bodyMedium)
-                        Text("Duração estimada: 2 horas", style = MaterialTheme.typography.bodyMedium)
-                        Text("Preço: €2,50", style = MaterialTheme.typography.bodyMedium)
+                        Text("Localização: Moscavide Central", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Duração estimada: 2 horas", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Preço: €2,50", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                     }
                 }
 
@@ -93,7 +90,7 @@ fun RentalDetailsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
                 ) {
-                    Text("Confirmar e Pagar", color = Color.White)
+                    Text("Confirmar e Pagar", color = Color.White, fontWeight = FontWeight.Bold)
                 }
 
                 OutlinedButton(
@@ -101,7 +98,7 @@ fun RentalDetailsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF1976D2))
                 ) {
-                    Text("Cancelar")
+                    Text("Cancelar", fontWeight = FontWeight.Bold)
                 }
             }
         }

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pagamento cancelado</title>
+    <style>
+      body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+      .warn { color: #c62828; }
+      pre { background: #111; color: #f5f5f5; padding: 12px; overflow: auto; display:none; }
+      button { padding: 6px 10px; }
+    </style>
+  </head>
+  <body>
+    <h1 class="warn">Pagamento cancelado</h1>
+    <p>Você cancelou a aprovação no PayPal.</p>
+
+    <div id="friendly" class="warn">A ordem não foi capturada.</div>
+    <button id="toggle">Mostrar detalhes técnicos</button>
+    <pre id="details"></pre>
+
+    <p style="margin-top:12px;">
+      Voltar para a página de pagamento: <a href="/paypal.html">PayPal Demo</a>
+    </p>
+
+    <script>
+      const toggleBtn = document.getElementById('toggle');
+      const detailsEl = document.getElementById('details');
+      toggleBtn.onclick = () => {
+        const show = detailsEl.style.display !== 'block';
+        detailsEl.style.display = show ? 'block' : 'none';
+        toggleBtn.textContent = show ? 'Ocultar detalhes técnicos' : 'Mostrar detalhes técnicos';
+      };
+
+      const params = new URLSearchParams(location.search);
+      const info = Object.fromEntries(params.entries());
+      detailsEl.textContent = JSON.stringify(info, null, 2);
+    </script>
+  </body>
+</html>

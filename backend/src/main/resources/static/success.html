@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pagamento aprovado</title>
+    <style>
+      body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+      pre { background: #111; color: #0f0; padding: 12px; overflow: auto; display:none; }
+      .ok { color: #2e7d32; }
+      .warn { color: #c62828; }
+      button { padding: 6px 10px; }
+    </style>
+  </head>
+  <body>
+    <h1>Pagamento aprovado no PayPal</h1>
+    <p>Conclua a captura para finalizar o pagamento.</p>
+
+    <div id="friendly" class="ok"></div>
+    <button id="toggle">Mostrar detalhes técnicos</button>
+    <pre id="details"></pre>
+
+    <div style="margin-top:12px;">
+      <button id="btnCapture">Capturar pagamento</button>
+      <span id="status" style="margin-left:8px;"></span>
+    </div>
+
+    <script>
+      const friendlyEl = document.getElementById('friendly');
+      const detailsEl = document.getElementById('details');
+      const toggleBtn = document.getElementById('toggle');
+      const statusEl = document.getElementById('status');
+
+      toggleBtn.onclick = () => {
+        const show = detailsEl.style.display !== 'block';
+        detailsEl.style.display = show ? 'block' : 'none';
+        toggleBtn.textContent = show ? 'Ocultar detalhes técnicos' : 'Mostrar detalhes técnicos';
+      };
+
+      function setFriendly(text, ok=true) {
+        friendlyEl.textContent = text;
+        friendlyEl.className = ok ? 'ok' : 'warn';
+      }
+      function setDetails(any) {
+        detailsEl.textContent = typeof any === 'string' ? any : JSON.stringify(any, null, 2);
+      }
+
+      const params = new URLSearchParams(location.search);
+      // PayPal Orders v2 envia token = orderId no retorno
+      const orderId = params.get('token') || params.get('orderId');
+
+      if (!orderId) {
+        setFriendly('Não foi possível identificar a ordem (token ausente).', false);
+        setDetails({ query: Object.fromEntries(params.entries()) });
+      } else {
+        setFriendly('Ordem ' + orderId + ' aprovada. Pronta para captura.');
+      }
+
+      document.getElementById('btnCapture').onclick = async () => {
+        if (!orderId) {
+          statusEl.textContent = 'Crie e aprove uma ordem primeiro.';
+          return;
+        }
+        statusEl.textContent = 'Capturando...';
+        try {
+          const resp = await fetch('/api/paypal/capture/' + encodeURIComponent(orderId), { method: 'POST' });
+          const data = await resp.json();
+          if (resp.ok) {
+            setFriendly('Pagamento capturado com sucesso.');
+            statusEl.textContent = 'Sucesso';
+          } else {
+            setFriendly('Falha na captura. Verifique credenciais/mode.', false);
+            statusEl.textContent = 'Erro ' + resp.status;
+          }
+          setDetails(data);
+        } catch (e) {
+          setFriendly('Erro de rede ao capturar.', false);
+          setDetails(String(e));
+          statusEl.textContent = 'Erro';
+        }
+      };
+    </script>
+  </body>
+</html>

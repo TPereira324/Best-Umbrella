@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pagamento PayPal (Demo)</title>
+    <style>
+      body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+      .row { margin-bottom: 12px; }
+      label { display: inline-block; width: 100px; }
+      input, select { padding: 6px 8px; }
+      pre { background: #111; color: #0f0; padding: 12px; overflow: auto; }
+      #status { margin: 12px 0; }
+    </style>
+  </head>
+  <body>
+    <h1>Pagamento PayPal (Sandbox)</h1>
+    <p>Esta página usa o JS SDK do PayPal e os seus endpoints do backend.</p>
+
+    <div class="row">
+      <label for="amount">Valor</label>
+      <input id="amount" type="text" value="10.00" />
+    </div>
+    <div class="row">
+      <label for="currency">Moeda</label>
+      <select id="currency">
+        <option value="EUR" selected>EUR</option>
+        <option value="USD">USD</option>
+        <option value="GBP">GBP</option>
+      </select>
+    </div>
+
+    <div id="paypal-button-container"></div>
+    <div id="status"></div>
+
+    <h2>Modo sem SDK (fallback)</h2>
+    <p>Se o SDK não carregar, pode usar estes botões:</p>
+    <div class="row">
+      <button id="btnCreate">Criar ordem</button>
+      <a id="approveLinkAnchor" href="#" target="_blank" style="display:none; margin-left:12px;">Abrir aprovação no PayPal</a>
+      <button id="btnCapture" style="margin-left:12px;">Capturar pagamento</button>
+    </div>
+
+    <h3>Resposta</h3>
+    <div id="friendly" style="margin-bottom:8px; font-weight:600;"></div>
+    <button id="toggleDetails" style="margin-bottom:8px; display:none;">Mostrar detalhes técnicos</button>
+    <pre id="result" style="display:none;">Aguardando ações...</pre>
+
+    <script>
+      async function loadSdkAndRender() {
+        // Buscar o clientId do backend (endpoints estão públicos para a beta)
+        const cidResp = await fetch('/api/paypal/client-id');
+        const { clientId } = await cidResp.json();
+        if (!clientId) {
+          document.getElementById('status').textContent = 'Falha ao obter clientId do backend';
+          return;
+        }
+
+        // Injetar o script do PayPal JS SDK dinamicamente
+        const sdk = document.createElement('script');
+        sdk.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=EUR`;
+        sdk.onload = initButtons;
+        sdk.onerror = () => {
+          document.getElementById('status').textContent = 'Falha ao carregar o SDK do PayPal — usando modo sem SDK.';
+          setupFallback();
+        };
+        document.head.appendChild(sdk);
+      }
+
+      function initButtons() {
+        document.getElementById('status').textContent = '';
+        paypal.Buttons({
+          createOrder: async () => {
+            const value = document.getElementById('amount').value || '10.00';
+            const currency = document.getElementById('currency').value || 'EUR';
+            const resp = await fetch(`/api/paypal/order?value=${encodeURIComponent(value)}&currency=${encodeURIComponent(currency)}`, {
+              method: 'POST'
+            });
+            const data = await resp.json();
+            handleResponse(resp, data, 'criar');
+            if (!resp.ok) throw new Error('Falha ao criar ordem');
+            return data.orderId; // o SDK precisa do orderId
+          },
+          onApprove: async (data) => {
+            document.getElementById('status').textContent = 'Capturando pagamento...';
+            const resp = await fetch(`/api/paypal/capture/${encodeURIComponent(data.orderID)}`, {
+              method: 'POST'
+            });
+            const capture = await resp.json();
+            handleResponse(resp, capture, 'capturar');
+          },
+          onError: (err) => {
+            document.getElementById('status').textContent = 'Erro nos botões do PayPal';
+            setFriendly('Ocorreu um erro no componente do PayPal. Tente novamente.');
+            setDetails(String(err));
+          }
+        }).render('#paypal-button-container');
+        // Mesmo com SDK, disponibilizar fallback
+        setupFallback();
+      }
+
+      function setupFallback() {
+        const statusEl = document.getElementById('status');
+        const approveA = document.getElementById('approveLinkAnchor');
+        let currentOrderId = null;
+
+        document.getElementById('btnCreate').onclick = async () => {
+          const value = document.getElementById('amount').value || '10.00';
+          const currency = document.getElementById('currency').value || 'EUR';
+          statusEl.textContent = 'Criando ordem...';
+          const resp = await fetch(`/api/paypal/order?value=${encodeURIComponent(value)}&currency=${encodeURIComponent(currency)}`, { method: 'POST' });
+          const data = await resp.json();
+          handleResponse(resp, data, 'criar');
+          if (resp.ok && data.orderId && data.approveLink) {
+            currentOrderId = data.orderId;
+            approveA.href = data.approveLink;
+            approveA.style.display = 'inline';
+            statusEl.textContent = 'Ordem criada. Clique em “Abrir aprovação no PayPal”, aprove e depois clique em “Capturar pagamento”.';
+          } else {
+            statusEl.textContent = 'Falha ao criar ordem.';
+          }
+        };
+
+        document.getElementById('btnCapture').onclick = async () => {
+          if (!currentOrderId) {
+            statusEl.textContent = 'Crie e aprove uma ordem primeiro.';
+            return;
+          }
+          statusEl.textContent = 'Capturando pagamento...';
+          const resp = await fetch(`/api/paypal/capture/${encodeURIComponent(currentOrderId)}`, { method: 'POST' });
+          const data = await resp.json();
+          handleResponse(resp, data, 'capturar');
+          statusEl.textContent = resp.ok ? 'Pagamento capturado!' : 'Falha na captura.';
+        };
+      }
+
+      // UX helpers
+      const friendlyEl = document.getElementById('friendly');
+      const resultEl = document.getElementById('result');
+      const toggleBtn = document.getElementById('toggleDetails');
+      toggleBtn.onclick = () => {
+        const showing = resultEl.style.display !== 'none';
+        resultEl.style.display = showing ? 'none' : 'block';
+        toggleBtn.textContent = showing ? 'Mostrar detalhes técnicos' : 'Ocultar detalhes técnicos';
+      };
+
+      function setFriendly(text) {
+        friendlyEl.textContent = text;
+      }
+      function setDetails(any) {
+        resultEl.textContent = typeof any === 'string' ? any : JSON.stringify(any, null, 2);
+        toggleBtn.style.display = 'inline-block';
+      }
+
+      function handleResponse(resp, data, tipo) {
+        // Mensagens amigáveis
+        if (resp.ok) {
+          if (tipo === 'criar') setFriendly('Ordem criada com sucesso. Prossiga para aprovação.');
+          else if (tipo === 'capturar') setFriendly('Pagamento capturado com sucesso.');
+        } else {
+          const status = resp.status;
+          const msg = (data && (data.message || data.error)) || resp.statusText || 'Erro desconhecido';
+          let friendly = 'Ocorreu um erro.';
+          if (status === 401 || /Unauthorized/i.test(msg)) {
+            friendly = 'Credenciais do PayPal inválidas ou modo incorreto (sandbox vs live).';
+          } else if (status === 422) {
+            friendly = 'A ordem não foi aprovada ou os dados são inválidos.';
+          } else if (status === 400) {
+            friendly = 'Pedido inválido (verifique valor/moeda).';
+          } else if (status >= 500) {
+            friendly = 'Falha interna ao comunicar com o PayPal. Tente novamente.';
+          }
+          setFriendly(friendly);
+        }
+        // Detalhes técnicos ficam ocultos por padrão
+        setDetails(data);
+      }
+
+      loadSdkAndRender();
+    </script>
+  </body>
+</html>

@@ -346,7 +346,7 @@ fun QrScannerScreen(
                             )
                         }
 
-                        // Removidos controles de overlay para usar a linha inferior antiga
+
                     }
                 }
             }

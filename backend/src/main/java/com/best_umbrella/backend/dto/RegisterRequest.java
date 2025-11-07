@@ -7,6 +7,7 @@ public class RegisterRequest {
     private String nome;
     private String email;
     private String password;
+    @JsonAlias({"telemovel", "phone", "telefone"})
     private String telefone;
 
     public RegisterRequest() {}

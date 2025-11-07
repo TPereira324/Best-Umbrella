@@ -11,6 +11,8 @@ import retrofit2.http.Query
 import retrofit2.http.Part
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import pt.iade.ei.bestumbrella1.models.AdviceResponse
+
 interface ApiService {
     @POST("users/register")
     suspend fun registerUser(@Body request: UserRequest): Response<UserResponse>
@@ -23,7 +25,7 @@ interface ApiService {
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double
     ): Response<WeatherResponse>
-
+ 
     @GET("users/profile")
     suspend fun getUserProfile(@Header("Authorization") token: String): Response<UserProfileResponse>
 
@@ -41,4 +43,7 @@ interface ApiService {
         @Part("umbrellaId") umbrellaId: RequestBody,
         @Part("notes") notes: RequestBody
     ): Response<ReturnResponse>
+
+    @GET("advice")
+    suspend fun getAdvice(): Response<AdviceResponse>
 }

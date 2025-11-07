@@ -10,7 +10,6 @@ import pt.iade.ei.bestumbrella1.network.UserProfileResponse
 import pt.iade.ei.bestumbrella1.network.UserRequest
 import pt.iade.ei.bestumbrella1.network.UserResponse
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
-import retrofit2.Response
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -18,6 +17,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import pt.iade.ei.bestumbrella1.network.ReturnResponse
 import java.io.File
+import pt.iade.ei.bestumbrella1.models.AdviceResponse
+import pt.iade.ei.bestumbrella1.network.RetrofitInstance
 
 class Repository(private val apiService: ApiService, private val sessionManager: SessionManager) {
 
@@ -163,6 +164,17 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                 } else {
                     Result.failure(Exception("Falha ao submeter devolução: HTTP ${response.code()} ${response.message()}"))
                 }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getAdvice(): Result<AdviceResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val advice = RetrofitInstance.api.getAdvice()
+                Result.success(advice)
             } catch (e: Exception) {
                 Result.failure(e)
             }

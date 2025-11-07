@@ -9,7 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "Utilizador")
@@ -36,10 +38,12 @@ public class Utilizador {
 
     private Double rating;
 
-    @OneToMany(mappedBy = "utilizador")
+    @OneToMany(mappedBy = "utilizador", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Aluguer> alugueres;
 
-    @OneToMany(mappedBy = "utilizador")
+    @OneToMany(mappedBy = "utilizador", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Noti> notificacoes;
 
     // Getters e Setters

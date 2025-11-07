@@ -31,6 +31,15 @@ public class PayPalService {
             // Criar o request da ordem usando o SDK v2
             OrderRequest orderRequest = new OrderRequest();
             orderRequest.checkoutPaymentIntent("CAPTURE");
+
+            // Contexto da aplicação para melhor UX e retorno controlado na demo
+            ApplicationContext appCtx = new ApplicationContext()
+                    .brandName("Best Umbrella")
+                    .landingPage("LOGIN")
+                    .userAction("PAY_NOW")
+                    .returnUrl("http://localhost:8080/success.html")
+                    .cancelUrl("http://localhost:8080/paypal.html");
+            orderRequest.applicationContext(appCtx);
             
             // Configurar unidade de compra
             List<PurchaseUnitRequest> purchaseUnits = new ArrayList<>();

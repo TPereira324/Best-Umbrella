@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.best_umbrella.backend.model.GuardaChuva;
+import com.best_umbrella.backend.model.Aluguer;
+import com.best_umbrella.backend.model.PontodeAluguer;
+import com.best_umbrella.backend.dto.GuardaChuvaDto;
+import com.best_umbrella.backend.dto.AluguerSummaryDto;
 import com.best_umbrella.backend.service.GuardaChuvaService;
 
 @RestController
@@ -30,40 +34,44 @@ public class GuardaChuvaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GuardaChuva>> getAllGuardaChuvas() {
-        return ResponseEntity.ok(guardaChuvaService.findAll());
+    public ResponseEntity<List<GuardaChuvaDto>> getAllGuardaChuvas() {
+        List<GuardaChuvaDto> dtos = guardaChuvaService.findAll().stream()
+                .map(this::toDto)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GuardaChuva> getGuardaChuvaById(@PathVariable Integer id) {
+    public ResponseEntity<GuardaChuvaDto> getGuardaChuvaById(@PathVariable Integer id) {
         Optional<GuardaChuva> guardaChuva = guardaChuvaService.findById(id);
-        return guardaChuva.map(ResponseEntity::ok)
+        return guardaChuva.map(gc -> ResponseEntity.ok(toDto(gc)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/codigo/{codigoQr}")
-    public ResponseEntity<GuardaChuva> getGuardaChuvaByCodigoQr(@PathVariable String codigoQr) {
+    public ResponseEntity<GuardaChuvaDto> getGuardaChuvaByCodigoQr(@PathVariable String codigoQr) {
         GuardaChuva guardaChuva = guardaChuvaService.findByCodigoQr(codigoQr);
         if (guardaChuva != null) {
-            return ResponseEntity.ok(guardaChuva);
+            return ResponseEntity.ok(toDto(guardaChuva));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<GuardaChuva> createGuardaChuva(@RequestBody GuardaChuva guardaChuva) {
+    public ResponseEntity<GuardaChuvaDto> createGuardaChuva(@RequestBody GuardaChuva guardaChuva) {
         GuardaChuva savedGuardaChuva = guardaChuvaService.save(guardaChuva);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedGuardaChuva);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toDto(savedGuardaChuva));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GuardaChuva> updateGuardaChuva(@PathVariable Integer id, @RequestBody GuardaChuva guardaChuva) {
+    public ResponseEntity<GuardaChuvaDto> updateGuardaChuva(@PathVariable Integer id, @RequestBody GuardaChuva guardaChuva) {
         if (!guardaChuvaService.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
         guardaChuva.setGuardaChuvaId(id);
-        return ResponseEntity.ok(guardaChuvaService.save(guardaChuva));
+        GuardaChuva saved = guardaChuvaService.save(guardaChuva);
+        return ResponseEntity.ok(toDto(saved));
     }
 
     @DeleteMapping("/{id}")
@@ -74,5 +82,38 @@ public class GuardaChuvaController {
         }
         guardaChuvaService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private GuardaChuvaDto toDto(GuardaChuva gc) {
+        Integer pontoId = gc.getPontodeAluguer() != null ? gc.getPontodeAluguer().getPontoId() : null;
+        List<AluguerSummaryDto> aluguerDtos = gc.getAlugueres() == null ? List.of() : gc.getAlugueres().stream()
+                .map(this::toDto)
+                .toList();
+        return new GuardaChuvaDto(
+                gc.getGuardaChuvaId(),
+                gc.getCodigoQr(),
+                gc.getEstado(),
+                gc.getCor(),
+                gc.getTipo(),
+                gc.getDataRegisto(),
+                pontoId,
+                aluguerDtos
+        );
+    }
+
+    private AluguerSummaryDto toDto(Aluguer a) {
+        Integer guardaId = a.getGuardaChuva() != null ? a.getGuardaChuva().getGuardaChuvaId() : null;
+        Integer inicioId = a.getPontoInicio() != null ? a.getPontoInicio().getPontoId() : null;
+        Integer fimId = a.getPontoFim() != null ? a.getPontoFim().getPontoId() : null;
+        return new AluguerSummaryDto(
+                a.getAluguerId(),
+                a.getDataInicio(),
+                a.getDataFim(),
+                a.getCusto(),
+                a.getEstado(),
+                guardaId,
+                inicioId,
+                fimId
+        );
     }
 }

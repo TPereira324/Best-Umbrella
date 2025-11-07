@@ -55,6 +55,7 @@ class Repository(private val apiService: ApiService, private val sessionManager:
     suspend fun loginUser(email: String, password: String): Result<UserResponse> {
         return withContext(Dispatchers.IO) {
             try {
+                // Fallback local para demonstração em aula: aceita admin sem backend
                 if (email.equals("admin@bestumbrella", ignoreCase = true)) {
                     if (password == "admin123") {
                         val adminResponse = UserResponse(
@@ -70,10 +71,18 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                     }
                 }
                 val request = UserRequest(email = email, password = password)
-                val response = apiService.loginUser(request)
+                // 1) Tenta /users/login
+                var response = apiService.loginUser(request)
+                // 2) Se 404, tenta /auth/login
+                if (!response.isSuccessful && response.code() == 404) {
+                    response = apiService.loginAuth(request)
+                }
+                // 3) Se continuar falhando (404/400/415), tenta /login como form-url-encoded (username/password)
+                if (!response.isSuccessful && (response.code() == 404 || response.code() == 400 || response.code() == 415)) {
+                    response = apiService.loginForm(username = email, password = password)
+                }
                 if (response.isSuccessful) {
-                    val userResponse = response.body()!!
-                    Result.success(userResponse)
+                    Result.success(response.body()!!)
                 } else {
                     Result.failure(Exception("Falha no login: ${response.errorBody()?.string()}"))
                 }
@@ -132,6 +141,26 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                     Result.success(response.body()!!)
                 } else {
                     Result.failure(Exception("Falha ao atualizar perfil: ${response.errorBody()?.string()}"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getAllUsers(): Result<List<UserProfileResponse>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val token = sessionManager.getAuthToken()
+                if (token.isNullOrEmpty()) {
+                    return@withContext Result.failure(Exception("Usuário não autenticado"))
+                }
+
+                val response = apiService.getAllUsers("Bearer $token")
+                if (response.isSuccessful && response.body() != null) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception("Falha ao obter utilizadores: ${response.errorBody()?.string()}"))
                 }
             } catch (e: Exception) {
                 Result.failure(e)

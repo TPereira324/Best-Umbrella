@@ -18,7 +18,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+         // Base sem prefixo /api; endpoints já incluem os caminhos relativos
+         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/\"")
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"ARKU6o3YNxM1l1uqUg1GGFcUZGW_OMBgm8eLBelT1f8hwTC-ONM_4XdEgSpHwIHm84BzbOO1yoD8_DrV\"")
          buildConfigField("String", "PAYPAL_CLIENT_SECRET", "\"EBFGH2RNBL3V-oheuKNy0oHqJ4qbTSp1k1A8SYEMt72EwT_CIOx082QAzl0YeM6UteBhTbxs8JxnUeBa\"")
          buildConfigField("String", "PAYPAL_RETURN_URL", "\"https://www.paypal.com/mep/dashboard\"")

@@ -8,6 +8,7 @@ import pt.iade.ei.bestumbrella1.network.RetrofitClient
 import pt.iade.ei.bestumbrella1.viewmodels.AuthViewModel
 import pt.iade.ei.bestumbrella1.viewmodels.WeatherViewModel
 import pt.iade.ei.bestumbrella1.viewmodels.AdviceViewModel
+import pt.iade.ei.bestumbrella1.viewmodels.UsersViewModel
 object AppModule {
     
     private var repository: Repository? = null
@@ -15,6 +16,7 @@ object AppModule {
     private var authViewModel: AuthViewModel? = null
     private var weatherViewModel: WeatherViewModel? = null
     private var adviceViewModel: AdviceViewModel? = null
+    private var usersViewModel: UsersViewModel? = null
     
     fun provideSessionManager(context: Context): SessionManager {
         return sessionManager ?: SessionManager(context).also {
@@ -52,11 +54,18 @@ object AppModule {
         }
     }
     
+    fun provideUsersViewModel(context: Context): UsersViewModel {
+        return usersViewModel ?: UsersViewModel(provideRepository(context)).also {
+            usersViewModel = it
+        }
+    }
+    
 
     fun clearInstances() {
         repository = null
         authViewModel = null
         weatherViewModel = null
         adviceViewModel = null
+        usersViewModel = null
     }
 }

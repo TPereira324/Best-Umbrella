@@ -1,6 +1,7 @@
 package com.best_umbrella.backend.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.time.LocalDateTime;
 
@@ -12,20 +13,24 @@ public class Aluguer {
     @Column(name = "aluguer_id")
     private Long aluguerId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilizador_id")
+    @JsonBackReference
     private Utilizador utilizador;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "guarda_chuva_id")
+    @JsonBackReference
     private GuardaChuva guardaChuva;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ponto_inicio_id")
+    @JsonBackReference
     private PontodeAluguer pontoInicio;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ponto_fim_id")
+    @JsonBackReference
     private PontodeAluguer pontoFim;
 
     @Column(name = "data_inicio")

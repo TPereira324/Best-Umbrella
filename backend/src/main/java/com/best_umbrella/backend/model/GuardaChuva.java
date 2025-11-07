@@ -12,6 +12,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.FetchType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "Guarda_chuva")
@@ -31,11 +34,13 @@ public class GuardaChuva {
     @Column(name = "data_registo")
     private LocalDateTime dataRegisto;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ponto_id")
+    @JsonBackReference
     private PontodeAluguer pontodeAluguer;
     
-    @OneToMany(mappedBy = "guardaChuva")
+    @OneToMany(mappedBy = "guardaChuva", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Aluguer> alugueres;
 
     // Getters e Setters

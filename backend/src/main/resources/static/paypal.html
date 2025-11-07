@@ -82,12 +82,10 @@
             return data.orderId; // o SDK precisa do orderId
           },
           onApprove: async (data) => {
-            document.getElementById('status').textContent = 'Capturando pagamento...';
-            const resp = await fetch(`/api/paypal/capture/${encodeURIComponent(data.orderID)}`, {
-              method: 'POST'
-            });
-            const capture = await resp.json();
-            handleResponse(resp, capture, 'capturar');
+            // DEMO beta: não capturar automaticamente
+            document.getElementById('status').textContent = 'Aprovação concluída. Sem captura automática nesta demonstração.';
+            // Redireciona para página de sucesso onde a captura é opcional/manual
+            window.location.href = `/success.html?orderId=${encodeURIComponent(data.orderID)}`;
           },
           onError: (err) => {
             document.getElementById('status').textContent = 'Erro nos botões do PayPal';

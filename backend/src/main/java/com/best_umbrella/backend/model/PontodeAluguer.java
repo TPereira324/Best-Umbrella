@@ -1,6 +1,8 @@
 package com.best_umbrella.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.FetchType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
 
@@ -19,13 +21,16 @@ public class PontodeAluguer {
     private Integer capacidade;
     private String tipo;
 
-    @OneToMany(mappedBy = "pontodeAluguer")
+    @OneToMany(mappedBy = "pontodeAluguer", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<GuardaChuva> guardaChuvas;
     
-    @OneToMany(mappedBy = "pontoInicio")
+    @OneToMany(mappedBy = "pontoInicio", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Aluguer> alugueresInicio;
     
-    @OneToMany(mappedBy = "pontoFim")
+    @OneToMany(mappedBy = "pontoFim", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Aluguer> alugueresTermino;
 
     // Getters e Setters

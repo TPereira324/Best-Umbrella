@@ -240,8 +240,11 @@ fun ProfileScreen(navController: NavController) {
                     onClick = {
                         coroutineScope.launch {
                             sessionManager.clearSession()
+                            // Limpar instâncias para evitar estados retidos após logout
+                            AppModule.clearInstances()
                             navController.navigate("login") {
-                                popUpTo(0) { inclusive = true }
+                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                                launchSingleTop = true
                             }
                         }
                     },

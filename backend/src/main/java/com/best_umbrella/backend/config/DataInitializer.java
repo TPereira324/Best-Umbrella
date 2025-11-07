@@ -23,6 +23,14 @@ public class DataInitializer implements CommandLineRunner {
         // Garantir admin com email canónico e migrar do legado se existir
         ensureAdminCanonical();
 
+        // Semear utilizadores pedidos (não altera porta do servidor)
+        ensureUser("Taha-Wur Pereira", "taha@umbrella.pt", "12345", "912345678", 4.8);
+        ensureUser("Joybeth Mateus", "joybeth@umbrella.pt", "12345", "913456789", 4.5);
+        ensureUser("Márcio Quintas", "marcio@umbrella.pt", "12345", "914567890", 4.7);
+        ensureUser("Feleciano Ramos", "feleciano@umbrella.pt", "12345", "915678901", 4.6);
+        ensureUser("Fábio Teixeira", "fabio@umbrella.pt", "12345", "916789012", 4.4);
+        ensureUser("Moira Silva", "moira@umbrella.pt", "12345", "917890123", 4.3);
+
     }
 
     private void ensureAdminCanonical() {

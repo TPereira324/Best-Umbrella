@@ -1,6 +1,9 @@
 package com.best_umbrella.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 public class RegisterRequest {
+    @JsonAlias({"name"})
     private String nome;
     private String email;
     private String password;

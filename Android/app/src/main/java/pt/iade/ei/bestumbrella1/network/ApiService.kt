@@ -9,6 +9,8 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
 import retrofit2.http.Part
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Field
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import pt.iade.ei.bestumbrella1.models.AdviceResponse
@@ -19,6 +21,17 @@ interface ApiService {
 
     @POST("users/login")
     suspend fun loginUser(@Body request: UserRequest): Response<UserResponse>
+
+    
+    @POST("auth/login")
+    suspend fun loginAuth(@Body request: UserRequest): Response<UserResponse>
+
+    @FormUrlEncoded
+    @POST("login")
+    suspend fun loginForm(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): Response<UserResponse>
 
     @GET("weather/forecast")
     suspend fun getWeatherForecast(
@@ -46,4 +59,7 @@ interface ApiService {
 
     @GET("advice")
     suspend fun getAdvice(): Response<AdviceResponse>
+
+    @GET("users")
+    suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<UserProfileResponse>>
 }

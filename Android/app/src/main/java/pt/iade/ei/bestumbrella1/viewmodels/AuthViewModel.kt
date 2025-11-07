@@ -61,11 +61,11 @@ class AuthViewModel(private val repository: Repository, private val sessionManag
         }
     }
 
-    fun register(name: String, email: String, password: String) {
+    fun register(name: String, email: String, password: String, phone: String?) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val result = repository.registerUser(name, email, password)
+                val result = repository.registerUser(name, email, password, phone)
                 result.fold(
                     onSuccess = { response ->
                         response.token?.let { sessionManager.saveToken(it) }

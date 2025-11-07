@@ -32,6 +32,15 @@ fun ProfileScreen(navController: NavController) {
     val context = LocalContext.current
     val sessionManager = AppModule.provideSessionManager(context)
     val coroutineScope = rememberCoroutineScope()
+    var userEmail by remember { mutableStateOf<String?>(null) }
+    var userName by remember { mutableStateOf<String?>(null) }
+    var isAdmin by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(Unit) {
+        userEmail = sessionManager.getEmail()
+        userName = sessionManager.getName()
+        isAdmin = sessionManager.isAdmin()
+    }
     
 
     Scaffold(
@@ -104,7 +113,7 @@ fun ProfileScreen(navController: NavController) {
                     tint = Color.White
                 )
                 Text(
-                    "admin@bestumbrella",
+                    text = (userName ?: userEmail ?: "Utilizador"),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
@@ -207,12 +216,35 @@ fun ProfileScreen(navController: NavController) {
                 Spacer(Modifier.height(5.dp))
 
                 
+                if (isAdmin) {
+                    Button(
+                        onClick = { navController.navigate("adminUsers") },
+                        modifier = Modifier
+                            .height(50.dp)
+                            .padding(bottom = 8.dp)
+                        ,
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            "Utilizadores",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
+                }
+
                 Button(
                     onClick = {
                         coroutineScope.launch {
                             sessionManager.clearSession()
+                            // Limpar instâncias para evitar estados retidos após logout
+                            AppModule.clearInstances()
                             navController.navigate("login") {
-                                popUpTo(0) { inclusive = true }
+                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                                launchSingleTop = true
                             }
                         }
                     },

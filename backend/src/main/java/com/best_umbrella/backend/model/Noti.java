@@ -1,6 +1,8 @@
 package com.best_umbrella.backend.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.FetchType;
 
 import java.time.LocalDateTime;
 
@@ -13,8 +15,9 @@ public class Noti {
     @Column(name = "notificacao_id")
     private Long notificacaoId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilizador_id")
+    @JsonBackReference
     private Utilizador utilizador;
 
     @Column(nullable = false)

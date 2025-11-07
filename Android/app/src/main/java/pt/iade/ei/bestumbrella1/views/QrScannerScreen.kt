@@ -1,6 +1,7 @@
 package pt.iade.ei.bestumbrella1.views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
@@ -39,6 +40,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 
+@SuppressLint("SuspiciousIndentation")
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGetImage::class)
 @Composable
@@ -54,6 +56,7 @@ fun QrScannerScreen(
     var torchEnabled by remember { mutableStateOf(false) }
     var shouldStartAfterPermission by remember { mutableStateOf(false) }
     var scannedText by remember { mutableStateOf("") }
+    
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
     DisposableEffect(Unit) {
         onDispose { cameraExecutor.shutdown() }
@@ -95,6 +98,7 @@ fun QrScannerScreen(
                             startScanner = false
                             onCodeScanned(value)
                             Toast.makeText(context, "Código: $value", Toast.LENGTH_SHORT).show()
+                            
                             cameraProviderRef?.unbindAll()
                         } else {
                             Toast.makeText(context, "Nenhum QR na imagem", Toast.LENGTH_SHORT).show()
@@ -175,36 +179,8 @@ fun QrScannerScreen(
                     .padding(30.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedTextField(
-                    value = scannedText,
-                    onValueChange = { scannedText = it },
-                    label = { Text("Resultado do scan") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(Modifier.height(16.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Button(
-                        onClick = {
-                            if (scannedText.isNotBlank()) {
-                                navController.navigate("rentalDetails/$scannedText")
-                            }
-                        },
-                        enabled = scannedText.isNotBlank()
-                    ) {
-                        Icon(Icons.Default.Check, contentDescription = null, tint = Color.Black)
-                        Spacer(Modifier.width(8.dp))
-                        Text("Usar código", color = Color.Black)
-                    }
-                    OutlinedButton(
-                        onClick = { scannedText = "" }
-                    ) {
-                        Icon(Icons.Default.Clear, contentDescription = null, tint = Color.Black)
-                        Spacer(Modifier.width(8.dp))
-                        Text("Limpar", color = Color.Black)
-                    }
-                }
-                Spacer(Modifier.height(16.dp))
+                
+                Spacer(Modifier.height(8.dp))
                 Text("Scanner QR", style = MaterialTheme.typography.headlineMedium, color = Color.Black)
                 Spacer(Modifier.height(50.dp))
                 Text(
@@ -284,6 +260,8 @@ fun QrScannerScreen(
                                                 scannedText = code
                                                 Toast.makeText(ctx, "Código: $code", Toast.LENGTH_SHORT).show()
                                                 startScanner = false
+                                                
+                                                onCodeScanned(code)
                                                 cameraProviderRef?.unbindAll()
                                             }
                                         })
@@ -342,6 +320,23 @@ fun QrScannerScreen(
                             Icon(
                                 imageVector = if (torchEnabled) Icons.Default.FlashOn else Icons.Default.FlashOff,
                                 contentDescription = "Flash",
+                                tint = Color.White
+                            )
+                        }
+
+                        // Botão para fechar o scanner e voltar às instruções
+                        IconButton(
+                            onClick = {
+                                startScanner = false
+                                cameraProviderRef?.unbindAll()
+                            },
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Fechar",
                                 tint = Color.White
                             )
                         }

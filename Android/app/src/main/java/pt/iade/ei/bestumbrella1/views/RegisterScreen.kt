@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,6 +37,7 @@ fun RegisterScreen(
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -108,6 +110,25 @@ fun RegisterScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Telefone", color = Color.Black, fontWeight = FontWeight.Bold) },
+                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedContainerColor = Color(0xFFBBDEFB),
+                    unfocusedContainerColor = Color(0xFFBBDEFB)
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(16.dp))
+
             var passwordVisible by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = password,
@@ -131,7 +152,7 @@ fun RegisterScreen(
             Spacer(Modifier.height(24.dp))
 
             Button(
-                onClick = { authViewModel.register(name, email, password) },
+                onClick = { authViewModel.register(name, email, password, phone) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

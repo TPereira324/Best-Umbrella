@@ -22,7 +22,7 @@ import pt.iade.ei.bestumbrella1.network.RetrofitInstance
 
 class Repository(private val apiService: ApiService, private val sessionManager: SessionManager) {
 
-    suspend fun registerUser(name: String, email: String, password: String): Result<UserResponse> {
+    suspend fun registerUser(name: String, email: String, password: String, phone: String?): Result<UserResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 if (email.equals("admin@bestumbrella", ignoreCase = true)) {
@@ -39,7 +39,7 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                         return@withContext Result.failure(Exception("Senha do administrador inválida"))
                     }
                 }
-                val request = UserRequest(name = name, email = email, password = password)
+                val request = UserRequest(name = name, email = email, password = password, phone = phone)
                 val response = apiService.registerUser(request)
                 if (response.isSuccessful) {
                     Result.success(response.body()!!)

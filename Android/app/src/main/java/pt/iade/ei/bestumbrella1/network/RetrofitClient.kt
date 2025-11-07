@@ -21,12 +21,19 @@ object RetrofitClient {
             .build()
     }
 
-    val api: ApiService by lazy {
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+    }
+
+    val api: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
+    }
+
+    val adviceApi: AdviceApiService by lazy {
+        retrofit.create(AdviceApiService::class.java)
     }
 }

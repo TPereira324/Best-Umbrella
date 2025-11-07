@@ -21,6 +21,7 @@ import pt.iade.ei.bestumbrella1.views.ProfileScreen
 import pt.iade.ei.bestumbrella1.views.CameraPreviewScreen
 import pt.iade.ei.bestumbrella1.views.PaymentScreen
 import pt.iade.ei.bestumbrella1.views.RentalDetailsScreen
+import pt.iade.ei.bestumbrella1.views.AdviceScreen
 
 @Composable
 fun MainNavigation(navController: NavHostController) {
@@ -70,6 +71,7 @@ fun MainNavigation(navController: NavHostController) {
             )
         }
         composable("weather") { WeatherScreen(navController) }
+        composable("advice") { AdviceScreen() }
         composable("history") { HistoryScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
         composable("cameraPreview") { CameraPreviewScreen() }

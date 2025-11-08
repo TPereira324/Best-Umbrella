@@ -1,5 +1,6 @@
 package pt.iade.ei.bestumbrella1.network
 
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pt.iade.ei.bestumbrella1.BuildConfig
@@ -22,6 +23,7 @@ object RetrofitClient {
     }
 
     private val retrofit: Retrofit by lazy {
+        Log.d("RetrofitBaseURL", "Using base URL: ${BuildConfig.API_BASE_URL}")
         Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
             .client(httpClient)

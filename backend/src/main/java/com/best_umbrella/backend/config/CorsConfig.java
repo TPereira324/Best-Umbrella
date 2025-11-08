@@ -19,6 +19,12 @@ public class CorsConfig {
                         .allowedHeaders("*")
                         .allowCredentials(false)
                         .maxAge(3600);
+                registry.addMapping("/users/**")
+                        .allowedOriginPatterns("http://10.0.2.2:*", "http://localhost:*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(false)
+                        .maxAge(3600);
             }
         };
     }

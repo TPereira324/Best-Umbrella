@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import com.best_umbrella.backend.dto.NomeUpdateRequest;
+
 @RestController
 @RequestMapping("/api/Utilizador")
 public class UtilizadorController {
@@ -65,6 +67,21 @@ public class UtilizadorController {
         }
         utilizadorService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/nome")
+    public ResponseEntity<UtilizadorDto> updateNome(@PathVariable Long id, @RequestBody NomeUpdateRequest request) {
+        Optional<Utilizador> opt = utilizadorService.findById(Long.valueOf(id));
+        if (opt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Utilizador u = opt.get();
+        if (request.getNome() == null || request.getNome().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        u.setNome(request.getNome().trim());
+        Utilizador saved = utilizadorService.save(u);
+        return ResponseEntity.ok(toDto(saved));
     }
 
     private UtilizadorDto toDto(Utilizador u) {

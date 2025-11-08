@@ -16,6 +16,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var nameEditText: EditText
     private lateinit var emailEditText: EditText
+    private lateinit var phoneEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var confirmPasswordEditText: EditText
     private lateinit var registerButton: Button
@@ -29,6 +30,7 @@ class RegisterActivity : AppCompatActivity() {
 
         nameEditText = findViewById(R.id.nameEditText)
         emailEditText = findViewById(R.id.emailEditText)
+        phoneEditText = findViewById(R.id.phoneEditText)
         passwordEditText = findViewById(R.id.passwordEditText)
         confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText)
         registerButton = findViewById(R.id.registerButton)
@@ -66,16 +68,17 @@ class RegisterActivity : AppCompatActivity() {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
             val confirmPassword = confirmPasswordEditText.text.toString().trim()
+            val phone = phoneEditText.text.toString().trim()
 
-            if (validateInput(name, email, password, confirmPassword)) {
-                authViewModel.register(name, email, password)
+            if (validateInput(name, email, password, confirmPassword, phone)) {
+                authViewModel.register(name, email, password, phone)
             }
         }
 
         backToLoginButton.setOnClickListener { finish() }
     }
 
-    private fun validateInput(name: String, email: String, password: String, confirmPassword: String): Boolean {
+    private fun validateInput(name: String, email: String, password: String, confirmPassword: String, phone: String): Boolean {
         var isValid = true
 
         if (name.isEmpty()) {
@@ -85,6 +88,11 @@ class RegisterActivity : AppCompatActivity() {
 
         if (email.isEmpty()) {
             emailEditText.error = "Email é obrigatório"
+            isValid = false
+        }
+
+        if (phone.isEmpty()) {
+            phoneEditText.error = "Telefone é obrigatório"
             isValid = false
         }
 

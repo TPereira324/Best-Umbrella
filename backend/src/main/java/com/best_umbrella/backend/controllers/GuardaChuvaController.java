@@ -24,6 +24,19 @@ import com.best_umbrella.backend.service.GuardaChuvaService;
 
 @RestController
 @RequestMapping("/api/guardachuvas")
+/**
+ * Controlador dos endpoints de Guarda-Chuva.
+ *
+ * Endpoints principais:
+ * - GET /api/guardachuvas                  → lista todos os guarda-chuvas
+ * - GET /api/guardachuvas/{id}             → obtém um guarda-chuva por ID
+ * - GET /api/guardachuvas/codigo/{codigo}  → obtém por código QR
+ * - POST /api/guardachuvas                 → cria um novo guarda-chuva
+ * - PUT /api/guardachuvas/{id}             → atualiza um guarda-chuva existente
+ * - DELETE /api/guardachuvas/{id}          → remove o guarda-chuva
+ *
+ * As respostas utilizam GuardaChuvaDto e referências de Aluguer via AluguerSummaryDto.
+ */
 public class GuardaChuvaController {
 
     private final GuardaChuvaService guardaChuvaService;

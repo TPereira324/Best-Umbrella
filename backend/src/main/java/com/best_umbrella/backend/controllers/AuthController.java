@@ -12,6 +12,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+/**
+ * Controlador de autenticação (API moderna).
+ *
+ * Endpoints:
+ * - POST /api/auth/register → regista um novo utilizador
+ * - POST /api/auth/login    → autentica e devolve UtilizadorDto
+ *
+ * Nota: Passwords podem estar em texto simples ou com BCrypt, conforme dados existentes.
+ */
 public class AuthController {
 
     private final UtilizadorService utilizadorService;

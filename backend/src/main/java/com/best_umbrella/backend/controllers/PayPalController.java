@@ -9,6 +9,15 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/paypal")
+/**
+ * Controlador de integração com PayPal.
+ *
+ * Endpoints:
+ * - GET  /api/paypal/client-id  → devolve clientId (config)
+ * - GET  /api/paypal/config      → devolve config (modo, baseUrl, clientId mascarado)
+ * - POST /api/paypal/order       → cria uma ordem (value, currency)
+ * - POST /api/paypal/capture/{orderId} → captura uma ordem existente
+ */
 public class PayPalController {
 
     private final PayPalService service;

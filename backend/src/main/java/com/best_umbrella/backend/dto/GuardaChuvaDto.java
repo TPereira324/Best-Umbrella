@@ -3,6 +3,12 @@ package com.best_umbrella.backend.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * DTO de Guarda-Chuva usado nas respostas dos endpoints.
+ *
+ * Representa o estado e metadados do guarda-chuva, incluindo o ponto de aluguer
+ * associado (pontoId) e uma lista de alugueres resumidos (AluguerSummaryDto).
+ */
 public class GuardaChuvaDto {
     private Integer guardaChuvaId;
     private String codigoQr;

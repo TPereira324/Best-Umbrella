@@ -1,40 +1,125 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pagamento cancelado</title>
-    <style>
-      body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
-      .warn { color: #c62828; }
-      pre { background: #111; color: #f5f5f5; padding: 12px; overflow: auto; display:none; }
-      button { padding: 6px 10px; }
-    </style>
-  </head>
-  <body>
-    <h1 class="warn">Pagamento cancelado</h1>
-    <p>Você cancelou a aprovação no PayPal.</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento cancelado • PayPal</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --text: #1f2d3d;
+      --muted: #6b7c93;
+      --primary: #0070ba;
+      --primary-dark: #005ea6;
+      --danger: #d0021b;
+      --card: #ffffff;
+      --border: #e6ecf3;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+    .header { display: flex; align-items: center; gap: 12px; padding: 20px 24px; background: #fff; border-bottom: 1px solid var(--border); }
+    .pp-logo { height: 28px; }
+    .container { max-width: 860px; margin: 32px auto; padding: 0 16px; }
+    .hero { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+    .title { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 700; margin: 0 0 6px 0; }
+    .title .cross { color: var(--danger); font-size: 26px; }
+    .subtitle { color: var(--muted); margin: 0 0 18px 0; }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+    .order-id { font-weight: 600; }
+    .actions { display: flex; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+    .btn { appearance: none; border: none; border-radius: 8px; padding: 12px 18px; font-weight: 600; cursor: pointer; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .link { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .link:hover { text-decoration: underline; }
+    details { margin-top: 10px; }
+    summary { cursor: pointer; color: var(--primary); }
+    .result { margin-top: 18px; background: #0b1e3b; color: #e6f0ff; border-radius: 8px; padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; overflow: auto; max-height: 320px; border: 1px solid #0e2b57; }
+    .muted { color: var(--muted); }
+    .notice { background: #fff6f6; border: 1px solid #ffd9d9; color: #a33; padding: 10px 12px; border-radius: 8px; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <img src="/img/paypal-logo.svg" alt="PayPal" class="pp-logo" />
+  </header>
+  <main class="container">
+    <section class="hero">
+      <h1 class="title"><span class="cross">✖</span> Pagamento cancelado no PayPal</h1>
+      <p class="subtitle">A operação foi cancelada antes da captura.</p>
 
-    <div id="friendly" class="warn">A ordem não foi capturada.</div>
-    <button id="toggle">Mostrar detalhes técnicos</button>
-    <pre id="details"></pre>
+      <div class="card">
+        <p id="orderText" class="muted">A obter dados da ordem…</p>
 
-    <p style="margin-top:12px;">
-      Voltar para a página de pagamento: <a href="/paypal.html">PayPal Demo</a>
-    </p>
+        <div id="reason" class="notice" hidden></div>
 
-    <script>
-      const toggleBtn = document.getElementById('toggle');
-      const detailsEl = document.getElementById('details');
-      toggleBtn.onclick = () => {
-        const show = detailsEl.style.display !== 'block';
-        detailsEl.style.display = show ? 'block' : 'none';
-        toggleBtn.textContent = show ? 'Ocultar detalhes técnicos' : 'Mostrar detalhes técnicos';
+        <details>
+          <summary>Mostrar detalhes técnicos</summary>
+          <div>
+            <div><strong>QueryString:</strong> <code id="qs"></code></div>
+            <div><strong>orderId/token:</strong> <code id="orderIdDbg"></code></div>
+            <div><strong>value:</strong> <code id="valueDbg"></code></div>
+            <div><strong>currency:</strong> <code id="currencyDbg"></code></div>
+            <div><strong>status:</strong> <code id="statusDbg"></code></div>
+            <div><strong>reason:</strong> <code id="reasonDbg"></code></div>
+          </div>
+        </details>
+
+        <div class="actions">
+          <a class="btn btn-primary" id="retryBtn" href="/">Tentar novamente</a>
+          <a class="link" href="/">Voltar ao início</a>
+        </div>
+
+        <pre id="result" class="result" hidden></pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function parseParams() {
+      const usp = new URLSearchParams(window.location.search);
+      return {
+        orderId: usp.get('orderId') || usp.get('token') || '',
+        value: usp.get('value') || '',
+        currency: usp.get('currency') || '',
+        status: usp.get('status') || 'CANCELLED',
+        reason: usp.get('reason') || ''
       };
+    }
 
-      const params = new URLSearchParams(location.search);
-      const info = Object.fromEntries(params.entries());
-      detailsEl.textContent = JSON.stringify(info, null, 2);
-    </script>
-  </body>
+    function setText(id, text) { document.getElementById(id).textContent = text || ''; }
+    function show(id, visible) { document.getElementById(id).hidden = !visible; }
+
+    (function init() {
+      const { orderId, value, currency, status, reason } = parseParams();
+      setText('qs', window.location.search);
+      setText('orderIdDbg', orderId);
+      setText('valueDbg', value);
+      setText('currencyDbg', currency);
+      setText('statusDbg', status);
+      setText('reasonDbg', reason);
+
+      const txt = document.getElementById('orderText');
+      if (orderId) {
+        txt.innerHTML = `Ordem <span class="order-id">${orderId}</span> cancelada.`;
+      } else {
+        txt.textContent = 'Pagamento cancelado. Não foi possível identificar o orderId (token).';
+      }
+
+      if (reason) {
+        const r = document.getElementById('reason');
+        r.textContent = `Motivo informado: ${reason}`;
+        show('reason', true);
+      }
+
+      // Incluir orderId na tentativa de nova compra se existir
+      const retry = document.getElementById('retryBtn');
+      if (orderId) {
+        const base = retry.getAttribute('href') || '/';
+        const qp = new URLSearchParams({ retry: 'true', orderId });
+        retry.setAttribute('href', `${base}?${qp}`);
+      }
+    })();
+  </script>
+</body>
 </html>

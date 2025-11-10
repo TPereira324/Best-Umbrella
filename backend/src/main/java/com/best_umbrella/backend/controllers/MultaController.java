@@ -14,6 +14,21 @@ import com.best_umbrella.backend.service.MultaService;
 
 @RestController
 @RequestMapping("/api/Multa")
+/**
+ * Controlador dos endpoints de Multa.
+ *
+ * Endpoints principais:
+ * - GET /api/Multa                        → lista todas as multas
+ * - GET /api/Multa/{id}                   → obtém uma multa por ID
+ * - GET /api/Multa/utilizador/{uid}       → lista multas por utilizador
+ * - GET /api/Multa/aluguer/{aid}          → lista multas por aluguer
+ * - POST /api/Multa                       → cria uma multa (entidade completa)
+ * - POST /api/Multa/atrelada              → cria multa a partir de parâmetros (aluguerId, valor, ...)
+ * - POST /api/Multa/{id}/pagar            → marca a multa como paga
+ * - POST /api/Multa/{id}/cancelar         → cancela a multa
+ *
+ * As respostas utilizam MultaDto.
+ */
 public class MultaController {
 
     private final MultaService multaService;

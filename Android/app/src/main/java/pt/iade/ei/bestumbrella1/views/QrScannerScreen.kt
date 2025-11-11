@@ -115,15 +115,11 @@ fun QrScannerScreen(
         }
     }
 
+   
     LaunchedEffect(Unit) {
-        if (!hasCameraPermission) {
-            // Solicitar permissão e iniciar automaticamente ao conceder
-            shouldStartAfterPermission = true
-            launcher.launch(Manifest.permission.CAMERA)
-        } else {
-            // Se já tiver permissão, iniciar imediatamente
-            startScanner = true
-        }
+        startScanner = false
+        shouldStartAfterPermission = false
+
     }
 
     Scaffold(

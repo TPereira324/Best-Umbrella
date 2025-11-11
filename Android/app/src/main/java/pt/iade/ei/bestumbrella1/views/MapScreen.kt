@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +28,9 @@ import com.google.maps.android.compose.*
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+ 
 
 data class Station(
     val name: String,
@@ -36,11 +39,25 @@ data class Station(
     val total: Int
 )
 
+private enum class StationFilter { ALL, AVAILABLE, NEARBY }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreenWithMarkers(navController: NavController) {
     val context = LocalContext.current
     val lisboaCenter = LatLng(38.7682, -9.0985)
+    var selectedStation by remember { mutableStateOf<Station?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    
+
+    
+    
+    
+
+    
+
+    var currentFilter by remember { mutableStateOf(StationFilter.ALL) }
 
     val stations = listOf(
         Station("IADE", LatLng(38.7818, -9.10251), 3, 6),
@@ -71,17 +88,41 @@ fun MapScreenWithMarkers(navController: NavController) {
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    FilterChip(selected = true, onClick = {}, label = { Text("Todas", color = Color.Black, fontWeight = FontWeight.Bold) })
-                    FilterChip(selected = false, onClick = {}, label = { Text("Disponíveis", color = Color.Black, fontWeight = FontWeight.Bold) })
-                    FilterChip(selected = false, onClick = {}, label = { Text("Próximas", color = Color.Black, fontWeight = FontWeight.Bold) })
+                    val totalCount = stations.size
+                    val availableCount = stations.count { it.available > 0 }
+                    val center = cameraPositionState.position.target
+                    fun distanceKm(a: LatLng, b: LatLng): Double {
+                        val R = 6371.0
+                        val dLat = Math.toRadians(b.latitude - a.latitude)
+                        val dLon = Math.toRadians(b.longitude - a.longitude)
+                        val lat1 = Math.toRadians(a.latitude)
+                        val lat2 = Math.toRadians(b.latitude)
+                        val aa = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                        val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
+                        return R * c
+                    }
+                    val nearbyStations = remember(stations, center) {
+                        stations.sortedBy { distanceKm(it.location, center) }.take(5)
+                    }
+                    val nearbyCount = nearbyStations.size
+
+                    FilterChip(
+                        selected = currentFilter == StationFilter.ALL,
+                        onClick = { currentFilter = StationFilter.ALL },
+                        label = { Text("Todas ($totalCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                    )
+                    FilterChip(
+                        selected = currentFilter == StationFilter.AVAILABLE,
+                        onClick = { currentFilter = StationFilter.AVAILABLE },
+                        label = { Text("Disponíveis ($availableCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                    )
+                    FilterChip(
+                        selected = currentFilter == StationFilter.NEARBY,
+                        onClick = { currentFilter = StationFilter.NEARBY },
+                        label = { Text("Próximas ($nearbyCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                    )
                 }
-                Text(
-                    text = "🟢 Localização ativa",
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
+                
             }
         },
         bottomBar = {
@@ -135,9 +176,27 @@ fun MapScreenWithMarkers(navController: NavController) {
 
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState
+                cameraPositionState = cameraPositionState,
+                properties = MapProperties(),
+                uiSettings = MapUiSettings()
             ) {
-                stations.forEach { station ->
+                val center = cameraPositionState.position.target
+                fun distanceKm(a: LatLng, b: LatLng): Double {
+                    val R = 6371.0
+                    val dLat = Math.toRadians(b.latitude - a.latitude)
+                    val dLon = Math.toRadians(b.longitude - a.longitude)
+                    val lat1 = Math.toRadians(a.latitude)
+                    val lat2 = Math.toRadians(b.latitude)
+                    val aa = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                    val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
+                    return R * c
+                }
+                val filtered = when (currentFilter) {
+                    StationFilter.ALL -> stations
+                    StationFilter.AVAILABLE -> stations.filter { it.available > 0 }
+                    StationFilter.NEARBY -> stations.sortedBy { distanceKm(it.location, center) }.take(5)
+                }
+                filtered.forEach { station ->
                     val snippet = "Disponíveis: ${station.available}/${station.total}\n" +
                             String.format(
                                 Locale.US,
@@ -154,7 +213,11 @@ fun MapScreenWithMarkers(navController: NavController) {
                         title = station.name,
                         snippet = snippet,
                         icon = iconDescriptor,
-                        anchor = Offset(0.5f, 1.0f)
+                        anchor = Offset(0.5f, 1.0f),
+                        onClick = {
+                            selectedStation = station
+                            true
+                        }
                     )
                 }
             }
@@ -169,8 +232,122 @@ fun MapScreenWithMarkers(navController: NavController) {
                         .padding(bottom = 24.dp)
                         .shadow(8.dp, shape = MaterialTheme.shapes.medium)
                 )
+            
+
+            selectedStation?.let { station ->
+                ModalBottomSheet(
+                    sheetState = sheetState,
+                    onDismissRequest = { selectedStation = null }
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = station.name,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                            AssistChip(
+                                onClick = {},
+                                label = {
+                                    Text(
+                                        text = "${station.available} disponíveis",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            )
+                        }
+
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = String.format(
+                                Locale.US,
+                                "\uD83D\uDCCD %.1f km de distância",
+                                0.3
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black
+                        )
+
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = "Informações da Estação",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Card(Modifier.fillMaxWidth()) {
+                            Column(Modifier.padding(16.dp)) {
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text("☂ Guarda-chuvas", color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text("${station.available} de ${station.total}", color = Color.Black)
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text("⏱ Tempo máximo", color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text("24 horas", color = Color.Black)
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    "⚠️ Multa aplicada após 24h",
+                                    color = Color.Red,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(Modifier.height(8.dp))
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text("€ Tarifa", color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text("€0.50/hora", color = Color.Black)
+                                }
+                            }
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = "Como funciona",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Card(Modifier.fillMaxWidth()) {
+                            Column(Modifier.padding(16.dp)) {
+                                Text("1. Reserve um guarda-chuva nesta estação", color = Color.Black)
+                                Text("2. Desbloqueie usando o código QR", color = Color.Black)
+                                Text("3. Use durante o tempo necessário", color = Color.Black)
+                                Text("4. Devolva em qualquer estação Best Umbrella", color = Color.Black)
+                            }
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                selectedStation = null
+                                navController.navigate("payment")
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF0D47A1),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Reservar Guarda-chuva")
+                        }
+                    }
+                }
             }
         }
+    }
     }
 
 
@@ -180,8 +357,6 @@ fun PreviewMapScreenWithMarkers() {
     val navController = rememberNavController()
     MapScreenWithMarkers(navController)
 }
-
-// Gera um BitmapDescriptor com um círculo colorido e o emoji de guarda-chuva no centro
 private fun umbrellaMarkerIcon(context: android.content.Context, available: Boolean): BitmapDescriptor {
     val density = context.resources.displayMetrics.density
     val sizePx = (48 * density).toInt()
@@ -191,7 +366,7 @@ private fun umbrellaMarkerIcon(context: android.content.Context, available: Bool
     val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = (if (available) Color(0xFF1976D2) else Color(0xFF9E9E9E)).toArgb()
     }
-    // Fundo circular
+
     val radius = sizePx / 2f
     canvas.drawCircle(radius, radius, radius, bgPaint)
 

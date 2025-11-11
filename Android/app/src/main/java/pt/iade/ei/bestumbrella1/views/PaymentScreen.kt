@@ -2,6 +2,7 @@ package pt.iade.ei.bestumbrella1.views
 
 import android.annotation.SuppressLint
 import android.webkit.JavascriptInterface
+import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.compose.foundation.background
@@ -21,6 +22,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import pt.iade.ei.bestumbrella1.BuildConfig
@@ -28,7 +31,7 @@ import pt.iade.ei.bestumbrella1.BuildConfig
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentScreen(navController: NavController, qrCode: String) {
-    var balance by remember { mutableStateOf(5.00) }
+    var balance by remember { mutableStateOf(0.00) }
     var amountText by remember { mutableStateOf(TextFieldValue("")) }
     var showCheckout by remember { mutableStateOf(false) }
     var paymentMessage by remember { mutableStateOf<String?>(null) }
@@ -99,6 +102,20 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
 
                 Spacer(Modifier.height(16.dp))
 
+                if (qrCode.isNotBlank()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text("Guarda-chuva", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text(qrCode, style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        }
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+                }
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
@@ -131,13 +148,12 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
 
                         Button(
                             onClick = {
-                                val value = amountText.text.toDoubleOrNull()
-                                if (value != null && value > 0) {
-                                    showCheckout = true
-                                    paymentMessage = null
-                                } else {
-                                    paymentMessage = "Insira um valor válido para pagar."
+                                // Abrir de imediato o checkout PayPal
+                                if (amountText.text.isBlank()) {
+                                    amountText = TextFieldValue("1.00")
                                 }
+                                showCheckout = true
+                                paymentMessage = null
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
@@ -161,27 +177,50 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                         }
 
                         if (showCheckout) {
-                            Spacer(Modifier.height(16.dp))
-                            PayPalCheckoutWebView(
-                                amount = amountText.text.toDoubleOrNull() ?: 0.0,
-                                onResult = { result ->
-                                    when (result.status) {
-                                        "success" -> {
-                                            paymentMessage = "Pagamento efetuado com sucesso via PayPal!"
-                                            showCheckout = false
-                                            val value = amountText.text.toDoubleOrNull()
-                                            if (value != null) balance -= value
-                                            amountText = TextFieldValue("")
-                                            
-                                            navController.navigate("history")
-                                        }
-                                        "error" -> {
-                                            val msg = result.message ?: "desconhecido"
-                                            paymentMessage = "Erro no pagamento: ${msg}"
+                            Dialog(
+                                onDismissRequest = { showCheckout = false },
+                                properties = DialogProperties(usePlatformDefaultWidth = false)
+                            ) {
+                                Surface(color = Color.White) {
+                                    Column(modifier = Modifier.fillMaxSize()) {
+                                        TopAppBar(
+                                            title = { Text("Checkout PayPal", color = Color.Black, fontWeight = FontWeight.Bold) },
+                                            navigationIcon = {
+                                                IconButton(onClick = { showCheckout = false }) {
+                                                    Icon(Icons.Default.Close, contentDescription = null, tint = Color.Black)
+                                                }
+                                            }
+                                        )
+                                        Box(modifier = Modifier.fillMaxSize()) {
+                                            PayPalCheckoutWebView(
+                                                amount = amountText.text.toDoubleOrNull() ?: 1.0,
+                                                onResult = { result ->
+                                                    when (result.status) {
+                                                        "success" -> {
+                                                            paymentMessage = "Pagamento efetuado com sucesso via PayPal!"
+                                                            showCheckout = false
+                                                            val value = amountText.text.toDoubleOrNull()
+                                                            if (value != null) balance -= value
+                                                            amountText = TextFieldValue("")
+                                                            navController.navigate("history")
+                                                        }
+                                                        "cancel" -> {
+                                                            paymentMessage = "Pagamento cancelado pelo utilizador."
+                                                            showCheckout = false
+                                                        }
+                                                        "error" -> {
+                                                            val msg = result.message ?: "desconhecido"
+                                                            paymentMessage = "Erro no pagamento: ${msg}"
+                                                            showCheckout = false
+                                                        }
+                                                    }
+                                                },
+                                                modifier = Modifier.fillMaxSize()
+                                            )
                                         }
                                     }
                                 }
-                            )
+                            }
                         }
                     }
                 }
@@ -194,18 +233,25 @@ private data class PayPalResult(val status: String, val orderID: String? = null,
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Unit) {
+private fun PayPalCheckoutWebView(
+    amount: Double,
+    onResult: (PayPalResult) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val valueStr = String.format("%.2f", amount)
     val html = remember(amount) {
-        val valueStr = String.format("%.2f", amount)
         """
         <html>
         <head>
           <meta name=viewport content="width=device-width, initial-scale=1" />
-          <script src="https://www.paypal.com/sdk/js?client-id=${BuildConfig.PAYPAL_CLIENT_ID}&currency=EUR&disable-funding=card"></script>
-          <style> body { font-family: sans-serif; margin: 0; padding: 16px; } </style>
+          <script src="https://www.paypal.com/sdk/js?client-id=${BuildConfig.PAYPAL_CLIENT_ID}&currency=EUR&intent=capture&disable-funding=card"></script>
+          <style>
+            body { font-family: sans-serif; margin: 0; padding: 16px; }
+            .section { margin-top: 16px; }
+          </style>
         </head>
         <body>
-          <div id="paypal-button-container"></div>
+          <div id="paypal-button-container" class="section"></div>
           <script>
             const amount = '${valueStr}';
             paypal.Buttons({
@@ -215,15 +261,21 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
                   purchase_units: [{ amount: { value: amount } }]
                 });
               },
-              onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                  PayPalAndroid.postMessage(JSON.stringify({ status: 'success', orderID: data.orderID }));
-                });
+               onApprove: function(data, actions) {
+                 // Notificar aprovação antes da captura
+                 try { PayPalAndroid.postMessage(JSON.stringify({ status: 'approved', orderID: data.orderID })); } catch(e) {}
+                 return actions.order.capture().then(function(details) {
+                   PayPalAndroid.postMessage(JSON.stringify({ status: 'success', orderID: data.orderID }));
+                 });
+               },
+              onCancel: function(data) {
+                PayPalAndroid.postMessage(JSON.stringify({ status: 'cancel' }));
               },
               onError: function(err) {
                 PayPalAndroid.postMessage(JSON.stringify({ status: 'error', message: String(err) }));
               }
             }).render('#paypal-button-container');
+
           </script>
         </body>
         </html>
@@ -231,9 +283,7 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
     }
 
     AndroidView(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(420.dp),
+        modifier = modifier,
         factory = { ctx ->
             WebView(ctx).apply {
                 settings.javaScriptEnabled = true
@@ -281,5 +331,5 @@ fun PreviewPaymentScreen() {
     val qrCode = ""
     PaymentScreen(navController, qrCode)
 }
-// testing this branch
+
 

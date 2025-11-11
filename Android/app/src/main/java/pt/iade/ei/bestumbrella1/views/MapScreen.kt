@@ -233,7 +233,7 @@ fun MapScreenWithMarkers(navController: NavController) {
                         .shadow(8.dp, shape = MaterialTheme.shapes.medium)
                 )
             
-            // Painel inferior com detalhes da estação e botão Reservar
+
             selectedStation?.let { station ->
                 ModalBottomSheet(
                     sheetState = sheetState,
@@ -357,8 +357,6 @@ fun PreviewMapScreenWithMarkers() {
     val navController = rememberNavController()
     MapScreenWithMarkers(navController)
 }
-
-// Gera um BitmapDescriptor com um círculo colorido e o emoji de guarda-chuva no centro
 private fun umbrellaMarkerIcon(context: android.content.Context, available: Boolean): BitmapDescriptor {
     val density = context.resources.displayMetrics.density
     val sizePx = (48 * density).toInt()
@@ -368,7 +366,7 @@ private fun umbrellaMarkerIcon(context: android.content.Context, available: Bool
     val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = (if (available) Color(0xFF1976D2) else Color(0xFF9E9E9E)).toArgb()
     }
-    // Fundo circular
+
     val radius = sizePx / 2f
     canvas.drawCircle(radius, radius, radius, bgPaint)
 

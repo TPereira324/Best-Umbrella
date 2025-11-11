@@ -2,7 +2,6 @@ package pt.iade.ei.bestumbrella1.views
 
 import android.annotation.SuppressLint
 import android.webkit.JavascriptInterface
-import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.compose.foundation.background
@@ -35,6 +34,7 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
     var amountText by remember { mutableStateOf(TextFieldValue("")) }
     var showCheckout by remember { mutableStateOf(false) }
     var paymentMessage by remember { mutableStateOf<String?>(null) }
+    
 
     Scaffold(
         bottomBar = {
@@ -146,6 +146,8 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
 
                         Spacer(Modifier.height(16.dp))
 
+                        
+
                         Button(
                             onClick = {
                                 // Abrir de imediato o checkout PayPal
@@ -155,6 +157,7 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                                 showCheckout = true
                                 paymentMessage = null
                             },
+                            
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF003087)

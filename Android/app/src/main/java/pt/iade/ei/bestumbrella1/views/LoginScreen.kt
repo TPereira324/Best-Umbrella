@@ -2,6 +2,8 @@ package pt.iade.ei.bestumbrella1.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -63,6 +65,7 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .background(Color.White.copy(alpha = 0.9f), RoundedCornerShape(16.dp))
                 .padding(24.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Image(
                 painter = painterResource(id = R.mipmap.ic_launcher_foreground),

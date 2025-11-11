@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +28,8 @@ import com.google.maps.android.compose.*
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 
 data class Station(
     val name: String,
@@ -41,6 +43,8 @@ data class Station(
 fun MapScreenWithMarkers(navController: NavController) {
     val context = LocalContext.current
     val lisboaCenter = LatLng(38.7682, -9.0985)
+    var selectedStation by remember { mutableStateOf<Station?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val stations = listOf(
         Station("IADE", LatLng(38.7818, -9.10251), 3, 6),
@@ -154,7 +158,11 @@ fun MapScreenWithMarkers(navController: NavController) {
                         title = station.name,
                         snippet = snippet,
                         icon = iconDescriptor,
-                        anchor = Offset(0.5f, 1.0f)
+                        anchor = Offset(0.5f, 1.0f),
+                        onClick = {
+                            selectedStation = station
+                            true
+                        }
                     )
                 }
             }
@@ -169,8 +177,122 @@ fun MapScreenWithMarkers(navController: NavController) {
                         .padding(bottom = 24.dp)
                         .shadow(8.dp, shape = MaterialTheme.shapes.medium)
                 )
+            
+            // Painel inferior com detalhes da estação e botão Reservar
+            selectedStation?.let { station ->
+                ModalBottomSheet(
+                    sheetState = sheetState,
+                    onDismissRequest = { selectedStation = null }
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = station.name,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                            AssistChip(
+                                onClick = {},
+                                label = {
+                                    Text(
+                                        text = "${station.available} disponíveis",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            )
+                        }
+
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = String.format(
+                                Locale.US,
+                                "\uD83D\uDCCD %.1f km de distância",
+                                0.3
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black
+                        )
+
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = "Informações da Estação",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Card(Modifier.fillMaxWidth()) {
+                            Column(Modifier.padding(16.dp)) {
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text("☂ Guarda-chuvas", color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text("${station.available} de ${station.total}", color = Color.Black)
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text("⏱ Tempo máximo", color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text("24 horas", color = Color.Black)
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    "⚠️ Multa aplicada após 24h",
+                                    color = Color.Red,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(Modifier.height(8.dp))
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text("€ Tarifa", color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text("€0.50/hora", color = Color.Black)
+                                }
+                            }
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = "Como funciona",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Card(Modifier.fillMaxWidth()) {
+                            Column(Modifier.padding(16.dp)) {
+                                Text("1. Reserve um guarda-chuva nesta estação", color = Color.Black)
+                                Text("2. Desbloqueie usando o código QR", color = Color.Black)
+                                Text("3. Use durante o tempo necessário", color = Color.Black)
+                                Text("4. Devolva em qualquer estação Best Umbrella", color = Color.Black)
+                            }
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                selectedStation = null
+                                navController.navigate("payment")
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF0D47A1),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Reservar Guarda-chuva")
+                        }
+                    }
+                }
             }
         }
+    }
     }
 
 

@@ -82,6 +82,8 @@ fun RentalDetailsScreen(
 
                         Text("Localização: Moscavide Central", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                         Text("Duração estimada: 2 horas", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Tempo máximo: 24 horas", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("⚠️ Multa aplicada após 24h", style = MaterialTheme.typography.bodySmall, color = Color.Red, fontWeight = FontWeight.Bold)
                         Text("Preço: €2,50", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                     }
                 }

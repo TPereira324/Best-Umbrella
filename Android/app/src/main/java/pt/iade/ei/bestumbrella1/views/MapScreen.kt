@@ -30,6 +30,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
+ 
 
 data class Station(
     val name: String,
@@ -38,6 +39,8 @@ data class Station(
     val total: Int
 )
 
+private enum class StationFilter { ALL, AVAILABLE, NEARBY }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreenWithMarkers(navController: NavController) {
@@ -45,6 +48,16 @@ fun MapScreenWithMarkers(navController: NavController) {
     val lisboaCenter = LatLng(38.7682, -9.0985)
     var selectedStation by remember { mutableStateOf<Station?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    
+
+    
+    
+    
+
+    
+
+    var currentFilter by remember { mutableStateOf(StationFilter.ALL) }
 
     val stations = listOf(
         Station("IADE", LatLng(38.7818, -9.10251), 3, 6),
@@ -75,17 +88,41 @@ fun MapScreenWithMarkers(navController: NavController) {
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    FilterChip(selected = true, onClick = {}, label = { Text("Todas", color = Color.Black, fontWeight = FontWeight.Bold) })
-                    FilterChip(selected = false, onClick = {}, label = { Text("Disponíveis", color = Color.Black, fontWeight = FontWeight.Bold) })
-                    FilterChip(selected = false, onClick = {}, label = { Text("Próximas", color = Color.Black, fontWeight = FontWeight.Bold) })
+                    val totalCount = stations.size
+                    val availableCount = stations.count { it.available > 0 }
+                    val center = cameraPositionState.position.target
+                    fun distanceKm(a: LatLng, b: LatLng): Double {
+                        val R = 6371.0
+                        val dLat = Math.toRadians(b.latitude - a.latitude)
+                        val dLon = Math.toRadians(b.longitude - a.longitude)
+                        val lat1 = Math.toRadians(a.latitude)
+                        val lat2 = Math.toRadians(b.latitude)
+                        val aa = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                        val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
+                        return R * c
+                    }
+                    val nearbyStations = remember(stations, center) {
+                        stations.sortedBy { distanceKm(it.location, center) }.take(5)
+                    }
+                    val nearbyCount = nearbyStations.size
+
+                    FilterChip(
+                        selected = currentFilter == StationFilter.ALL,
+                        onClick = { currentFilter = StationFilter.ALL },
+                        label = { Text("Todas ($totalCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                    )
+                    FilterChip(
+                        selected = currentFilter == StationFilter.AVAILABLE,
+                        onClick = { currentFilter = StationFilter.AVAILABLE },
+                        label = { Text("Disponíveis ($availableCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                    )
+                    FilterChip(
+                        selected = currentFilter == StationFilter.NEARBY,
+                        onClick = { currentFilter = StationFilter.NEARBY },
+                        label = { Text("Próximas ($nearbyCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                    )
                 }
-                Text(
-                    text = "🟢 Localização ativa",
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
+                
             }
         },
         bottomBar = {
@@ -139,9 +176,27 @@ fun MapScreenWithMarkers(navController: NavController) {
 
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState
+                cameraPositionState = cameraPositionState,
+                properties = MapProperties(),
+                uiSettings = MapUiSettings()
             ) {
-                stations.forEach { station ->
+                val center = cameraPositionState.position.target
+                fun distanceKm(a: LatLng, b: LatLng): Double {
+                    val R = 6371.0
+                    val dLat = Math.toRadians(b.latitude - a.latitude)
+                    val dLon = Math.toRadians(b.longitude - a.longitude)
+                    val lat1 = Math.toRadians(a.latitude)
+                    val lat2 = Math.toRadians(b.latitude)
+                    val aa = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                    val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
+                    return R * c
+                }
+                val filtered = when (currentFilter) {
+                    StationFilter.ALL -> stations
+                    StationFilter.AVAILABLE -> stations.filter { it.available > 0 }
+                    StationFilter.NEARBY -> stations.sortedBy { distanceKm(it.location, center) }.take(5)
+                }
+                filtered.forEach { station ->
                     val snippet = "Disponíveis: ${station.available}/${station.total}\n" +
                             String.format(
                                 Locale.US,

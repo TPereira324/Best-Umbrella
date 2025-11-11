@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.remember
+import pt.iade.ei.bestumbrella1.models.UmbrellaData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,6 +26,8 @@ fun RentalDetailsScreen(
     navController: NavController,
     qrCode: String
 ) {
+    val umbrella = remember(qrCode) { UmbrellaData.findByQrCode(qrCode) }
+    val stationName = umbrella?.let { UmbrellaData.stationNameFor(it.pontoId) } ?: "Desconhecido"
     Scaffold(
         topBar = {
             TopAppBar(
@@ -76,22 +80,23 @@ fun RentalDetailsScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text("Código do Guarda-Chuva:", fontWeight = FontWeight.Bold, color = Color.Black)
-                        Text(qrCode, color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(umbrella?.codigoQr ?: qrCode, color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
                         Spacer(Modifier.height(8.dp))
-
-                        Text("Localização: Moscavide Central", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                        Text("Duração estimada: 2 horas", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Localização: $stationName", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Estado: ${umbrella?.estado ?: "Desconhecido"}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Cor: ${umbrella?.cor ?: "-"}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Tipo: ${umbrella?.tipo ?: "-"}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                         Text("Tempo máximo: 24 horas", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                         Text("⚠️ Multa aplicada após 24h", style = MaterialTheme.typography.bodySmall, color = Color.Red, fontWeight = FontWeight.Bold)
-                        Text("Preço: €2,50", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Registo: ${umbrella?.dataRegisto ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     }
                 }
 
                 Spacer(Modifier.height(20.dp))
 
                 Button(
-                    onClick = { navController.navigate("payment/$qrCode") },
+                    onClick = { navController.navigate("payment/${umbrella?.codigoQr ?: qrCode}") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
                 ) {
@@ -114,5 +119,5 @@ fun RentalDetailsScreen(
 @Composable
 fun PreviewRentalDetailsScreen() {
     val navController = rememberNavController()
-    RentalDetailsScreen(navController = navController, qrCode = "ABC123XYZ")
+    RentalDetailsScreen(navController = navController, qrCode = "QR003")
 }

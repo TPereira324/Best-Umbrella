@@ -11,6 +11,8 @@ val localProps = Properties().apply {
     }
 }
 val paypalClientId: String = localProps.getProperty("PAYPAL_CLIENT_ID") ?: ""
+// Chave da OpenWeather: usa a de local.properties ou cai no valor fornecido
+val weatherApiKey: String = localProps.getProperty("WEATHER_API_KEY") ?: "7d7353b5a696a31078211f46891b389e"
 
 plugins {
     alias(libs.plugins.android.application)
@@ -34,6 +36,12 @@ android {
          buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/\"")
 
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"$paypalClientId\"")
+         buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
+
+        // Reduz ABIs para ARM (dispositivos reais) e evita libs x86/x86_64
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
     }
 
     buildFeatures {
@@ -42,7 +50,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            // Remove recursos não usados para reduzir tamanho do APK
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -65,6 +75,10 @@ android {
 
    
     packaging {
+        // Exclui arquiteturas x86/x86_64 para evitar libs nativas desnecessárias e avisos de 16KB
+        jniLibs {
+            excludes += setOf("**/x86/**", "**/x86_64/**")
+        }
         resources {
             excludes += setOf(
                 "META-INF/DEPENDENCIES",

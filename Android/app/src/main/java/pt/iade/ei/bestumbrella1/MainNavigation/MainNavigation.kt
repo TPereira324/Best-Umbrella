@@ -15,7 +15,6 @@ import pt.iade.ei.bestumbrella1.views.LoginScreen
 import pt.iade.ei.bestumbrella1.views.RegisterScreen
 import pt.iade.ei.bestumbrella1.views.MapScreenWithMarkers
 import pt.iade.ei.bestumbrella1.views.QrScannerScreen
-import pt.iade.ei.bestumbrella1.views.WeatherScreen
 import pt.iade.ei.bestumbrella1.views.HistoryScreen
 import pt.iade.ei.bestumbrella1.views.ProfileScreen
 import pt.iade.ei.bestumbrella1.views.CameraPreviewScreen
@@ -71,7 +70,7 @@ fun MainNavigation(navController: NavHostController) {
                 onCodeScanned = { code -> navController.navigate("rentalDetails/$code") }
             )
         }
-        composable("weather") { WeatherScreen(navController) }
+        composable("weather") { pt.iade.ei.bestumbrella1.views.WeatherScreen(navController) }
         composable("advice") { AdviceScreen() }
         composable("history") { HistoryScreen(navController) }
         composable("profile") { ProfileScreen(navController) }

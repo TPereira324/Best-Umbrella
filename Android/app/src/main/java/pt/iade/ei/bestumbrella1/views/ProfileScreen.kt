@@ -46,40 +46,7 @@ fun ProfileScreen(navController: NavController) {
     
 
     Scaffold(
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("map") },
-                    icon = { Icon(Icons.Default.Map, null) },
-                    label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("qrscanner") },
-                    icon = { Icon(Icons.Default.QrCodeScanner, null) },
-                    label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("weather") },
-                    icon = { Icon(Icons.Default.Cloud, contentDescription = null) },
-                    label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("history") },
-                    icon = { Icon(Icons.Default.History, null) },
-                    label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = { Icon(Icons.Default.Person, null) },
-                    label = { Text("Perfil", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-            }
-        }
+        bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -243,7 +210,7 @@ fun ProfileScreen(navController: NavController) {
                     onClick = {
                         coroutineScope.launch {
                             sessionManager.clearSession()
-                            // Limpar instâncias para evitar estados retidos após logout
+
                             AppModule.clearInstances()
                             navController.navigate("login") {
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
@@ -276,3 +243,5 @@ fun PreviewProfileScreen() {
     val navController = rememberNavController()
     ProfileScreen(navController)
 }
+
+

@@ -7,3 +7,4 @@ interface AdviceApiService {
     @GET("advice")
     suspend fun getAdvice(): AdviceResponse
 }
+

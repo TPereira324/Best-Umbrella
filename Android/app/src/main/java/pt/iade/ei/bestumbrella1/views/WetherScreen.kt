@@ -37,43 +37,7 @@ fun WeatherScreen(navController: NavController) {
     )
 
     Scaffold(
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("map") },
-                    icon = { Icon(Icons.Default.Map, contentDescription = null) },
-                    label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("qrscanner") },
-                    icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
-                    label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-
-                NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = { Icon(Icons.Default.Cloud, contentDescription = null) },
-                    label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("history") },
-                    icon = { Icon(Icons.Default.History, contentDescription = null) },
-                    label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("profile") },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    label = { Text("Perfil", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-            }
-        }
+        bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -172,4 +136,6 @@ fun PreviewWeatherScreen() {
     val navController = rememberNavController()
     WeatherScreen(navController)
 }
+
+
 

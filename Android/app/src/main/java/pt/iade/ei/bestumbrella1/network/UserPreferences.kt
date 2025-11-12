@@ -5,3 +5,4 @@ data class UserPreferences(
     val locationTracking: Boolean = true,
     val weatherAlerts: Boolean = true
 )
+

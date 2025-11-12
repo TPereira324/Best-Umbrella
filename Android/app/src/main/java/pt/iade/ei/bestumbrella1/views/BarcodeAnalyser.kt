@@ -1,48 +1,71 @@
 package pt.iade.ei.bestumbrella1.views
 
-import android.util.Log
-import androidx.annotation.OptIn
-import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.common.InputImage
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.PlanarYUVLuminanceSource
+import com.google.zxing.DecodeHintType
 
 class BarcodeAnalyser(
-    private val callback: (String) -> Unit
+    private val onCodeDetected: (String) -> Unit
 ) : ImageAnalysis.Analyzer {
+    private val reader = MultiFormatReader().apply {
+        val hints = mapOf(
+            DecodeHintType.POSSIBLE_FORMATS to listOf(BarcodeFormat.QR_CODE)
+        )
+        setHints(hints)
+    }
 
-    private val scanner = BarcodeScanning.getClient(
-        BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-            .build()
-    )
+    override fun analyze(image: ImageProxy) {
+        try {
+            val width = image.width
+            val height = image.height
 
-    @OptIn(ExperimentalGetImage::class)
-    override fun analyze(imageProxy: ImageProxy) {
-        val mediaImage = imageProxy.image
-        if (mediaImage != null) {
-            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+            val yPlane = image.planes[0]
+            val yBuffer = yPlane.buffer
+            val yRowStride = yPlane.rowStride
+            val yPixelStride = yPlane.pixelStride
 
-            scanner.process(image)
-                .addOnSuccessListener { barcodes ->
-                    Log.d("QR", "Barcodes detectados: ${barcodes.size}")
-                    val value = barcodes.firstOrNull()?.rawValue
-                    if (!value.isNullOrEmpty()) {
-                        callback(value)
+            val luminance = ByteArray(width * height)
+            var offset = 0
+
+            if (yPixelStride == 1 && yRowStride == width) {
+                yBuffer.get(luminance, 0, width * height)
+            } else {
+                val position = yBuffer.position()
+                for (row in 0 until height) {
+                    var colOffset = row * yRowStride
+                    for (col in 0 until width) {
+                        luminance[offset++] = yBuffer.get(colOffset + col * yPixelStride)
                     }
                 }
-                .addOnFailureListener {
-                    Log.e("QR", "Falha na detecção", it)
-                }
-                .addOnCompleteListener {
-                    imageProxy.close()
-                }
-        } else {
-            imageProxy.close()
+                yBuffer.position(position)
+            }
+
+            val source = PlanarYUVLuminanceSource(
+                luminance,
+                width,
+                height,
+                0,
+                0,
+                width,
+                height,
+                false
+            )
+
+            val bitmap = BinaryBitmap(HybridBinarizer(source))
+            val result = reader.decode(bitmap)
+            val text = result.text
+            if (!text.isNullOrEmpty()) {
+                onCodeDetected(text)
+            }
+            reader.reset()
+        } catch (_: Exception) {
+        } finally {
+            image.close()
         }
     }
 }

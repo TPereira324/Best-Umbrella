@@ -75,3 +75,4 @@ class SessionManager(context: Context) {
         return dataStore.data.map { it[key] }.first()
     }
 }
+

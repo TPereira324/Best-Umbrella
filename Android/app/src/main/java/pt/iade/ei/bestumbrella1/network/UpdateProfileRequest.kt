@@ -7,3 +7,4 @@ data class UpdateProfileRequest(
     val preferences: UserPreferences? = null,
     @SerializedName("telefone") val phone: String? = null
 )
+

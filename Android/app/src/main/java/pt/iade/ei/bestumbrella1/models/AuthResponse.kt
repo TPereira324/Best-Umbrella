@@ -8,3 +8,4 @@ data class AuthResponse(
     val userEmail: String? = null,
     val token: String? = null
 )
+

@@ -9,3 +9,4 @@ data class UserProfileResponse(
     val preferences: UserPreferences? = null,
     val isSuccessful: Boolean = true
 )
+

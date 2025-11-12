@@ -3,7 +3,7 @@
 import java.io.File
 import java.util.Properties
 
-// Ler propriedades locais (local.properties) para credenciais que não devem ser commitadas
+
 val localProps = Properties().apply {
     val localFile = File(rootProject.projectDir, "local.properties")
     if (localFile.exists()) {
@@ -96,35 +96,24 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.fuel.v231)
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
-    implementation(libs.barcode.scanning)
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.room.common.jvm)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
-    implementation(libs.firebase.appdistribution.gradle)
-    implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2.v130)
     implementation(libs.androidx.camera.lifecycle.v130)
     implementation(libs.androidx.camera.view.v130)
-    implementation(libs.guava)
     implementation(libs.androidx.compose.runtime.livedata.v160)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation("com.google.zxing:core:3.5.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

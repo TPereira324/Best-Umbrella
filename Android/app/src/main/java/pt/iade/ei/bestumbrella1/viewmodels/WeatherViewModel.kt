@@ -40,3 +40,4 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 }
+

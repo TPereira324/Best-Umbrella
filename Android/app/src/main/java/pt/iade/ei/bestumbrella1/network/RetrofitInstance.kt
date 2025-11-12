@@ -14,3 +14,4 @@ object RetrofitInstance {
             .create(AdviceApiService::class.java)
     }
 }
+

@@ -125,40 +125,7 @@ fun MapScreenWithMarkers(navController: NavController) {
                 
             }
         },
-        bottomBar = {
-            NavigationBar(containerColor = Color.White, contentColor = Color(0xFF1976D2)) {
-                NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = { Icon(Icons.Default.Map, contentDescription = "Mapa", tint = Color.Black) },
-                    label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("qrscanner") },
-                    icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = "Scanner", tint = Color.Black) },
-                    label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("weather") },
-                    icon = { Icon(Icons.Default.Cloud, contentDescription = null, tint = Color.Black) },
-                    label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("history") },
-                    icon = { Icon(Icons.Default.History, contentDescription = "Histórico", tint = Color.Black) },
-                    label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("profile") },
-                    icon = { Icon(Icons.Default.Person, contentDescription = "Perfil", tint = Color.Black) },
-                    label = { Text("Perfil", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-            }
-        }
+        bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -221,17 +188,17 @@ fun MapScreenWithMarkers(navController: NavController) {
                     )
                 }
             }
-                ExtendedFloatingActionButton(
-                    onClick = { navController.navigate("qrscanner") },
-                    containerColor = Color(0xFF1976D2),
-                    contentColor = Color.White,
-                    icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = "Scanner") },
-                    text = { Text("Scanner") },
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 24.dp)
-                        .shadow(8.dp, shape = MaterialTheme.shapes.medium)
-                )
+
+            ExtendedFloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+                text = { Text("Scanner") },
+                icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
+                containerColor = Color(0xFF2196F3),
+                contentColor = Color.White,
+                onClick = { navController.navigate("qrscanner") }
+            )
             
 
             selectedStation?.let { station ->
@@ -381,3 +348,5 @@ private fun umbrellaMarkerIcon(context: android.content.Context, available: Bool
 
     return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
+
+

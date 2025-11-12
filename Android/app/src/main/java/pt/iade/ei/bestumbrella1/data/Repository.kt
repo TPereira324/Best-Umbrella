@@ -2,27 +2,32 @@ package pt.iade.ei.bestumbrella1.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import pt.iade.ei.bestumbrella1.models.AdviceResponse
 import pt.iade.ei.bestumbrella1.models.SessionManager
 import pt.iade.ei.bestumbrella1.network.ApiService
+import pt.iade.ei.bestumbrella1.network.RetrofitInstance
+import pt.iade.ei.bestumbrella1.network.ReturnResponse
 import pt.iade.ei.bestumbrella1.network.UpdateProfileRequest
 import pt.iade.ei.bestumbrella1.network.UserPreferences
 import pt.iade.ei.bestumbrella1.network.UserProfileResponse
 import pt.iade.ei.bestumbrella1.network.UserRequest
 import pt.iade.ei.bestumbrella1.network.UserResponse
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import pt.iade.ei.bestumbrella1.network.ReturnResponse
 import java.io.File
-import pt.iade.ei.bestumbrella1.models.AdviceResponse
-import pt.iade.ei.bestumbrella1.network.RetrofitInstance
 
 class Repository(private val apiService: ApiService, private val sessionManager: SessionManager) {
 
-    suspend fun registerUser(name: String, email: String, password: String, phone: String?): Result<UserResponse> {
+    suspend fun registerUser(
+        name: String,
+        email: String,
+        password: String,
+        phone: String?
+    ): Result<UserResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 if (email.equals("admin@bestumbrella", ignoreCase = true)) {
@@ -39,12 +44,19 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                         return@withContext Result.failure(Exception("Senha do administrador inválida"))
                     }
                 }
-                val request = UserRequest(name = name, email = email, password = password, phone = phone)
+                val request =
+                    UserRequest(name = name, email = email, password = password, phone = phone)
                 val response = apiService.registerUser(request)
                 if (response.isSuccessful) {
                     Result.success(response.body()!!)
                 } else {
-                    Result.failure(Exception("Falha no registro: ${response.errorBody()?.string()}"))
+                    Result.failure(
+                        Exception(
+                            "Falha no registro: ${
+                                response.errorBody()?.string()
+                            }"
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 Result.failure(e)
@@ -55,7 +67,7 @@ class Repository(private val apiService: ApiService, private val sessionManager:
     suspend fun loginUser(email: String, password: String): Result<UserResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                // Fallback local para demonstração em aula: aceita admin sem backend
+
                 if (email.equals("admin@bestumbrella", ignoreCase = true)) {
                     if (password == "admin123") {
                         val adminResponse = UserResponse(
@@ -71,13 +83,13 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                     }
                 }
                 val request = UserRequest(email = email, password = password)
-                // 1) Tenta /users/login
+
                 var response = apiService.loginUser(request)
-                // 2) Se 404, tenta /auth/login
+
                 if (!response.isSuccessful && response.code() == 404) {
                     response = apiService.loginAuth(request)
                 }
-                // 3) Se continuar falhando (404/400/415), tenta /login como form-url-encoded (username/password)
+
                 if (!response.isSuccessful && (response.code() == 404 || response.code() == 400 || response.code() == 415)) {
                     response = apiService.loginForm(username = email, password = password)
                 }
@@ -99,7 +111,13 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                 if (response.isSuccessful) {
                     Result.success(response.body()!!)
                 } else {
-                    Result.failure(Exception("Falha ao obter previsão do tempo: ${response.errorBody()?.string()}"))
+                    Result.failure(
+                        Exception(
+                            "Falha ao obter previsão do tempo: ${
+                                response.errorBody()?.string()
+                            }"
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 Result.failure(e)
@@ -114,12 +132,18 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                 if (token.isNullOrEmpty()) {
                     return@withContext Result.failure(Exception("Usuário não autenticado"))
                 }
-                
+
                 val response = apiService.getUserProfile("Bearer $token")
                 if (response.isSuccessful) {
                     Result.success(response.body()!!)
                 } else {
-                    Result.failure(Exception("Falha ao obter perfil: ${response.errorBody()?.string()}"))
+                    Result.failure(
+                        Exception(
+                            "Falha ao obter perfil: ${
+                                response.errorBody()?.string()
+                            }"
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 Result.failure(e)
@@ -127,20 +151,29 @@ class Repository(private val apiService: ApiService, private val sessionManager:
         }
     }
 
-    suspend fun updateUserProfile(name: String?, preferences: UserPreferences?): Result<UserResponse> {
+    suspend fun updateUserProfile(
+        name: String?,
+        preferences: UserPreferences?
+    ): Result<UserResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val token = sessionManager.getAuthToken()
                 if (token.isNullOrEmpty()) {
                     return@withContext Result.failure(Exception("Usuário não autenticado"))
                 }
-                
+
                 val request = UpdateProfileRequest(name, preferences)
                 val response = apiService.updateUserProfile("Bearer $token", request)
                 if (response.isSuccessful) {
                     Result.success(response.body()!!)
                 } else {
-                    Result.failure(Exception("Falha ao atualizar perfil: ${response.errorBody()?.string()}"))
+                    Result.failure(
+                        Exception(
+                            "Falha ao atualizar perfil: ${
+                                response.errorBody()?.string()
+                            }"
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 Result.failure(e)
@@ -160,7 +193,13 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
-                    Result.failure(Exception("Falha ao obter utilizadores: ${response.errorBody()?.string()}"))
+                    Result.failure(
+                        Exception(
+                            "Falha ao obter utilizadores: ${
+                                response.errorBody()?.string()
+                            }"
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 Result.failure(e)
@@ -168,7 +207,11 @@ class Repository(private val apiService: ApiService, private val sessionManager:
         }
     }
 
-    suspend fun submitUmbrellaReturn(imageFile: File, umbrellaId: String, notes: String): Result<ReturnResponse> {
+    suspend fun submitUmbrellaReturn(
+        imageFile: File,
+        umbrellaId: String,
+        notes: String
+    ): Result<ReturnResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val token = sessionManager.getAuthToken()
@@ -177,8 +220,10 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                 }
 
                 val imageRequestBody = imageFile.asRequestBody("image/jpeg".toMediaType())
-                val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, imageRequestBody)
-                val umbrellaIdBody: RequestBody = umbrellaId.toRequestBody("text/plain".toMediaType())
+                val imagePart =
+                    MultipartBody.Part.createFormData("image", imageFile.name, imageRequestBody)
+                val umbrellaIdBody: RequestBody =
+                    umbrellaId.toRequestBody("text/plain".toMediaType())
                 val notesBody: RequestBody = notes.toRequestBody("text/plain".toMediaType())
 
                 val response = apiService.submitReturn(
@@ -210,3 +255,4 @@ class Repository(private val apiService: ApiService, private val sessionManager:
         }
     }
 }
+

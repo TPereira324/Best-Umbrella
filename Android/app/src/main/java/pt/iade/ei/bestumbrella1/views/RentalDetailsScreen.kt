@@ -1,12 +1,29 @@
 package pt.iade.ei.bestumbrella1.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -17,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.runtime.remember
 import pt.iade.ei.bestumbrella1.models.UmbrellaData
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,8 +47,14 @@ fun RentalDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalhes do Aluguer", color = Color.Black, fontWeight = FontWeight.Bold) },
-                )
+                title = {
+                    Text(
+                        "Detalhes do Aluguer",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+            )
 
         }
     ) { padding ->
@@ -79,17 +101,60 @@ fun RentalDetailsScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("Código do Guarda-Chuva:", fontWeight = FontWeight.Bold, color = Color.Black)
-                        Text(umbrella?.codigoQr ?: qrCode, color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Código do Guarda-Chuva:",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Text(
+                            umbrella?.codigoQr ?: qrCode,
+                            color = Color.Black,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
 
                         Spacer(Modifier.height(8.dp))
-                        Text("Localização: $stationName", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                        Text("Estado: ${umbrella?.estado ?: "Desconhecido"}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                        Text("Cor: ${umbrella?.cor ?: "-"}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                        Text("Tipo: ${umbrella?.tipo ?: "-"}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                        Text("Tempo máximo: 24 horas", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                        Text("⚠️ Multa aplicada após 24h", style = MaterialTheme.typography.bodySmall, color = Color.Red, fontWeight = FontWeight.Bold)
-                        Text("Registo: ${umbrella?.dataRegisto ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        Text(
+                            "Localização: $stationName",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Estado: ${umbrella?.estado ?: "Desconhecido"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Cor: ${umbrella?.cor ?: "-"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Tipo: ${umbrella?.tipo ?: "-"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Tempo máximo: 24 horas",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "⚠️ Multa aplicada após 24h",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Registo: ${umbrella?.dataRegisto ?: "-"}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
                     }
                 }
 
@@ -121,3 +186,5 @@ fun PreviewRentalDetailsScreen() {
     val navController = rememberNavController()
     RentalDetailsScreen(navController = navController, qrCode = "QR003")
 }
+
+

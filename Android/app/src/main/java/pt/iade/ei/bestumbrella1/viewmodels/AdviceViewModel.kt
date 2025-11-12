@@ -23,3 +23,4 @@ class AdviceViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 }
+

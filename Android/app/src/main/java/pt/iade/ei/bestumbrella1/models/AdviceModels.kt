@@ -10,3 +10,4 @@ data class Slip(
     val advice: String,
     @SerializedName("slip_id") val slipId: String
 )
+

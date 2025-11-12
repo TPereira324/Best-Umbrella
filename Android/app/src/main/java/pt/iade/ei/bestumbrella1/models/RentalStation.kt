@@ -8,3 +8,4 @@ data class RentalStation(
     val availableUmbrellas: Int,
     val totalCapacity: Int
 )
+

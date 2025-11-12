@@ -37,3 +37,4 @@ object UmbrellaData {
 
     fun stationNameFor(pontoId: Int): String = stationNames[pontoId] ?: "Ponto #$pontoId"
 }
+

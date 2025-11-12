@@ -39,3 +39,4 @@ object RetrofitClient {
         retrofit.create(AdviceApiService::class.java)
     }
 }
+

@@ -114,3 +114,4 @@ class RegisterActivity : AppCompatActivity() {
         return isValid
     }
 }
+

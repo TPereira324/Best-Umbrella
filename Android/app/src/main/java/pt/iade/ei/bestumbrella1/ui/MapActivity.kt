@@ -142,3 +142,4 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 }
+

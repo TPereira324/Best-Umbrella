@@ -19,6 +19,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.remember
 import pt.iade.ei.bestumbrella1.models.UmbrellaData
+import java.text.NumberFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +30,16 @@ fun RentalDetailsScreen(
 ) {
     val umbrella = remember(qrCode) { UmbrellaData.findByQrCode(qrCode) }
     val stationName = umbrella?.let { UmbrellaData.stationNameFor(it.pontoId) } ?: "Desconhecido"
+    val price = remember(umbrella, qrCode) {
+        // Regra simples: preço de desbloqueio por tipo, default 2.99€
+        when (umbrella?.tipo?.lowercase(Locale.ROOT)) {
+            "automático" -> 3.49
+            "compacto" -> 2.99
+            "manual" -> 2.49
+            else -> 2.99
+        }
+    }
+    val priceStr = remember(price) { NumberFormat.getCurrencyInstance(Locale("pt", "PT")).format(price) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -90,17 +102,22 @@ fun RentalDetailsScreen(
                         Text("Tempo máximo: 24 horas", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                         Text("⚠️ Multa aplicada após 24h", style = MaterialTheme.typography.bodySmall, color = Color.Red, fontWeight = FontWeight.Bold)
                         Text("Registo: ${umbrella?.dataRegisto ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        Spacer(Modifier.height(12.dp))
+                        HorizontalDivider(thickness = 1.dp, color = Color(0xFFBBDEFB))
+                        Spacer(Modifier.height(8.dp))
+                        Text("Preço de desbloqueio", fontWeight = FontWeight.Bold, color = Color.Black)
+                        Text(priceStr, color = Color(0xFF1B5E20), fontSize = 22.sp, fontWeight = FontWeight.Bold)
                     }
                 }
 
                 Spacer(Modifier.height(20.dp))
 
                 Button(
-                    onClick = { navController.navigate("payment/${umbrella?.codigoQr ?: qrCode}") },
+                    onClick = { navController.navigate("payment/${umbrella?.codigoQr ?: qrCode}/${String.format(Locale.US, "%.2f", price)}") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
                 ) {
-                    Text("Confirmar e Pagar", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Pagar e Desbloquear", color = Color.White, fontWeight = FontWeight.Bold)
                 }
 
                 OutlinedButton(

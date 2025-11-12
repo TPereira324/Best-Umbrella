@@ -81,6 +81,12 @@ fun MainNavigation(navController: NavHostController) {
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
             PaymentScreen(navController, qrCode)
         }
+        composable("payment/{qrCode}/{amount}") { backStackEntry ->
+            val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
+            val amountStr = backStackEntry.arguments?.getString("amount")
+            val amount = amountStr?.toDoubleOrNull()
+            PaymentScreen(navController, qrCode, amountPrefill = amount)
+        }
         composable("rentalDetails/{qrCode}") { backStackEntry ->
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
             RentalDetailsScreen(navController, qrCode)

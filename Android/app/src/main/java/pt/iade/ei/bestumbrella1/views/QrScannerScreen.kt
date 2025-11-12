@@ -34,11 +34,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import java.util.concurrent.Executors
 import android.util.Size
-import androidx.activity.result.PickVisualMediaRequest
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.common.InputImage
+ 
 
 @SuppressLint("SuspiciousIndentation")
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
@@ -80,40 +76,7 @@ fun QrScannerScreen(
         }
     }
 
-    val scannerOptions = remember {
-        BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build()
-    }
-    val galleryScanner = remember { BarcodeScanning.getClient(scannerOptions) }
-
-    val pickImageLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        if (uri != null) {
-            try {
-                val image = InputImage.fromFilePath(context, uri)
-                galleryScanner.process(image)
-                    .addOnSuccessListener { barcodes ->
-                        val value = barcodes.firstOrNull()?.rawValue
-                        if (!value.isNullOrEmpty()) {
-                            startScanner = false
-                            onCodeScanned(value)
-                            Toast.makeText(context, "Código: $value", Toast.LENGTH_SHORT).show()
-                            
-                            cameraProviderRef?.unbindAll()
-                        } else {
-                            Toast.makeText(context, "Nenhum QR na imagem", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("QR", "Erro ao processar imagem: ${e.message}", e)
-                        Toast.makeText(context, "Erro ao processar imagem", Toast.LENGTH_SHORT).show()
-                    }
-            } catch (e: Exception) {
-                Log.e("QR", "Falha ao abrir imagem: ${e.message}", e)
-                Toast.makeText(context, "Falha ao abrir imagem", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    
 
    
     LaunchedEffect(Unit) {
@@ -204,13 +167,7 @@ fun QrScannerScreen(
                     Text("Iniciar Scanner", color = Color.Black)
                 }
                 Spacer(Modifier.height(12.dp))
-                OutlinedButton(onClick = {
-                    pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                }) {
-                    Icon(Icons.Default.Image, contentDescription = null, tint = Color.Black)
-                    Spacer(Modifier.width(8.dp))
-                    Text("Ler da galeria", color = Color.Black)
-                }
+                
                 Spacer(Modifier.height(50.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),

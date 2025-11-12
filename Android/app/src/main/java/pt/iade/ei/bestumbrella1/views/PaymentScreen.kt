@@ -25,11 +25,18 @@ import pt.iade.ei.bestumbrella1.BuildConfig
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentScreen(navController: NavController, qrCode: String) {
+fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: Double? = null) {
     var balance by remember { mutableStateOf(0.00) }
     var amountText by remember { mutableStateOf(TextFieldValue("")) }
     var showCheckout by remember { mutableStateOf(false) }
     var paymentMessage by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(amountPrefill) {
+        if (amountPrefill != null && amountPrefill > 0) {
+            amountText = TextFieldValue(String.format("%.2f", amountPrefill))
+            showCheckout = true
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -188,7 +195,8 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                                                             if (value != null) balance += value
                                                             amountText = TextFieldValue("")
 
-                                                            navController.navigate("history")
+                                                            // Após pagamento, considerar guarda-chuva desbloqueado
+                                                            navController.navigate("map")
                                                         }
                                                         "error" -> {
                                                             val msg = result.message ?: "desconhecido"
@@ -299,5 +307,5 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
 fun PreviewPaymentScreen() {
     val navController = rememberNavController()
     val qrCode = ""
-    PaymentScreen(navController, qrCode)
+    PaymentScreen(navController, qrCode, amountPrefill = 2.99)
 }

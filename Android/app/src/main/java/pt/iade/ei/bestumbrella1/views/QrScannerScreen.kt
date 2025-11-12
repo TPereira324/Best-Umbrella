@@ -242,5 +242,5 @@ fun PreviewQrScannerScreen() {
     QrScannerScreen()
 }
 
-// BarcodeAnalyser moved to BarcodeAnalyser.kt
+
 

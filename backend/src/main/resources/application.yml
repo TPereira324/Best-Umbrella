@@ -37,4 +37,12 @@ paypal:
   client-secret: EM1HqI8zcLE-sTUn3xvrZXs4TMN1AYsH55YNQLeYYUCEQD_9-N_QrvbnjXH_6RAK5fushzfHTzJ3tyYc
 
 
+# OpenWeather configuration
+openweather:
+  api:
+    key: 7d7353b5a696a31078211f46891b389e
+    units: metric
+    lang: pt
+
+
   

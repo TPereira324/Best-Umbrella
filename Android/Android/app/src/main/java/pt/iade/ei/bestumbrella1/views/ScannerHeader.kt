@@ -11,7 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -33,19 +36,25 @@ fun ScannerHeader() {
         Icon(
             Icons.Default.QrCodeScanner,
             contentDescription = null,
-            modifier = Modifier.size(96.dp),
+            modifier = Modifier
+                .size(96.dp)
+                .align(Alignment.CenterHorizontally),
             tint = Color.Black
         )
         Spacer(Modifier.height(16.dp))
         Text(
             "Pronto para escanear",
             style = MaterialTheme.typography.titleMedium,
-            color = Color.Black
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
         Text(
             "Toque no botão abaixo para ativar a câmera",
             style = MaterialTheme.typography.bodySmall,
-            color = Color.Black
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(35.dp))
     }

@@ -67,7 +67,7 @@ class ApiIntegrationTest {
 
         val request = mockWebServer.takeRequest()
         assertNotNull(request.path)
-        assertTrue(request.path!!.startsWith("/users/login"))
+        assertTrue(request.path!!.startsWith("/auth/login"))
 
         assertTrue(result.isSuccess)
         val userResponse = result.getOrNull()

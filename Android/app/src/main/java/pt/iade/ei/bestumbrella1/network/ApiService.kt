@@ -57,7 +57,7 @@ interface ApiService {
     ): Response<ReturnResponse>
 
 
-    @GET("users")
+    @GET("Utilizador")
     suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<UserProfileResponse>>
 }
 

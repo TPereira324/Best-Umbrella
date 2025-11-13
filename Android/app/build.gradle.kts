@@ -33,7 +33,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
          
-         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/\"")
+         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
 
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"$paypalClientId\"")
          buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
@@ -132,6 +132,9 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

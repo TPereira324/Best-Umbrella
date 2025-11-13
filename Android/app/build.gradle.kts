@@ -38,9 +38,10 @@ android {
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"$paypalClientId\"")
          buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
 
-        // Reduz ABIs para ARM (dispositivos reais) e evita libs x86/x86_64
+        // Suporte a emuladores x86_64 e dispositivos ARM
         ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+            abiFilters.clear()
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
         }
     }
 
@@ -75,9 +76,9 @@ android {
 
    
     packaging {
-        // Exclui arquiteturas x86/x86_64 para evitar libs nativas desnecessárias e avisos de 16KB
+        // Mantém todas as arquiteturas compatíveis para rodar em emuladores x86_64
         jniLibs {
-            excludes += setOf("**/x86/**", "**/x86_64/**")
+            // Sem exclusões de x86/x86_64
         }
         resources {
             excludes += setOf(

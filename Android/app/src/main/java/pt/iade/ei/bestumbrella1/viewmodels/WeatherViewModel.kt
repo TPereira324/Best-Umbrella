@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.data.Repository
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
+import pt.iade.ei.bestumbrella1.network.Hourly
+import pt.iade.ei.bestumbrella1.network.Daily
+import pt.iade.ei.bestumbrella1.network.Alert
 
 class WeatherViewModel(private val repository: Repository) : ViewModel() {
 
@@ -18,6 +21,18 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
+
+    private val _hourly = MutableLiveData<List<Hourly>>()
+    val hourly: LiveData<List<Hourly>> = _hourly
+
+    private val _daily = MutableLiveData<List<Daily>>()
+    val daily: LiveData<List<Daily>> = _daily
+
+    private val _alerts = MutableLiveData<List<Alert>>()
+    val alerts: LiveData<List<Alert>> = _alerts
+
+    private val _sunriseSunset = MutableLiveData<Pair<Long?, Long?>>()
+    val sunriseSunset: LiveData<Pair<Long?, Long?>> = _sunriseSunset
 
     fun getWeatherForecast(latitude: Double, longitude: Double) {
         _isLoading.value = true
@@ -32,6 +47,37 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                         _error.value = exception.message ?: "Erro ao obter previsão do tempo"
                     }
                 )
+
+                val oneCall = repository.getOneCallForecast(latitude, longitude)
+                oneCall.fold(
+                    onSuccess = { oc ->
+                        _hourly.value = oc.hourly?.take(24) ?: emptyList()
+                        _daily.value = oc.daily?.take(5) ?: emptyList()
+                        _alerts.value = oc.alerts ?: emptyList()
+                        _sunriseSunset.value = Pair(oc.current?.sunrise, oc.current?.sunset)
+                    },
+                    onFailure = { e ->
+                        val forecast = repository.getFiveDayForecast(latitude, longitude)
+                        forecast.fold(
+                            onSuccess = { fc ->
+                                val (h, d) = repository.mapForecastToHourlyDaily(fc)
+                                _hourly.value = h
+                                _daily.value = d
+                                _sunriseSunset.value = Pair(fc.city?.sunrise, fc.city?.sunset)
+                            },
+                            onFailure = { fe ->
+                                _error.value = listOfNotNull(
+                                    e.message,
+                                    fe.message
+                                ).joinToString("\n")
+                            }
+                        )
+                    }
+                )
+
+                if ((_alerts.value ?: emptyList()).isEmpty() && (_daily.value ?: emptyList()).isNotEmpty()) {
+                    _error.value = null
+                }
             } catch (e: Exception) {
                 _error.value = e.message ?: "Erro desconhecido"
             } finally {

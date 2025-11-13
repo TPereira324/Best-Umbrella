@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
@@ -125,50 +124,27 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                         }
 
                         if (showCheckout) {
-                            androidx.compose.ui.window.Dialog(
-                                onDismissRequest = { showCheckout = false },
-                                properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
-                            ) {
-                                Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
-                                    Scaffold(
-                                        topBar = {
-                                            TopAppBar(
-                                                title = { Text("Checkout PayPal", color = Color.Black, fontWeight = FontWeight.Bold) },
-                                                navigationIcon = {
-                                                    IconButton(onClick = { showCheckout = false }) {
-                                                        Icon(Icons.Default.Close, contentDescription = null, tint = Color.Black)
-                                                    }
-                                                }
-                                            )
-                                        },
-                                        contentWindowInsets = WindowInsets(0)
-                                    ) { innerPadding ->
-                                        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-                                            PayPalCheckoutWebView(
-                                                amount = amountText.text.toDoubleOrNull() ?: 0.0,
-                                                onResult = { result ->
-                                                    when (result.status) {
-                                                        "success" -> {
-                                                            paymentMessage = "Pagamento efetuado com sucesso via PayPal!"
-                                                            showCheckout = false
-                                                            val value = amountText.text.toDoubleOrNull()
-                                                            if (value != null) balance += value
-                                                            amountText = TextFieldValue("")
+                            Spacer(Modifier.height(16.dp))
+                            PayPalCheckoutWebView(
+                                amount = amountText.text.toDoubleOrNull() ?: 0.0,
+                                onResult = { result ->
+                                    when (result.status) {
+                                        "success" -> {
+                                            paymentMessage = "Pagamento efetuado com sucesso via PayPal!"
+                                            showCheckout = false
+                                            val value = amountText.text.toDoubleOrNull()
+                                            if (value != null) balance -= value
+                                            amountText = TextFieldValue("")
 
-                                                            navController.navigate("history")
-                                                        }
-                                                        "error" -> {
-                                                            val msg = result.message ?: "desconhecido"
-                                                            paymentMessage = "Erro no pagamento: ${msg}"
-                                                            showCheckout = false
-                                                        }
-                                                    }
-                                                }
-                                            )
+                                            navController.navigate("history")
+                                        }
+                                        "error" -> {
+                                            val msg = result.message ?: "desconhecido"
+                                            paymentMessage = "Erro no pagamento: ${msg}"
                                         }
                                     }
                                 }
-                            }
+                            )
                         }
                     }
                 }
@@ -259,14 +235,6 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
             )
         }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewPaymentScreen() {
-    val navController = rememberNavController()
-    val qrCode = ""
-    PaymentScreen(navController, qrCode)
 }
 
 

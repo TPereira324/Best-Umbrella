@@ -30,7 +30,13 @@ public class OpenWeatherService {
                 "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=%s&lang=%s",
                 lat, lon, props.getApiKey(), props.getUnits(), props.getLang()
         );
-        return fetchAndMap(url);
+        OpenWeatherDto dto = fetchAndMap(url);
+        // Preferir nome canónico através do geocoding reverso (ex.: Lisboa em vez de Socorro)
+        String resolved = resolveCityName(lat, lon);
+        if (resolved != null && !resolved.isBlank()) {
+            dto.setCity(resolved);
+        }
+        return dto;
     }
 
     private OpenWeatherDto fetchAndMap(String url) {
@@ -79,6 +85,39 @@ public class OpenWeatherService {
         }
 
         return new OpenWeatherDto(city, country, temp, feels, humidity, windSpeed, condition, icon);
+    }
+
+    // Resolve o nome da cidade a partir de lat/lon usando a API de geocoding reverso da OpenWeather
+    private String resolveCityName(double lat, double lon) {
+        try {
+            String url = String.format(
+                    "https://api.openweathermap.org/geo/1.0/reverse?lat=%s&lon=%s&limit=1&appid=%s",
+                    lat, lon, props.getApiKey()
+            );
+            Object obj = rest.getForObject(url, List.class);
+            if (!(obj instanceof List<?> list) || list.isEmpty()) return "";
+            Object first = list.get(0);
+            if (!(first instanceof Map)) return "";
+            Map<String, Object> geo = (Map<String, Object>) first;
+
+            // Tenta usar o nome local em PT; caso contrário usa o name geral.
+            Object localNamesObj = geo.get("local_names");
+            if (localNamesObj instanceof Map<?, ?> ln) {
+                Object ptName = ln.get("pt");
+                if (ptName != null) return String.valueOf(ptName);
+            }
+
+            String name = str(geo.get("name"));
+            String state = str(geo.get("state"));
+
+            // Heurística simples: se o estado for Lisboa/Lisbon, preferir "Lisboa"
+            if (!state.isBlank() && (state.equalsIgnoreCase("Lisboa") || state.equalsIgnoreCase("Lisbon"))) {
+                return "Lisboa";
+            }
+            return name;
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private static String encode(String s) { return s == null ? "" : s.replace(" ", "%20"); }

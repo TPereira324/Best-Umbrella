@@ -50,7 +50,6 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                 )
                 // Em paralelo, obter One Call para 24h, 5 dias e alertas
                 val oneCall = repository.getOneCallForecast(latitude, longitude)
-                var loadedFromForecastFallback = false
                 oneCall.fold(
                     onSuccess = { oc ->
                         _hourly.value = oc.hourly?.take(24) ?: emptyList()
@@ -66,10 +65,11 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                                 val (h, d) = repository.mapForecastToHourlyDaily(fc)
                                 _hourly.value = h
                                 _daily.value = d
-                                // sunrise/sunset: manter do tempo atual ou null
-                                loadedFromForecastFallback = true
+                                // sunrise/sunset: usar dados de cidade do forecast quando disponíveis
+                                _sunriseSunset.value = Pair(fc.city?.sunrise, fc.city?.sunset)
                             },
                             onFailure = { fe ->
+                                // Se ambos falharem, reportar erro combinado
                                 _error.value = listOfNotNull(
                                     e.message,
                                     fe.message
@@ -78,10 +78,9 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                         )
                     }
                 )
-                if (loadedFromForecastFallback) {
-                    _alerts.value = emptyList() // Sem alertas no forecast
-                    _error.value = "One Call não autorizado. Mostrando previsão por 5 dias (3h) como fallback." +
-                            (if ((_error.value ?: "").isNotBlank()) "\n" + (_error.value ?: "") else "")
+                // Caso de fallback não deve gerar erro visível; usamos forecast sem alertas
+                if ((_alerts.value ?: emptyList()).isEmpty() && (_daily.value ?: emptyList()).isNotEmpty()) {
+                    _error.value = null
                 }
             } catch (e: Exception) {
                 _error.value = e.message ?: "Erro desconhecido"

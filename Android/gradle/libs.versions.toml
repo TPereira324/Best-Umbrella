@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.1"
 barcodeScanning = "17.3.0"
 cameraCamera2Version = "1.5.0"
 cameraLifecycle = "1.5.0"

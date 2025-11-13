@@ -40,43 +40,7 @@ import kotlin.random.Random
 @Composable
 fun WeatherScreen(navController: NavController) {
     Scaffold(
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("map") },
-                    icon = { Icon(Icons.Default.Map, contentDescription = null) },
-                    label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("qrscanner") },
-                    icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
-                    label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-
-                NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = { Icon(Icons.Default.Cloud, contentDescription = null) },
-                    label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("history") },
-                    icon = { Icon(Icons.Default.History, contentDescription = null) },
-                    label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("profile") },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    label = { Text("Perfil", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-            }
-        }
+        bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         val context = LocalContext.current
         val viewModel = remember { AppModule.provideWeatherViewModel(context) }
@@ -254,6 +218,7 @@ fun WeatherScreen(navController: NavController) {
                     }
                 }
             }
+            // Rodapé de créditos movido para o Scaffold global
         }
     }
 }
@@ -263,6 +228,19 @@ fun WeatherScreen(navController: NavController) {
 fun PreviewWeatherScreen() {
     val navController = rememberNavController()
     WeatherScreen(navController)
+}
+
+// Pequeno rodapé de créditos do projeto
+@Composable
+private fun ProjectCreditsFooter() {
+    Text(
+        text = "Projeto desenvolvido por alunos do 2º ano da Universidade Europeia, Portugal",
+        style = MaterialTheme.typography.labelSmall,
+        color = Color.Black.copy(alpha = 0.75f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+    )
 }
 
 // Ícones animados para estados de tempo: sol, chuva, nuvens

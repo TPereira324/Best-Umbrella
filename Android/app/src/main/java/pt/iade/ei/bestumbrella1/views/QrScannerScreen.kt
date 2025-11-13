@@ -86,40 +86,7 @@ fun QrScannerScreen(
     }
 
     Scaffold(
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("map") },
-                    icon = { Icon(Icons.Default.Map, contentDescription = null) },
-                    label = { Text("Mapa") }
-                )
-                NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
-                    label = { Text("Scanner") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("weather") },
-                    icon = { Icon(Icons.Default.Cloud, contentDescription = null) },
-                    label = { Text("Tempo") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("history") },
-                    icon = { Icon(Icons.Default.History, contentDescription = null) },
-                    label = { Text("Histórico") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("profile") },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    label = { Text("Perfil") }
-                )
-            }
-        }
+        bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         Box(
             modifier = Modifier

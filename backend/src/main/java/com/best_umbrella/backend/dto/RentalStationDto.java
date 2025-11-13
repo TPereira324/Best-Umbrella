@@ -1,5 +1,11 @@
 package com.best_umbrella.backend.dto;
 
+/**
+ * DTO de Estação de Aluguer.
+ *
+ * Utilizado para transportar dados das estações (localização, capacidade e
+ * disponibilidade) entre back-end e front-end.
+ */
 public class RentalStationDto {
     private Integer id;
     private String name;
@@ -67,9 +73,3 @@ public class RentalStationDto {
         this.capacity = capacity;
     }
 }
-
-//dto RentalStationDto
-// classe de transferência de dados para estação de aluguel
-// contém os campos necessários para a comunicação entre o front-end e o back-end
-// para operações relacionadas à estação de aluguel
-// como listar, criar, atualizar e excluir estações de aluguel

@@ -19,6 +19,19 @@ import com.best_umbrella.backend.dto.NomeUpdateRequest;
 
 @RestController
 @RequestMapping("/api/Utilizador")
+/**
+ * Controlador dos endpoints de Utilizador.
+ *
+ * Endpoints principais:
+ * - GET /api/Utilizador              → lista todos os utilizadores
+ * - GET /api/Utilizador/{id}         → obtém um utilizador por ID
+ * - POST /api/Utilizador             → cria um novo utilizador
+ * - PUT /api/Utilizador/{id}         → atualiza um utilizador existente
+ * - PATCH /api/Utilizador/{id}/nome  → atualiza apenas o nome
+ * - DELETE /api/Utilizador/{id}      → remove o utilizador
+ *
+ * Todas as respostas utilizam UtilizadorDto.
+ */
 public class UtilizadorController {
 
     private final UtilizadorService utilizadorService;

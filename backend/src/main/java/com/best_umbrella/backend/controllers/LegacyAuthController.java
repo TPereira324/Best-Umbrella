@@ -12,6 +12,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+/**
+ * Controlador de autenticação legado (compatibilidade).
+ *
+ * Endpoints:
+ * - POST /users/register → regista um novo utilizador
+ * - POST /users/login    → autentica e devolve UtilizadorDto
+ *
+ * Mantido para compatibilidade com clientes antigos que usam base "/users".
+ */
 public class LegacyAuthController {
 
     private final UtilizadorService utilizadorService;

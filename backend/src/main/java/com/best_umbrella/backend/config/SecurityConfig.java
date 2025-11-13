@@ -10,6 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
+/**
+ * Configuração de segurança Spring Security.
+ *
+ * - Desativa CSRF para simplificar em ambiente de desenvolvimento.
+ * - Ativa CORS com defaults.
+ * - Libera todas as requisições (permitAll) para apresentação/beta.
+ * - Define `BCryptPasswordEncoder` como encoder padrão.
+ */
 public class SecurityConfig {
 
     @Bean

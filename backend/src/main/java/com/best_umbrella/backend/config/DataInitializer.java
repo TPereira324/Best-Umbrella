@@ -10,6 +10,13 @@ import java.time.LocalDateTime;
 
 @Component
 @Order(1)
+/**
+ * Inicializador de dados de arranque.
+ *
+ * Corre no startup para garantir um conjunto mínimo de Utilizadores na base,
+ * incluindo admin canónico e alguns utilizadores de demonstração.
+ * Não altera configuração de porta/servidor.
+ */
 public class DataInitializer implements CommandLineRunner {
 
     private final UtilizadorService utilizadorService;

@@ -2,6 +2,12 @@ package com.best_umbrella.backend.dto;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO resumido de Aluguer.
+ *
+ * Traz apenas os campos essenciais de um aluguer para respostas aninhadas
+ * (ids relacionados, datas, custo e estado) evitando carregar entidades completas.
+ */
 public class AluguerSummaryDto {
     private Long aluguerId;
     private LocalDateTime dataInicio;

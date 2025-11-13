@@ -1,6 +1,8 @@
 package pt.iade.ei.bestumbrella1.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -38,6 +40,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,6 +78,7 @@ fun WeatherScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     "Meteorologia",
@@ -102,7 +106,8 @@ fun WeatherScreen(navController: NavController) {
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB)),
+                    shape = RoundedCornerShape(24.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -127,14 +132,14 @@ fun WeatherScreen(navController: NavController) {
                                 descLower.contains("poucas nuvens")
                             )
                         WeatherAnimatedIcon(isRaining = isRaining, isCloudy = isCloudy)
-                        Text("Lisboa, Portugal", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Lisboa, Portugal", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
                         val tempText = weatherData?.temperature?.let { String.format("%.1f°C", it) } ?: "--°C"
                         val descText = weatherData?.description ?: ""
-                        Text("$tempText — $descText", style = MaterialTheme.typography.headlineSmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("$tempText — $descText", style = MaterialTheme.typography.headlineMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(8.dp))
                         val humidityText = weatherData?.humidity?.let { "$it%" } ?: "--%"
                         val windText = weatherData?.windSpeed?.let { String.format("%.1f km/h", it) } ?: "-- km/h"
-                        Text("Humidade: $humidityText | Vento: $windText", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Humidade: $humidityText | Vento: $windText", style = MaterialTheme.typography.titleSmall, color = Color.Black, fontWeight = FontWeight.Bold)
 
                         // Probabilidade de precipitação atual (se disponível) para dar contexto real
                         val popText = if (hourly.isNotEmpty()) {
@@ -143,13 +148,13 @@ fun WeatherScreen(navController: NavController) {
                         } else null
                         if (!popText.isNullOrBlank()) {
                             Spacer(Modifier.height(6.dp))
-                            Text(popText!!, style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text(popText!!, style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
 
                         Spacer(Modifier.height(8.dp))
                         val sunriseText = sunriseSunset?.first?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
                         val sunsetText = sunriseSunset?.second?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
-                        Text("Nascer do sol: $sunriseText | Pôr do sol: $sunsetText", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Nascer do sol: $sunriseText | Pôr do sol: $sunsetText", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                     }
                 }
 
@@ -159,15 +164,17 @@ fun WeatherScreen(navController: NavController) {
                 Spacer(Modifier.height(8.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)),
+                    shape = RoundedCornerShape(20.dp)
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         hourly.forEach { h ->
                             val hourText = timeFormatter.format(Date(h.dt * 1000))
                             val tempText = String.format("%.0f°C", h.temp)
                             val desc = h.weather.firstOrNull()?.description ?: ""
                             val pop = h.precipitationProbability?.let { String.format("%.0f%%", it * 100) } ?: "--%"
-                            Text("$hourText  •  $tempText  •  $desc  •  Chuva: $pop", style = MaterialTheme.typography.bodySmall, color = Color.Black)
+                            Text("$hourText  •  $tempText  •  $desc  •  Chuva: $pop", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.height(8.dp))
                         }
                     }
                 }
@@ -178,16 +185,18 @@ fun WeatherScreen(navController: NavController) {
                 Spacer(Modifier.height(8.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)),
+                    shape = RoundedCornerShape(20.dp)
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         val dayFormatter = remember { SimpleDateFormat("EEE, dd/MM", Locale("pt", "PT")) }
                         daily.forEach { d ->
                             val dayText = dayFormatter.format(Date(d.dt * 1000))
                             val minMax = String.format("%.0f° / %.0f°", d.temp.min, d.temp.max)
                             val desc = d.weather.firstOrNull()?.description ?: ""
                             val pop = d.precipitationProbability?.let { String.format("%.0f%%", it * 100) } ?: "--%"
-                            Text("$dayText  •  $minMax  •  $desc  •  Chuva: $pop", style = MaterialTheme.typography.bodySmall, color = Color.Black)
+                            Text("$dayText  •  $minMax  •  $desc  •  Chuva: $pop", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.height(8.dp))
                         }
                     }
                 }
@@ -223,7 +232,7 @@ private fun ProjectCreditsFooter() {
 // Ícones animados para estados de tempo: sol, chuva, nuvens
 @Composable
 private fun WeatherAnimatedIcon(isRaining: Boolean, isCloudy: Boolean) {
-    val size = 60.dp
+    val size = 80.dp
     when {
         isRaining -> RainAnimatedIcon(size)
         isCloudy -> CloudAnimatedIcon(size)

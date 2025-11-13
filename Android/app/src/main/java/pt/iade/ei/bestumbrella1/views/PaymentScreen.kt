@@ -26,46 +26,13 @@ import pt.iade.ei.bestumbrella1.BuildConfig
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentScreen(navController: NavController, qrCode: String) {
-    var balance by remember { mutableStateOf(5.00) }
+    var balance by remember { mutableStateOf(0.00) }
     var amountText by remember { mutableStateOf(TextFieldValue("")) }
     var showCheckout by remember { mutableStateOf(false) }
     var paymentMessage by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("map") },
-                    icon = { Icon(Icons.Default.Map, null) },
-                    label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("qrscanner") },
-                    icon = { Icon(Icons.Default.QrCodeScanner, null) },
-                    label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("weather") },
-                    icon = { Icon(Icons.Default.Cloud, contentDescription = null) },
-                    label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("history") },
-                    icon = { Icon(Icons.Default.History, null) },
-                    label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate("profile") },
-                    icon = { Icon(Icons.Default.Person, null) },
-                    label = { Text("Perfil", color = Color.Black, fontWeight = FontWeight.Bold) }
-                )
-            }
-        }
+        bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         Box(
             modifier = Modifier

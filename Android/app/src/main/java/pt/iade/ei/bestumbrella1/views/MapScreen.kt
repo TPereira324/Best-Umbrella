@@ -1,36 +1,68 @@
 package pt.iade.ei.bestumbrella1.views
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.text.font.FontWeight
-import java.util.Locale
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.geometry.Offset
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.maps.android.compose.*
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
- 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
+import java.util.Locale
+
 
 data class Station(
     val name: String,
@@ -49,13 +81,6 @@ fun MapScreenWithMarkers(navController: NavController) {
     var selectedStation by remember { mutableStateOf<Station?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    
-
-    
-    
-    
-
-    
 
     var currentFilter by remember { mutableStateOf(StationFilter.ALL) }
 
@@ -70,7 +95,7 @@ fun MapScreenWithMarkers(navController: NavController) {
         Station("Rossio", LatLng(38.713718, -9.139681), 7, 12),
 
         )
-        val cameraPositionState = rememberCameraPositionState {
+    val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(lisboaCenter, 14.8f)
     }
 
@@ -78,9 +103,15 @@ fun MapScreenWithMarkers(navController: NavController) {
         topBar = {
             Column {
                 TopAppBar(
-                    title = { Text("Best Umbrella ☂️", color = Color.Black, fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            "Best Umbrella ☂️",
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
 
-                )
+                    )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -97,10 +128,14 @@ fun MapScreenWithMarkers(navController: NavController) {
                         val dLon = Math.toRadians(b.longitude - a.longitude)
                         val lat1 = Math.toRadians(a.latitude)
                         val lat2 = Math.toRadians(b.latitude)
-                        val aa = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                        val aa =
+                            Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(
+                                dLon / 2
+                            ) * Math.sin(dLon / 2)
                         val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
                         return R * c
                     }
+
                     val nearbyStations = remember(stations, center) {
                         stations.sortedBy { distanceKm(it.location, center) }.take(5)
                     }
@@ -109,23 +144,104 @@ fun MapScreenWithMarkers(navController: NavController) {
                     FilterChip(
                         selected = currentFilter == StationFilter.ALL,
                         onClick = { currentFilter = StationFilter.ALL },
-                        label = { Text("Todas ($totalCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                        label = {
+                            Text(
+                                "Todas ($totalCount)",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     )
                     FilterChip(
                         selected = currentFilter == StationFilter.AVAILABLE,
                         onClick = { currentFilter = StationFilter.AVAILABLE },
-                        label = { Text("Disponíveis ($availableCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                        label = {
+                            Text(
+                                "Disponíveis ($availableCount)",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     )
                     FilterChip(
                         selected = currentFilter == StationFilter.NEARBY,
                         onClick = { currentFilter = StationFilter.NEARBY },
-                        label = { Text("Próximas ($nearbyCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+                        label = {
+                            Text(
+                                "Próximas ($nearbyCount)",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     )
                 }
-                
+
             }
         },
-        bottomBar = { AppBottomNavigationBar(navController) }
+        bottomBar = {
+            NavigationBar(containerColor = Color.White, contentColor = Color(0xFF1976D2)) {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate("weather") },
+                    icon = {
+                        Icon(
+                            Icons.Default.Cloud,
+                            contentDescription = "Tempo",
+                            tint = Color.Black
+                        )
+                    },
+                    label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate("history") },
+                    icon = {
+                        Icon(
+                            Icons.Default.History,
+                            contentDescription = "Histórico",
+                            tint = Color.Black
+                        )
+                    },
+                    label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
+                )
+                NavigationBarItem(
+                    selected = true,
+                    onClick = {},
+                    icon = {
+                        Icon(
+                            Icons.Default.Map,
+                            contentDescription = "Mapa",
+                            tint = Color.Black
+                        )
+                    },
+                    label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate("qrscanner") },
+                    icon = {
+                        Icon(
+                            Icons.Default.QrCodeScanner,
+                            contentDescription = "Scanner",
+                            tint = Color.Black
+                        )
+                    },
+                    label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate("profile") },
+                    icon = {
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = "Perfil",
+                            tint = Color.Black
+                        )
+                    },
+                    label = { Text("Perfil", color = Color.Black, fontWeight = FontWeight.Bold) }
+                )
+            }
+        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -154,14 +270,19 @@ fun MapScreenWithMarkers(navController: NavController) {
                     val dLon = Math.toRadians(b.longitude - a.longitude)
                     val lat1 = Math.toRadians(a.latitude)
                     val lat2 = Math.toRadians(b.latitude)
-                    val aa = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                    val aa =
+                        Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(
+                            dLon / 2
+                        ) * Math.sin(dLon / 2)
                     val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
                     return R * c
                 }
+
                 val filtered = when (currentFilter) {
                     StationFilter.ALL -> stations
                     StationFilter.AVAILABLE -> stations.filter { it.available > 0 }
-                    StationFilter.NEARBY -> stations.sortedBy { distanceKm(it.location, center) }.take(5)
+                    StationFilter.NEARBY -> stations.sortedBy { distanceKm(it.location, center) }
+                        .take(5)
                 }
                 filtered.forEach { station ->
                     val snippet = "Disponíveis: ${station.available}/${station.total}\n" +
@@ -188,18 +309,18 @@ fun MapScreenWithMarkers(navController: NavController) {
                     )
                 }
             }
-
             ExtendedFloatingActionButton(
+                onClick = { navController.navigate("qrscanner") },
+                containerColor = Color(0xFF1976D2),
+                contentColor = Color.White,
+                icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = "Scanner") },
+                text = { Text("Scanner") },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-                text = { Text("Scanner") },
-                icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
-                containerColor = Color(0xFF2196F3),
-                contentColor = Color.White,
-                onClick = { navController.navigate("qrscanner") }
+                    .padding(bottom = 24.dp)
+                    .shadow(8.dp, shape = MaterialTheme.shapes.medium)
             )
-            
+
 
             selectedStation?.let { station ->
                 ModalBottomSheet(
@@ -255,13 +376,30 @@ fun MapScreenWithMarkers(navController: NavController) {
                         Spacer(Modifier.height(8.dp))
                         Card(Modifier.fillMaxWidth()) {
                             Column(Modifier.padding(16.dp)) {
-                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                    Text("☂ Guarda-chuvas", color = Color.Black, fontWeight = FontWeight.Bold)
-                                    Text("${station.available} de ${station.total}", color = Color.Black)
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        "☂ Guarda-chuvas",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        "${station.available} de ${station.total}",
+                                        color = Color.Black
+                                    )
                                 }
                                 Spacer(Modifier.height(8.dp))
-                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                    Text("⏱ Tempo máximo", color = Color.Black, fontWeight = FontWeight.Bold)
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        "⏱ Tempo máximo",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                     Text("24 horas", color = Color.Black)
                                 }
                                 Spacer(Modifier.height(8.dp))
@@ -272,8 +410,15 @@ fun MapScreenWithMarkers(navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(Modifier.height(8.dp))
-                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                    Text("€ Tarifa", color = Color.Black, fontWeight = FontWeight.Bold)
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        "€ Tarifa",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                     Text("€0.50/hora", color = Color.Black)
                                 }
                             }
@@ -289,10 +434,16 @@ fun MapScreenWithMarkers(navController: NavController) {
                         Spacer(Modifier.height(8.dp))
                         Card(Modifier.fillMaxWidth()) {
                             Column(Modifier.padding(16.dp)) {
-                                Text("1. Reserve um guarda-chuva nesta estação", color = Color.Black)
+                                Text(
+                                    "1. Reserve um guarda-chuva nesta estação",
+                                    color = Color.Black
+                                )
                                 Text("2. Desbloqueie usando o código QR", color = Color.Black)
                                 Text("3. Use durante o tempo necessário", color = Color.Black)
-                                Text("4. Devolva em qualquer estação Best Umbrella", color = Color.Black)
+                                Text(
+                                    "4. Devolva em qualquer estação Best Umbrella",
+                                    color = Color.Black
+                                )
                             }
                         }
 
@@ -315,16 +466,13 @@ fun MapScreenWithMarkers(navController: NavController) {
             }
         }
     }
-    }
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewMapScreenWithMarkers() {
-    val navController = rememberNavController()
-    MapScreenWithMarkers(navController)
 }
-private fun umbrellaMarkerIcon(context: android.content.Context, available: Boolean): BitmapDescriptor {
+
+
+private fun umbrellaMarkerIcon(
+    context: android.content.Context,
+    available: Boolean
+): BitmapDescriptor {
     val density = context.resources.displayMetrics.density
     val sizePx = (48 * density).toInt()
     val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
@@ -348,5 +496,3 @@ private fun umbrellaMarkerIcon(context: android.content.Context, available: Bool
 
     return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
-
-

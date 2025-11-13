@@ -35,8 +35,4 @@ object RetrofitClient {
         retrofit.create(ApiService::class.java)
     }
 
-    val adviceApi: AdviceApiService by lazy {
-        retrofit.create(AdviceApiService::class.java)
-    }
 }
-

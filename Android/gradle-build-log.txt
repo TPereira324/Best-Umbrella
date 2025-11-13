@@ -1,0 +1,18 @@
+﻿Initialized native services in: C:\Users\tahaw\.gradle\native
+Initialized jansi services in: C:\Users\tahaw\.gradle\native
+Found daemon DaemonInfo{pid=10184, address=[e322c559-4f57-4abb-8a81-6f759a757576 port:56043, addresses:[/127.0.0.1]], state=Idle, lastBusy=1762952649025, context=DefaultDaemonContext[uid=14a7ab5a-6310-4296-add6-1e721ac9f536,javaHome=C:\Program Files\Android\Android Studio\jbr,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=C:\Users\tahaw\.gradle\daemon,pid=10184,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=--enable-native-access=ALL-UNNAMED,-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=GB,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+JVM is incompatible.
+Wanted: DaemonRequestContext{jvmCriteria=C:\Program Files\Java\jdk-25 (no JDK specified, using current Java home), daemonOpts=[--enable-native-access=ALL-UNNAMED, -Xmx2048m, -Dfile.encoding=UTF-8, -Duser.country=GB, -Duser.language=en, -Duser.variant], applyInstrumentationAgent=true, nativeServicesMode=ENABLED, priority=NORMAL}
+Actual: DefaultDaemonContext[uid=14a7ab5a-6310-4296-add6-1e721ac9f536,javaHome=C:\Program Files\Android\Android Studio\jbr,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=C:\Users\tahaw\.gradle\daemon,pid=10184,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=--enable-native-access=ALL-UNNAMED,-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=GB,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 27900). The daemon log file: C:\Users\tahaw\.gradle\daemon\8.13\daemon-27900.out.log
+Starting 6th build in daemon [uptime: 1 hrs 16 mins 33.062 secs, performance: 98%, GC rate: 0.00/s, heap usage: 0% of 2 GiB]
+Using 16 worker leases.
+Now considering [C:\Users\tahaw\AndroidStudioProjects\Best-Umbrella\Android] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Caching disabled for Kotlin DSL script compilation (Settings/TopLevel/stage1) because:
+  Build cache is disabled
+Watched directory hierarchies: []

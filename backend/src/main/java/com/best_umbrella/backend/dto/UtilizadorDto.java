@@ -3,6 +3,12 @@ package com.best_umbrella.backend.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * DTO de Utilizador exposto pelos endpoints.
+ *
+ * Contém dados básicos do utilizador (identificação, contacto, registo, rating)
+ * e coleções resumidas de alugueres (AluguerSummaryDto) e notificações (NotiDto).
+ */
 public class UtilizadorDto {
     private Integer utilizadorId;
     private String nome;

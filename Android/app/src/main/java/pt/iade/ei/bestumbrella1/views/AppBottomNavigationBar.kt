@@ -23,28 +23,6 @@ fun AppBottomNavigationBar(navController: NavController) {
 
     NavigationBar {
         NavigationBarItem(
-            selected = currentRoute == "weather",
-            onClick = { navController.navigate("weather") },
-            icon = {
-                androidx.compose.material3.Icon(
-                    Icons.Default.Cloud,
-                    contentDescription = null
-                )
-            },
-            label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
-        )
-        NavigationBarItem(
-            selected = currentRoute == "history",
-            onClick = { navController.navigate("history") },
-            icon = {
-                androidx.compose.material3.Icon(
-                    Icons.Default.History,
-                    contentDescription = null
-                )
-            },
-            label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
-        )
-        NavigationBarItem(
             selected = currentRoute == "map",
             onClick = { navController.navigate("map") },
             icon = {
@@ -67,6 +45,28 @@ fun AppBottomNavigationBar(navController: NavController) {
             label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
         )
         NavigationBarItem(
+            selected = currentRoute == "weather",
+            onClick = { navController.navigate("weather") },
+            icon = {
+                androidx.compose.material3.Icon(
+                    Icons.Default.Cloud,
+                    contentDescription = null
+                )
+            },
+            label = { Text("Tempo", color = Color.Black, fontWeight = FontWeight.Bold) }
+        )
+        NavigationBarItem(
+            selected = currentRoute == "history",
+            onClick = { navController.navigate("history") },
+            icon = {
+                androidx.compose.material3.Icon(
+                    Icons.Default.History,
+                    contentDescription = null
+                )
+            },
+            label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
+        )
+        NavigationBarItem(
             selected = currentRoute == "profile",
             onClick = { navController.navigate("profile") },
             icon = {
@@ -79,3 +79,4 @@ fun AppBottomNavigationBar(navController: NavController) {
         )
     }
 }
+

@@ -1,18 +1,34 @@
 package pt.iade.ei.bestumbrella1.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -29,12 +45,12 @@ data class RentalEntry(
 @Composable
 fun HistoryScreen(navController: NavController) {
     val entries = listOf(
-        // existentes
+
         RentalEntry("Hoje, 14:30", "Metro Moscavide", "Parque das Nações", 0.29, "35 min"),
         RentalEntry("Ontem, 09:16", "Vasco da Gama Shopping", "Metro Oriente", 1.00, "1h 15min"),
         RentalEntry("Há 2 dias", "IADE", "Metro Oriente", 2.50, "27h 40min"),
 
-        // novas entradas com base nas novas estações centrais
+
         RentalEntry("Hoje, 11:05", "Terreiro do Paço", "Baixa-Chiado", 0.35, "22 min"),
         RentalEntry("Hoje, 09:20", "Rossio", "Marquês de Pombal", 0.50, "41 min"),
         RentalEntry("Ontem, 18:10", "Baixa-Chiado", "Rossio", 0.25, "17 min"),
@@ -81,16 +97,46 @@ fun HistoryScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("7", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
-                            Text("Usos", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text(
+                                "7",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                "Usos",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("5h 45min", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
-                            Text("Tempo Total", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text(
+                                "5h 45min",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                "Tempo Total",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("€2.88", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
-                            Text("Gasto Total", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text(
+                                "€2.88",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                "Gasto Total",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
@@ -124,7 +170,12 @@ fun HistoryScreen(navController: NavController) {
                                         contentDescription = null
                                     )
                                     Spacer(Modifier.width(4.dp))
-                                    Text("De: ${entry.from}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text(
+                                        "De: ${entry.from}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 }
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
@@ -133,11 +184,26 @@ fun HistoryScreen(navController: NavController) {
                                         contentDescription = null
                                     )
                                     Spacer(Modifier.width(4.dp))
-                                    Text("Para: ${entry.to}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                                    Text(
+                                        "Para: ${entry.to}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 }
                                 Spacer(Modifier.height(4.dp))
-                                Text("Duração: ${entry.duration}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                                Text("Custo base: €${"%.2f".format(entry.cost)}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                                Text(
+                                    "Duração: ${entry.duration}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    "Custo base: €${"%.2f".format(entry.cost)}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold
+                                )
 
                                 if (multa > 0) {
                                     Spacer(Modifier.height(4.dp))
@@ -170,4 +236,13 @@ fun extractHours(duration: String): Int {
     val match = regex.find(duration)
     return match?.groupValues?.get(1)?.toIntOrNull() ?: 0
 }
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewHistoryScreen() {
+    val navController = rememberNavController()
+    HistoryScreen(navController)
+}
+
+
 

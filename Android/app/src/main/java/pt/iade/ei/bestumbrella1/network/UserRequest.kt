@@ -8,3 +8,4 @@ data class UserRequest(
     val password: String? = null,
     @SerializedName("telefone") val phone: String? = null
 )
+

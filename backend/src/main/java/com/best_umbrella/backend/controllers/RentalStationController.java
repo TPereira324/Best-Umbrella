@@ -11,6 +11,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/rental-stations")
+/**
+ * Controlador de Estações de Aluguer.
+ *
+ * Endpoints:
+ * - GET /api/rental-stations → lista estações pré-definidas (dados estáticos em memória).
+ */
 public class RentalStationController {
 
     @GetMapping

@@ -8,3 +8,4 @@ data class WeatherResponse(
     val rainProbability: Double,
     val isSuccessful: Boolean = true
 )
+

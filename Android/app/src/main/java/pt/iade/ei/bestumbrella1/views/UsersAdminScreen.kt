@@ -1,7 +1,14 @@
 package pt.iade.ei.bestumbrella1.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -67,15 +74,28 @@ fun UsersAdminScreen(navController: NavController) {
                 Text("Erro: ${error}", color = MaterialTheme.colorScheme.error)
             }
         } else {
-            // Ordenar para mostrar o admin primeiro
-            val sortedUsers = users.sortedByDescending { it.email.equals("admin@bestumbrella", ignoreCase = true) }
-            LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
+
+            val sortedUsers = users.sortedByDescending {
+                it.email.equals(
+                    "admin@bestumbrella",
+                    ignoreCase = true
+                )
+            }
+            LazyColumn(Modifier
+                .fillMaxSize()
+                .padding(16.dp)) {
                 items(sortedUsers) { user ->
                     val isAdminUser = user.email.equals("admin@bestumbrella", ignoreCase = true)
                     val displayName = if (user.name.isNotBlank()) user.name else user.email
-                    Column(Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                    Column(Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(displayName, style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                            Text(
+                                displayName,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color.Black
+                            )
                             Spacer(Modifier.width(8.dp))
                             Text(
                                 text = if (isAdminUser) "Principal" else "Teste",
@@ -83,10 +103,15 @@ fun UsersAdminScreen(navController: NavController) {
                                 color = if (isAdminUser) Color(0xFF2E7D32) else Color(0xFF616161)
                             )
                         }
-                        Text(user.email, style = MaterialTheme.typography.bodyMedium, color = Color.DarkGray)
+                        Text(
+                            user.email,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.DarkGray
+                        )
                     }
                 }
             }
         }
     }
 }
+

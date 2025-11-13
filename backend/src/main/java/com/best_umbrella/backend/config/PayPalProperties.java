@@ -4,6 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+/**
+ * Propriedades de configuração para integração com PayPal.
+ *
+ * Lê `paypal.client-id`, `paypal.client-secret` e `paypal.mode` do `application.yml`.
+ * Expõe `getBaseUrl()` conforme o modo (sandbox/live).
+ */
 public class PayPalProperties {
     @Value("${paypal.client-id}")
     private String clientId;

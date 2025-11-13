@@ -1,158 +1,85 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-body {
-  font-family: Arial;
-  font-size: 17px;
-  padding: 8px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.row {
-  display: -ms-flexbox; /* IE10 */
-  display: flex;
-  -ms-flex-wrap: wrap; /* IE10 */
-  flex-wrap: wrap;
-  margin: 0 -16px;
-}
-
-.col-25 {
-  -ms-flex: 25%; /* IE10 */
-  flex: 25%;
-}
-
-.col-50 {
-  -ms-flex: 50%; /* IE10 */
-  flex: 50%;
-}
-
-.col-75 {
-  -ms-flex: 75%; /* IE10 */
-  flex: 75%;
-}
-
-.col-25,
-.col-50,
-.col-75 {
-  padding: 0 16px;
-}
-
-.container {
-  background-color: #f2f2f2;
-  padding: 5px 20px 15px 20px;
-  border: 1px solid lightgrey;
-  border-radius: 3px;
-}
-
-input[type=text] {
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-label {
-  margin-bottom: 10px;
-  display: block;
-}
-
-.icon-container {
-  margin-bottom: 20px;
-  padding: 7px 0;
-  font-size: 24px;
-}
-
-.btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  width: 100%;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 17px;
-}
-
-.btn:hover {
-  background-color: #45a049;
-}
-
-a {
-  color: #2196F3;
-}
-
-hr {
-  border: 1px solid lightgrey;
-}
-
-span.price {
-  float: right;
-  color: grey;
-}
-
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (also change the direction - make the "cart" column go on top) */
-@media (max-width: 800px) {
-  .row {
-    flex-direction: column-reverse;
-  }
-  .col-25 {
-    margin-bottom: 20px;
-  }
-}
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Best Umbrella • Pagamentos</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --text: #1f2d3d;
+      --muted: #6b7c93;
+      --primary: #0070ba;
+      --primary-dark: #005ea6;
+      --card: #ffffff;
+      --border: #e6ecf3;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+    .header { display: flex; align-items: center; gap: 12px; padding: 20px 24px; background: #fff; border-bottom: 1px solid var(--border); }
+    .pp-logo { height: 28px; }
+    .container { max-width: 920px; margin: 32px auto; padding: 0 16px; }
+    .hero { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+    .title { font-size: 24px; font-weight: 800; margin: 0 0 8px 0; }
+    .subtitle { color: var(--muted); margin: 0 0 18px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-weight: 600; color: var(--muted); }
+    .field input, .field select { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+    .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+    .btn { appearance: none; border: none; border-radius: 8px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-ghost { background: transparent; color: var(--primary); }
+    .note { color: var(--muted); font-size: 14px; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
-<div class="row">
-    <div class="col-75">
-        <div class="container">
-            <form method="post"  action="/pay">
-                <div class="col-50">
-                    <h3>Payment</h3>
-                    <label>Accepted Cards</label>
-                    <div class="icon-container">
-                        <i class="fa fa-cc-visa" style="color:navy;"></i>
-                        <i class="fa fa-cc-amex" style="color:blue;"></i>
-                        <i class="fa fa-cc-mastercard" style="color:red;"></i>
-                        <i class="fa fa-cc-discover" style="color:orange;"></i>
-                    </div>
-                    <label for="price">Total</label>
-                    <input type="text" id="price" name="price" value="10">
-                    <label for="currency">Currency</label>
-                    <input type="text" id="currency" name="currency" value="EUR">
-                    <label for="method">Payment Method</label>
-                    <input type="text" id="method" name="method" value="paypal">
-                    <label for="intent">Intent</label>
-                    <input type="text" id="intent" name="intent" value="sale">
-                    <label for="description">Payment Description</label>
-                    <input type="text" id="description" name="description" value="Pagamento Best Umbrella">
+  <header class="header">
+    <img src="/img/paypal-logo.svg" alt="PayPal" class="pp-logo" />
+    <strong>Best Umbrella • Checkout</strong>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <h1 class="title">Pagamento</h1>
+      <p class="subtitle">Preencha os dados abaixo e avance para o checkout.</p>
 
-                </div>
-
-                <input type="submit" value="Continue to checkout" class="btn">
-            </form>
+      <form method="post" action="/pay">
+        <div class="grid">
+          <div class="field">
+            <label for="price">Valor</label>
+            <input type="text" id="price" name="price" value="10.00" />
+          </div>
+          <div class="field">
+            <label for="currency">Moeda</label>
+            <select id="currency" name="currency">
+              <option value="EUR" selected>EUR</option>
+              <option value="USD">USD</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="method">Método</label>
+            <input type="text" id="method" name="method" value="paypal" />
+          </div>
+          <div class="field">
+            <label for="intent">Intent</label>
+            <input type="text" id="intent" name="intent" value="sale" />
+          </div>
+          <div class="field" style="grid-column: 1 / -1;">
+            <label for="description">Descrição</label>
+            <input type="text" id="description" name="description" value="Pagamento Best Umbrella" />
+          </div>
         </div>
-    </div>
-    <div class="col-25">
-        <div class="container">
-            <h4>Cart <span class="price" style="color:black"><i class="fa fa-shopping-cart"></i> <b>4</b></span></h4>
-            <p><a href="#">Product 1</a> <span class="price">$1</span></p>
-            <p><a href="#">Product 2</a> <span class="price">$4</span></p>
-            <p><a href="#">Product 3</a> <span class="price">$3</span></p>
-            <p><a href="#">Product 4</a> <span class="price">$2</span></p>
-            <hr>
-            <p>Total <span class="price" style="color:black"><b>$10</b></span></p>
-        </div>
-    </div>
-</div>
 
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Avançar para checkout</button>
+          <a href="/paypal.html" class="btn btn-ghost">Testar com PayPal SDK</a>
+        </div>
+        <p class="note">Nota: pode usar o botão acima para testar a integração via JS SDK (sandbox).</p>
+      </form>
+    </section>
+  </main>
 </body>
 </html>

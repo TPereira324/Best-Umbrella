@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.best_umbrella.backend.model.GuardaChuva;
@@ -24,6 +25,19 @@ import com.best_umbrella.backend.service.GuardaChuvaService;
 
 @RestController
 @RequestMapping("/api/guardachuvas")
+/**
+ * Controlador dos endpoints de Guarda-Chuva.
+ *
+ * Endpoints principais:
+ * - GET /api/guardachuvas                  → lista todos os guarda-chuvas
+ * - GET /api/guardachuvas/{id}             → obtém um guarda-chuva por ID
+ * - GET /api/guardachuvas/codigo/{codigo}  → obtém por código QR
+ * - POST /api/guardachuvas                 → cria um novo guarda-chuva
+ * - PUT /api/guardachuvas/{id}             → atualiza um guarda-chuva existente
+ * - DELETE /api/guardachuvas/{id}          → remove o guarda-chuva
+ *
+ * As respostas utilizam GuardaChuvaDto e referências de Aluguer via AluguerSummaryDto.
+ */
 public class GuardaChuvaController {
 
     private final GuardaChuvaService guardaChuvaService;
@@ -34,8 +48,13 @@ public class GuardaChuvaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GuardaChuvaDto>> getAllGuardaChuvas() {
-        List<GuardaChuvaDto> dtos = guardaChuvaService.findAll().stream()
+    public ResponseEntity<List<GuardaChuvaDto>> getAllGuardaChuvas(
+            @RequestParam(value = "estado", required = false) String estado
+    ) {
+        List<GuardaChuvaDto> dtos = (estado == null || estado.isBlank()
+                ? guardaChuvaService.findAll()
+                : guardaChuvaService.findByEstado(estado))
+                .stream()
                 .map(this::toDto)
                 .toList();
         return ResponseEntity.ok(dtos);
@@ -56,6 +75,16 @@ public class GuardaChuvaController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/disponiveis")
+    public ResponseEntity<?> getDisponiveis() {
+        List<GuardaChuva> disponiveis = guardaChuvaService.findDisponiveis();
+        if (disponiveis == null || disponiveis.isEmpty()) {
+            return ResponseEntity.ok("Ocupado: nenhum guarda-chuva disponível");
+        }
+        List<GuardaChuvaDto> dtos = disponiveis.stream().map(this::toDto).toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping

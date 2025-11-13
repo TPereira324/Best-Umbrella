@@ -2,6 +2,13 @@ package com.best_umbrella.backend.dto;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO de Multa devolvido pelos endpoints.
+ *
+ * Inclui identificadores de utilizador e aluguer relacionados, valores e estado
+ * da multa, além de datas (emissão, vencimento, pagamento) e campos de cálculo
+ * como jurosAcumulados e descontoAplicado.
+ */
 public class MultaDto {
     private Long multaId;
     private Long utilizadorId;

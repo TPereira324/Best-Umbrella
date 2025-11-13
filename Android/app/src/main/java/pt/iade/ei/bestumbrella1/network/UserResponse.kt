@@ -9,3 +9,4 @@ data class UserResponse(
     val token: String? = null,
     val isSuccessful: Boolean = true
 )
+

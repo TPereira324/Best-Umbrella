@@ -5,46 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pagamento PayPal (Demo)</title>
     <style>
-      body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
-      .row { margin-bottom: 12px; }
-      label { display: inline-block; width: 100px; }
-      input, select { padding: 6px 8px; }
-      pre { background: #111; color: #0f0; padding: 12px; overflow: auto; }
-      #status { margin: 12px 0; }
+      :root {
+        --bg: #f5f7fa;
+        --text: #1f2d3d;
+        --muted: #6b7c93;
+        --primary: #0070ba;
+        --primary-dark: #005ea6;
+        --card: #ffffff;
+        --border: #e6ecf3;
+        --success: #2ecc71;
+        --danger: #d0021b;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+      .header { display: flex; align-items: center; gap: 12px; padding: 20px 24px; background: #fff; border-bottom: 1px solid var(--border); }
+      .pp-logo { height: 28px; }
+      .container { max-width: 920px; margin: 32px auto; padding: 0 16px; }
+      .hero { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+      .title { font-size: 24px; font-weight: 800; margin: 0 0 6px 0; }
+      .subtitle { color: var(--muted); margin: 0 0 18px 0; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      .field label { font-weight: 600; color: var(--muted); }
+      .field input, .field select { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+      .status { margin: 14px 0; padding: 10px 12px; border-radius: 8px; background: #eef6ff; border: 1px solid #cfe5ff; color: #093b6d; }
+      .row { margin: 14px 0; }
+      .btn { appearance: none; border: none; border-radius: 8px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+      .btn-primary { background: var(--primary); color: #fff; }
+      .btn-primary:hover { background: var(--primary-dark); }
+      .btn-ghost { background: transparent; color: var(--primary); }
+      .card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+      details { margin-top: 12px; }
+      summary { cursor: pointer; color: var(--primary); font-weight: 600; }
+      pre { background: #0b1e3b; color: #e6f0ff; border-radius: 8px; padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; overflow: auto; max-height: 360px; border: 1px solid #0e2b57; }
+      #friendly { font-weight: 600; margin-bottom: 8px; }
     </style>
   </head>
   <body>
-    <h1>Pagamento PayPal (Sandbox)</h1>
-    <p>Esta página usa o JS SDK do PayPal e os seus endpoints do backend.</p>
+    <header class="header">
+      <img src="/img/paypal-logo.svg" alt="PayPal" class="pp-logo" />
+    </header>
+    <main class="container">
+      <section class="hero">
+        <h1 class="title">Pagamento PayPal (Sandbox)</h1>
+        <p class="subtitle">Integração com JS SDK e endpoints do seu backend.</p>
 
-    <div class="row">
-      <label for="amount">Valor</label>
-      <input id="amount" type="text" value="10.00" />
-    </div>
-    <div class="row">
-      <label for="currency">Moeda</label>
-      <select id="currency">
-        <option value="EUR" selected>EUR</option>
-        <option value="USD">USD</option>
-        <option value="GBP">GBP</option>
-      </select>
-    </div>
+        <div class="grid">
+          <div class="field">
+            <label for="amount">Valor</label>
+            <input id="amount" type="text" value="10.00" />
+          </div>
+          <div class="field">
+            <label for="currency">Moeda</label>
+            <select id="currency">
+              <option value="EUR" selected>EUR</option>
+              <option value="USD">USD</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
+        </div>
 
-    <div id="paypal-button-container"></div>
-    <div id="status"></div>
+        <div class="card">
+          <div id="paypal-button-container"></div>
+          <div id="status" class="status"></div>
+        </div>
 
-    <h2>Modo sem SDK (fallback)</h2>
-    <p>Se o SDK não carregar, pode usar estes botões:</p>
-    <div class="row">
-      <button id="btnCreate">Criar ordem</button>
-      <a id="approveLinkAnchor" href="#" target="_blank" style="display:none; margin-left:12px;">Abrir aprovação no PayPal</a>
-      <button id="btnCapture" style="margin-left:12px;">Capturar pagamento</button>
-    </div>
+        <details>
+          <summary>Modo sem SDK (fallback)</summary>
+          <div class="row" style="margin-top:8px;">
+            <button id="btnCreate" class="btn btn-primary">Criar ordem</button>
+            <a id="approveLinkAnchor" href="#" target="_blank" class="btn btn-ghost" style="display:none;">Abrir aprovação no PayPal</a>
+            <button id="btnCapture" class="btn">Finalizar</button>
+          </div>
+        </details>
 
-    <h3>Resposta</h3>
-    <div id="friendly" style="margin-bottom:8px; font-weight:600;"></div>
-    <button id="toggleDetails" style="margin-bottom:8px; display:none;">Mostrar detalhes técnicos</button>
-    <pre id="result" style="display:none;">Aguardando ações...</pre>
+        <h3 style="margin-top:18px;">Resposta</h3>
+        <div id="friendly"></div>
+        <button id="toggleDetails" class="btn btn-ghost" style="display:none;">Mostrar detalhes</button>
+        <pre id="result" style="display:none;">Aguardando ações...</pre>
+      </section>
+    </main>
 
     <script>
       async function loadSdkAndRender() {
@@ -113,7 +153,7 @@
             currentOrderId = data.orderId;
             approveA.href = data.approveLink;
             approveA.style.display = 'inline';
-            statusEl.textContent = 'Ordem criada. Clique em “Abrir aprovação no PayPal”, aprove e depois clique em “Capturar pagamento”.';
+            statusEl.textContent = 'Ordem criada. Clique em “Abrir aprovação no PayPal”, aprove e depois clique em “Finalizar”.';
           } else {
             statusEl.textContent = 'Falha ao criar ordem.';
           }
@@ -124,11 +164,11 @@
             statusEl.textContent = 'Crie e aprove uma ordem primeiro.';
             return;
           }
-          statusEl.textContent = 'Capturando pagamento...';
+          statusEl.textContent = 'A concluir...';
           const resp = await fetch(`/api/paypal/capture/${encodeURIComponent(currentOrderId)}`, { method: 'POST' });
           const data = await resp.json();
           handleResponse(resp, data, 'capturar');
-          statusEl.textContent = resp.ok ? 'Pagamento capturado!' : 'Falha na captura.';
+          statusEl.textContent = resp.ok ? 'Pagamento concluído!' : 'Falha na conclusão.';
         };
       }
 
@@ -139,7 +179,7 @@
       toggleBtn.onclick = () => {
         const showing = resultEl.style.display !== 'none';
         resultEl.style.display = showing ? 'none' : 'block';
-        toggleBtn.textContent = showing ? 'Mostrar detalhes técnicos' : 'Ocultar detalhes técnicos';
+        toggleBtn.textContent = showing ? 'Mostrar detalhes' : 'Ocultar detalhes';
       };
 
       function setFriendly(text) {
@@ -154,7 +194,7 @@
         // Mensagens amigáveis
         if (resp.ok) {
           if (tipo === 'criar') setFriendly('Ordem criada com sucesso. Prossiga para aprovação.');
-          else if (tipo === 'capturar') setFriendly('Pagamento capturado com sucesso.');
+          else if (tipo === 'capturar') setFriendly('Pagamento concluído com sucesso.');
         } else {
           const status = resp.status;
           const msg = (data && (data.message || data.error)) || resp.statusText || 'Erro desconhecido';

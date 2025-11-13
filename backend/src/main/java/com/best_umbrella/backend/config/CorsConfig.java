@@ -6,6 +6,13 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+/**
+ * Configuração de CORS (Cross-Origin Resource Sharing).
+ *
+ * Permite chamadas do front-end (localhost e 10.0.2.2 — Android emulator)
+ * para os endpoints da API (`/api/**`) e os legados (`/users/**`).
+ * Métodos permitidos: GET, POST, PUT, DELETE, OPTIONS.
+ */
 public class CorsConfig {
 
     @Bean

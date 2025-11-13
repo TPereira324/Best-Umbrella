@@ -1,0 +1,219 @@
+{
+  "info": {
+    "name": "BestUmbrella API",
+    "_postman_id": "c4c8a2e2-6c41-48f2-9c7a-collection",
+    "description": "Coleção de endpoints BestUmbrella com exemplos de bodies para testes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register (API)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"]},
+            "body": {"mode": "raw", "raw": "{\n  \"nome\": \"Usuário Teste\",\n  \"email\": \"user@exemplo.com\",\n  \"telefone\": \"912345678\",\n  \"password\": \"senha\"\n}"}
+          }
+        },
+        {
+          "name": "Login (API)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"]},
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"user@exemplo.com\",\n  \"password\": \"senha\"\n}"}
+          }
+        },
+        {
+          "name": "Register (Legacy)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/users/register", "host": ["{{baseUrl}}"], "path": ["users","register"]},
+            "body": {"mode": "raw", "raw": "{\n  \"nome\": \"Usuário Teste\",\n  \"email\": \"user@exemplo.com\",\n  \"telefone\": \"912345678\",\n  \"password\": \"senha\"\n}"}
+          }
+        },
+        {
+          "name": "Login (Legacy)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/users/login", "host": ["{{baseUrl}}"], "path": ["users","login"]},
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"user@exemplo.com\",\n  \"password\": \"senha\"\n}"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Utilizador",
+      "item": [
+        {
+          "name": "Listar Utilizadores",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/api/Utilizador", "host": ["{{baseUrl}}"], "path": ["api","Utilizador"]}
+          }
+        },
+        {
+          "name": "Obter Utilizador por ID",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/api/Utilizador/1", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1"]}
+          }
+        },
+        {
+          "name": "Criar Utilizador",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/Utilizador", "host": ["{{baseUrl}}"], "path": ["api","Utilizador"]},
+            "body": {"mode":"raw","raw":"{\n  \"nome\": \"Usuário Teste\",\n  \"email\": \"user@exemplo.com\",\n  \"telefone\": \"912345678\",\n  \"password\": \"senha\"\n}"}
+          }
+        },
+        {
+          "name": "Atualizar Utilizador",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/Utilizador/1", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1"]},
+            "body": {"mode":"raw","raw":"{\n  \"nome\": \"Usuário Editado\",\n  \"email\": \"user@exemplo.com\",\n  \"telefone\": \"912345678\",\n  \"password\": \"senha\"\n}"}
+          }
+        },
+        {
+          "name": "Atualizar Nome (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/Utilizador/1/nome", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1","nome"]},
+            "body": {"mode":"raw","raw":"{\n  \"nome\": \"Novo Nome\"\n}"}
+          }
+        },
+        {
+          "name": "Apagar Utilizador",
+          "request": {
+            "method": "DELETE",
+            "url": {"raw": "{{baseUrl}}/api/Utilizador/1", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Guarda-Chuva",
+      "item": [
+        {
+          "name": "Listar Guarda-Chuvas",
+          "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/guardachuvas","host":["{{baseUrl}}"],"path":["api","guardachuvas"]}}
+        },
+        {
+          "name": "Obter por ID",
+          "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/guardachuvas/12","host":["{{baseUrl}}"],"path":["api","guardachuvas","12"]}}
+        },
+        {
+          "name": "Obter por Código QR",
+          "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/guardachuvas/codigo/GC-00012","host":["{{baseUrl}}"],"path":["api","guardachuvas","codigo","GC-00012"]}}
+        },
+        {
+          "name": "Criar Guarda-Chuva",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/guardachuvas", "host": ["{{baseUrl}}"], "path": ["api","guardachuvas"]},
+            "body": {"mode":"raw","raw":"{\n  \"codigoQr\": \"GC-00099\",\n  \"estado\": \"DISPONIVEL\",\n  \"cor\": \"preto\",\n  \"tipo\": \"clássico\",\n  \"dataRegisto\": \"2025-11-08T13:00:00\",\n  \"pontodeAluguer\": { \"pontoId\": 3 }\n}"}
+          }
+        },
+        {
+          "name": "Atualizar Guarda-Chuva",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/guardachuvas/12", "host": ["{{baseUrl}}"], "path": ["api","guardachuvas","12"]},
+            "body": {"mode":"raw","raw":"{\n  \"codigoQr\": \"GC-00012\",\n  \"estado\": \"EM_USO\",\n  \"cor\": \"azul\",\n  \"tipo\": \"compacto\",\n  \"pontodeAluguer\": { \"pontoId\": 3 }\n}"}
+          }
+        },
+        {
+          "name": "Apagar Guarda-Chuva",
+          "request": {"method":"DELETE","url":{"raw":"{{baseUrl}}/api/guardachuvas/12","host":["{{baseUrl}}"],"path":["api","guardachuvas","12"]}}
+        }
+      ]
+    },
+    {
+      "name": "Multa",
+      "item": [
+        {"name":"Listar Multas","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa","host":["{{baseUrl}}"],"path":["api","Multa"]}}},
+        {"name":"Obter Multa por ID","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa/50","host":["{{baseUrl}}"],"path":["api","Multa","50"]}}},
+        {"name":"Multas por Utilizador","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa/utilizador/7","host":["{{baseUrl}}"],"path":["api","Multa","utilizador","7"]}}},
+        {"name":"Multas por Aluguer","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa/aluguer/101","host":["{{baseUrl}}"],"path":["api","Multa","aluguer","101"]}}},
+        {
+          "name": "Criar Multa (entidade)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/Multa", "host": ["{{baseUrl}}"], "path": ["api","Multa"]},
+            "body": {"mode":"raw","raw":"{\n  \"utilizador\": { \"utilizadorId\": 7 },\n  \"aluguer\": { \"aluguerId\": 101 },\n  \"valor\": 12.0,\n  \"moeda\": \"EUR\",\n  \"estado\": \"PENDENTE\",\n  \"motivo\": \"ATRASO\",\n  \"descricao\": \"Devolução 30min após o prazo\",\n  \"dataEmissao\": \"2025-05-10T12:45:00\",\n  \"dataVencimento\": \"2025-05-20T23:59:59\"\n}"}
+          }
+        },
+        {
+          "name": "Criar Multa Atrelada (query)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/Multa/atrelada?aluguerId=101&valor=12.0&motivo=ATRASO&descricao=Devolucao%20apos%20prazo&moeda=EUR",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","Multa","atrelada"],
+              "query": [
+                {"key":"aluguerId","value":"101"},
+                {"key":"valor","value":"12.0"},
+                {"key":"motivo","value":"ATRASO"},
+                {"key":"descricao","value":"Devolucao apos prazo"},
+                {"key":"moeda","value":"EUR"}
+              ]
+            }
+          }
+        },
+        {"name":"Pagar Multa","request": {"method":"POST","url":{"raw":"{{baseUrl}}/api/Multa/50/pagar","host":["{{baseUrl}}"],"path":["api","Multa","50","pagar"]}}},
+        {"name":"Cancelar Multa","request": {"method":"POST","url":{"raw":"{{baseUrl}}/api/Multa/50/cancelar","host":["{{baseUrl}}"],"path":["api","Multa","50","cancelar"]}}}
+      ]
+    },
+    {
+      "name": "PayPal",
+      "item": [
+        {"name":"Client ID","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/paypal/client-id","host":["{{baseUrl}}"],"path":["api","paypal","client-id"]}}},
+        {"name":"Config","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/paypal/config","host":["{{baseUrl}}"],"path":["api","paypal","config"]}}},
+        {
+          "name": "Criar Ordem",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/paypal/order?value=10.00&currency=EUR",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","paypal","order"],
+              "query": [
+                {"key":"value","value":"10.00"},
+                {"key":"currency","value":"EUR"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Capturar Ordem",
+          "request": {
+            "method": "POST",
+            "url": {"raw": "{{baseUrl}}/api/paypal/capture/REPLACE_ORDER_ID", "host": ["{{baseUrl}}"], "path": ["api","paypal","capture","REPLACE_ORDER_ID"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rental Stations",
+      "item": [
+        {"name":"Listar Estações","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/rental-stations","host":["{{baseUrl}}"],"path":["api","rental-stations"]}}}
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8080"}
+  ]
+}

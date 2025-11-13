@@ -11,7 +11,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-//
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -20,6 +20,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Best Umbrella1"
+rootProject.name = "BestUmbrella-Android"
 include(":app")
  
+

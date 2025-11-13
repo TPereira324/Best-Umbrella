@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Best Umbrella1"
+rootProject.name = "BestUmbrella-Android"
 include(":app")
  

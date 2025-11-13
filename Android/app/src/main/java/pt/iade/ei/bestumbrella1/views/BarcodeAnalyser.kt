@@ -1,71 +1,42 @@
 package pt.iade.ei.bestumbrella1.views
 
+import androidx.annotation.OptIn
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.google.zxing.BinaryBitmap
-import com.google.zxing.MultiFormatReader
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.common.HybridBinarizer
-import com.google.zxing.PlanarYUVLuminanceSource
-import com.google.zxing.DecodeHintType
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
 
 class BarcodeAnalyser(
     private val onCodeDetected: (String) -> Unit
 ) : ImageAnalysis.Analyzer {
-    private val reader = MultiFormatReader().apply {
-        val hints = mapOf(
-            DecodeHintType.POSSIBLE_FORMATS to listOf(BarcodeFormat.QR_CODE)
-        )
-        setHints(hints)
-    }
+    private val scanner = BarcodeScanning.getClient(
+        BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+            .build()
+    )
 
+    @OptIn(ExperimentalGetImage::class)
     override fun analyze(image: ImageProxy) {
-        try {
-            val width = image.width
-            val height = image.height
-
-            val yPlane = image.planes[0]
-            val yBuffer = yPlane.buffer
-            val yRowStride = yPlane.rowStride
-            val yPixelStride = yPlane.pixelStride
-
-            val luminance = ByteArray(width * height)
-            var offset = 0
-
-            if (yPixelStride == 1 && yRowStride == width) {
-                yBuffer.get(luminance, 0, width * height)
-            } else {
-                val position = yBuffer.position()
-                for (row in 0 until height) {
-                    var colOffset = row * yRowStride
-                    for (col in 0 until width) {
-                        luminance[offset++] = yBuffer.get(colOffset + col * yPixelStride)
+        val mediaImage = image.image
+        if (mediaImage == null) {
+            image.close()
+            return
+        }
+        val inputImage = InputImage.fromMediaImage(mediaImage, image.imageInfo.rotationDegrees)
+        scanner.process(inputImage)
+            .addOnSuccessListener { barcodes ->
+                for (barcode in barcodes) {
+                    val raw = barcode.rawValue
+                    if (!raw.isNullOrEmpty()) {
+                        onCodeDetected(raw)
+                        break
                     }
                 }
-                yBuffer.position(position)
             }
-
-            val source = PlanarYUVLuminanceSource(
-                luminance,
-                width,
-                height,
-                0,
-                0,
-                width,
-                height,
-                false
-            )
-
-            val bitmap = BinaryBitmap(HybridBinarizer(source))
-            val result = reader.decode(bitmap)
-            val text = result.text
-            if (!text.isNullOrEmpty()) {
-                onCodeDetected(text)
-            }
-            reader.reset()
-        } catch (_: Exception) {
-        } finally {
-            image.close()
-        }
+            .addOnFailureListener { }
+            .addOnCompleteListener { image.close() }
     }
 }

@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.data.Repository
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
-import pt.iade.ei.bestumbrella1.network.OpenWeatherOneCallResponse
 import pt.iade.ei.bestumbrella1.network.Hourly
 import pt.iade.ei.bestumbrella1.network.Daily
 import pt.iade.ei.bestumbrella1.network.Alert
@@ -48,7 +47,7 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                         _error.value = exception.message ?: "Erro ao obter previsão do tempo"
                     }
                 )
-                // Em paralelo, obter One Call para 24h, 5 dias e alertas
+
                 val oneCall = repository.getOneCallForecast(latitude, longitude)
                 oneCall.fold(
                     onSuccess = { oc ->
@@ -58,18 +57,15 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                         _sunriseSunset.value = Pair(oc.current?.sunrise, oc.current?.sunset)
                     },
                     onFailure = { e ->
-                        // Fallback: usar forecast 5 dias (3h) quando One Call não está autorizado
                         val forecast = repository.getFiveDayForecast(latitude, longitude)
                         forecast.fold(
                             onSuccess = { fc ->
                                 val (h, d) = repository.mapForecastToHourlyDaily(fc)
                                 _hourly.value = h
                                 _daily.value = d
-                                // sunrise/sunset: usar dados de cidade do forecast quando disponíveis
                                 _sunriseSunset.value = Pair(fc.city?.sunrise, fc.city?.sunset)
                             },
                             onFailure = { fe ->
-                                // Se ambos falharem, reportar erro combinado
                                 _error.value = listOfNotNull(
                                     e.message,
                                     fe.message
@@ -78,7 +74,7 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                         )
                     }
                 )
-                // Caso de fallback não deve gerar erro visível; usamos forecast sem alertas
+
                 if ((_alerts.value ?: emptyList()).isEmpty() && (_daily.value ?: emptyList()).isNotEmpty()) {
                     _error.value = null
                 }

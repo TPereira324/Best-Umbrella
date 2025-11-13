@@ -17,11 +17,10 @@ import pt.iade.ei.bestumbrella1.views.MapScreenWithMarkers
 import pt.iade.ei.bestumbrella1.views.QrScannerScreen
 import pt.iade.ei.bestumbrella1.views.HistoryScreen
 import pt.iade.ei.bestumbrella1.views.ProfileScreen
-import pt.iade.ei.bestumbrella1.views.CameraPreviewScreen
 import pt.iade.ei.bestumbrella1.views.PaymentScreen
 import pt.iade.ei.bestumbrella1.views.RentalDetailsScreen
-import pt.iade.ei.bestumbrella1.views.AdviceScreen
 import pt.iade.ei.bestumbrella1.views.UsersAdminScreen
+import pt.iade.ei.bestumbrella1.views.WeatherScreen
 
 @Composable
 fun MainNavigation(navController: NavHostController) {
@@ -70,12 +69,11 @@ fun MainNavigation(navController: NavHostController) {
                 onCodeScanned = { code -> navController.navigate("rentalDetails/$code") }
             )
         }
-        composable("weather") { pt.iade.ei.bestumbrella1.views.WeatherScreen(navController) }
-        composable("advice") { AdviceScreen() }
+        
         composable("history") { HistoryScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
         composable("adminUsers") { UsersAdminScreen(navController) }
-        composable("cameraPreview") { CameraPreviewScreen() }
+        composable("weather") { WeatherScreen(navController) }
         composable("payment") { PaymentScreen(navController, qrCode = "") }
         composable("payment/{qrCode}") { backStackEntry ->
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""

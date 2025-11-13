@@ -23,28 +23,6 @@ fun AppBottomNavigationBar(navController: NavController) {
 
     NavigationBar {
         NavigationBarItem(
-            selected = currentRoute == "map",
-            onClick = { navController.navigate("map") },
-            icon = {
-                androidx.compose.material3.Icon(
-                    Icons.Default.Map,
-                    contentDescription = null
-                )
-            },
-            label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
-        )
-        NavigationBarItem(
-            selected = currentRoute == "qrscanner",
-            onClick = { navController.navigate("qrscanner") },
-            icon = {
-                androidx.compose.material3.Icon(
-                    Icons.Default.QrCodeScanner,
-                    contentDescription = null
-                )
-            },
-            label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
-        )
-        NavigationBarItem(
             selected = currentRoute == "weather",
             onClick = { navController.navigate("weather") },
             icon = {
@@ -65,6 +43,28 @@ fun AppBottomNavigationBar(navController: NavController) {
                 )
             },
             label = { Text("Histórico", color = Color.Black, fontWeight = FontWeight.Bold) }
+        )
+        NavigationBarItem(
+            selected = currentRoute == "map",
+            onClick = { navController.navigate("map") },
+            icon = {
+                androidx.compose.material3.Icon(
+                    Icons.Default.Map,
+                    contentDescription = null
+                )
+            },
+            label = { Text("Mapa", color = Color.Black, fontWeight = FontWeight.Bold) }
+        )
+        NavigationBarItem(
+            selected = currentRoute == "qrscanner",
+            onClick = { navController.navigate("qrscanner") },
+            icon = {
+                androidx.compose.material3.Icon(
+                    Icons.Default.QrCodeScanner,
+                    contentDescription = null
+                )
+            },
+            label = { Text("Scanner", color = Color.Black, fontWeight = FontWeight.Bold) }
         )
         NavigationBarItem(
             selected = currentRoute == "profile",

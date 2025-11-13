@@ -27,8 +27,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import pt.iade.ei.bestumbrella1.network.ReturnResponse
 import java.io.File
-import pt.iade.ei.bestumbrella1.models.AdviceResponse
-import pt.iade.ei.bestumbrella1.network.RetrofitInstance
 
 class Repository(private val apiService: ApiService, private val sessionManager: SessionManager) {
 
@@ -317,14 +315,4 @@ class Repository(private val apiService: ApiService, private val sessionManager:
         }
     }
 
-    suspend fun getAdvice(): Result<AdviceResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val advice = RetrofitInstance.api.getAdvice()
-                Result.success(advice)
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    }
 }

@@ -62,12 +62,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -104,41 +104,32 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v261)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.fuel.v231)
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
     implementation(libs.barcode.scanning)
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.room.common.jvm)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.retrofit.v290)
+    implementation(libs.converter.gson.v290)
     implementation(libs.logging.interceptor)
-    implementation(libs.firebase.appdistribution.gradle)
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2.v130)
     implementation(libs.androidx.camera.lifecycle.v130)
     implementation(libs.androidx.camera.view.v130)
-    implementation(libs.guava)
-    implementation(libs.androidx.compose.runtime.livedata.v160)
+    implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -149,4 +140,11 @@ dependencies {
     androidTestImplementation(libs.mockwebserver.v530)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+}
+
+// Force Gradle to use a Java 17 toolchain for this module
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }

@@ -8,7 +8,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.livedata.observeAsState
 import pt.iade.ei.bestumbrella1.di.AppModule
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,24 +42,22 @@ import kotlin.random.Random
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreen(navController: NavController) {
+    val context = LocalContext.current
+    val viewModel: pt.iade.ei.bestumbrella1.viewmodels.WeatherViewModel = remember { AppModule.provideWeatherViewModel(context) }
+    val weatherData by viewModel.weatherData.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val error by viewModel.error.observeAsState()
+    val hourly by viewModel.hourly.observeAsState(emptyList())
+    val daily by viewModel.daily.observeAsState(emptyList())
+    val sunriseSunset by viewModel.sunriseSunset.observeAsState(null)
+    val timeFormatter = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
+
+    LaunchedEffect(Unit) {
+        viewModel.getWeatherForecast(latitude = 38.7223, longitude = -9.1393)
+    }
     Scaffold(
         bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
-        val context = LocalContext.current
-        val viewModel = remember { AppModule.provideWeatherViewModel(context) }
-        val weatherData by viewModel.weatherData.observeAsState()
-        val isLoading by viewModel.isLoading.observeAsState(false)
-        val error by viewModel.error.observeAsState()
-        val hourly by viewModel.hourly.observeAsState(emptyList())
-        val daily by viewModel.daily.observeAsState(emptyList())
-        val alerts by viewModel.alerts.observeAsState(emptyList())
-        val sunriseSunset by viewModel.sunriseSunset.observeAsState(null)
-        val timeFormatter = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
-
-        // Lisboa como coordenadas padrão
-        LaunchedEffect(Unit) {
-            viewModel.getWeatherForecast(latitude = 38.7223, longitude = -9.1393)
-        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -89,9 +90,9 @@ fun WeatherScreen(navController: NavController) {
                     }
                 }
 
-                if (error != null) {
+                error?.let {
                     Text(
-                        text = error ?: "Erro",
+                        text = it,
                         color = Color.Red,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
@@ -145,7 +146,6 @@ fun WeatherScreen(navController: NavController) {
                             Text(popText!!, style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
 
-                        // Nascer/Pôr do sol (hoje)
                         Spacer(Modifier.height(8.dp))
                         val sunriseText = sunriseSunset?.first?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
                         val sunsetText = sunriseSunset?.second?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
@@ -193,30 +193,7 @@ fun WeatherScreen(navController: NavController) {
                 }
 
                 Spacer(Modifier.height(16.dp))
-                // Alertas meteorológicos
-                if (alerts.isNotEmpty()) {
-                    Text("Alertas", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(8.dp))
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFCDD2))
-                    ) {
-                        Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-                            alerts.forEach { a ->
-                                val startText = a.start?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
-                                val endText = a.end?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
-                                val title = listOfNotNull(a.event, a.sender_name).joinToString(" — ")
-                                Text(title, style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-                                Text("De: $startText  Até: $endText", style = MaterialTheme.typography.bodySmall, color = Color.Black)
-                                if (!a.description.isNullOrBlank()) {
-                                    Spacer(Modifier.height(4.dp))
-                                    Text(a.description!!, style = MaterialTheme.typography.bodySmall, color = Color.Black)
-                                }
-                                Spacer(Modifier.height(10.dp))
-                            }
-                        }
-                    }
-                }
+                
             }
             // Rodapé de créditos movido para o Scaffold global
         }
@@ -355,4 +332,3 @@ private fun RainAnimatedIcon(sizeDp: androidx.compose.ui.unit.Dp) {
         )
     }
 }
-

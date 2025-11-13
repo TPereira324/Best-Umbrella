@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -267,10 +266,4 @@ fun QrScannerScreen(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewQrScannerScreen() {
-    QrScannerScreen()
 }

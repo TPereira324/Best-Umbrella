@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -170,12 +169,5 @@ fun extractHours(duration: String): Int {
     val regex = Regex("(\\d+)h")
     val match = regex.find(duration)
     return match?.groupValues?.get(1)?.toIntOrNull() ?: 0
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewHistoryScreen() {
-    val navController = rememberNavController()
-    HistoryScreen(navController)
 }
 

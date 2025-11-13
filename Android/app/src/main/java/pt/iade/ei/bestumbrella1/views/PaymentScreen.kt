@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
@@ -238,11 +237,4 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewPaymentScreen() {
-    val navController = rememberNavController()
-    val qrCode = ""
-    PaymentScreen(navController, qrCode)
-}
-// testing this branch
+

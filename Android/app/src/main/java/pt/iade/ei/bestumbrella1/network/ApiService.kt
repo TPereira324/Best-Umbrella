@@ -13,7 +13,6 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Field
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import pt.iade.ei.bestumbrella1.models.AdviceResponse
 
 interface ApiService {
     @POST("users/register")
@@ -57,8 +56,6 @@ interface ApiService {
         @Part("notes") notes: RequestBody
     ): Response<ReturnResponse>
 
-    @GET("advice")
-    suspend fun getAdvice(): Response<AdviceResponse>
 
     @GET("users")
     suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<UserProfileResponse>>

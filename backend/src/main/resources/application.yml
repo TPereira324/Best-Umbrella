@@ -5,9 +5,9 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:mysql://localhost:3306/best_umbrella
-    username: root
-    password: root
+    url: ${DB_URL:jdbc:mysql://localhost:3306/best_umbrella}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -25,22 +25,22 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.springframework: INFO
-
+# Configuração do Google
 google:
   api:
-    key: AIzaSyAWOO-efpqfd9rfJ_7z1vsFbtzvtiR4D2E
+    key: ${GOOGLE_API_KEY:AIzaSyAWOO-efpqfd9rfJ_7z1vsFbtzvtiR4D2E}
 
 # Configuração PayPal (corrigida para usar kebab-case)
 paypal:
-  mode: live
-  client-id: AbWHZSjRti6nJOR1llh1bJjDj2GUklE1xT3BeYq4JRlwTKQYz9Ohf8fVUrTe2SwRW0NatLaFxJl1_wV4
-  client-secret: EM1HqI8zcLE-sTUn3xvrZXs4TMN1AYsH55YNQLeYYUCEQD_9-N_QrvbnjXH_6RAK5fushzfHTzJ3tyYc
+  mode: sandbox
+  client-id: ${PAYPAL_CLIENT_ID:AbWHZSjRti6nJOR1llh1bJjDj2GUklE1xT3BeYq4JRlwTKQYz9Ohf8fVUrTe2SwRW0NatLaFxJl1_wV4}
+  client-secret: ${PAYPAL_CLIENT_SECRET:EM1HqI8zcLE-sTUn3xvrZXs4TMN1AYsH55YNQLeYYUCEQD_9-N_QrvbnjXH_6RAK5fushzfHTzJ3tyYc}
 
 
 # OpenWeather configuration
 openweather:
   api:
-    key: 7d7353b5a696a31078211f46891b389e
+    key: ${OPENWEATHER_API_KEY:7d7353b5a696a31078211f46891b389e}
     units: metric
     lang: pt
 

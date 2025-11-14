@@ -170,16 +170,23 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
         <body>
           <div id="paypal-button-container"></div>
           <script>
+            const API_BASE = '${BuildConfig.API_BASE_URL}';
             const amount = '${valueStr}';
             paypal.Buttons({
               style: { shape: 'pill', color: 'blue', layout: 'vertical', label: 'paypal' },
               createOrder: function(data, actions) {
-                return actions.order.create({
-                  purchase_units: [{ amount: { value: amount } }]
-                });
+                return fetch(API_BASE + 'paypal/order?value=' + amount + '&currency=EUR', {
+                  method: 'POST'
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(body) { return body.orderId; });
               },
               onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
+                return fetch(API_BASE + 'paypal/capture/' + data.orderID, {
+                  method: 'POST'
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(details) {
                   PayPalAndroid.postMessage(JSON.stringify({ status: 'success', orderID: data.orderID }));
                 });
               },
@@ -192,6 +199,8 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
         </html>
         """.trimIndent()
     }
+
+    val serverBaseUrl = remember { BuildConfig.API_BASE_URL.replace("api/", "") }
 
     AndroidView(
         modifier = Modifier
@@ -217,7 +226,7 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
                     }
                 }, "PayPalAndroid")
                 loadDataWithBaseURL(
-                    "https://www.paypal.com/",
+                    serverBaseUrl,
                     html,
                     "text/html",
                     "utf-8",
@@ -227,7 +236,7 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
         },
         update = { webView ->
             webView.loadDataWithBaseURL(
-                "https://www.paypal.com/",
+                serverBaseUrl,
                 html,
                 "text/html",
                 "utf-8",

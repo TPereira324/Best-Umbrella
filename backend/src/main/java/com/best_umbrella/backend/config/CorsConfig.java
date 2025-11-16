@@ -24,15 +24,13 @@ public class CorsConfig {
                         .allowedOriginPatterns("http://10.0.2.2:*", "http://localhost:*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .exposedHeaders("Authorization")
-                        .allowCredentials(true)
+                        .allowCredentials(false)
                         .maxAge(3600);
                 registry.addMapping("/users/**")
                         .allowedOriginPatterns("http://10.0.2.2:*", "http://localhost:*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .exposedHeaders("Authorization")
-                        .allowCredentials(true)
+                        .allowCredentials(false)
                         .maxAge(3600);
             }
         };

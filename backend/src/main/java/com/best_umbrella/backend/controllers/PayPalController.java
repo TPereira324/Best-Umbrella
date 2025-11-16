@@ -46,6 +46,15 @@ public class PayPalController {
         ));
     }
 
+    @GetMapping("/order")
+    public ResponseEntity<Map<String, Object>> createOrderGet(
+            @RequestParam(defaultValue = "10.00") String value,
+            @RequestParam(defaultValue = "EUR") String currency
+    ) {
+        Map<String, Object> order = service.createOrder(value, currency);
+        return ResponseEntity.ok(order);
+    }
+
     @PostMapping("/order")
     public ResponseEntity<Map<String, Object>> createOrder(
             @RequestParam(defaultValue = "10.00") String value,

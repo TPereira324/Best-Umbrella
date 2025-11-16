@@ -32,9 +32,9 @@ google:
 
 # Configuração PayPal (corrigida para usar kebab-case)
 paypal:
-  mode: sandbox
-  client-id: ${PAYPAL_CLIENT_ID:AbWHZSjRti6nJOR1llh1bJjDj2GUklE1xT3BeYq4JRlwTKQYz9Ohf8fVUrTe2SwRW0NatLaFxJl1_wV4}
-  client-secret: ${PAYPAL_CLIENT_SECRET:EM1HqI8zcLE-sTUn3xvrZXs4TMN1AYsH55YNQLeYYUCEQD_9-N_QrvbnjXH_6RAK5fushzfHTzJ3tyYc}
+  mode: live
+  client-id: AbWHZSjRti6nJOR1llh1bJjDj2GUklE1xT3BeYq4JRlwTKQYz9Ohf8fVUrTe2SwRW0NatLaFxJl1_wV4
+  client-secret: EM1HqI8zcLE-sTUn3xvrZXs4TMN1AYsH55YNQLeYYUCEQD_9-N_QrvbnjXH_6RAK5fushzfHTzJ3tyYc
 
 
 # OpenWeather configuration

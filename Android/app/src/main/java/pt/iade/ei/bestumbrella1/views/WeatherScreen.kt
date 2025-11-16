@@ -1,6 +1,8 @@
 package pt.iade.ei.bestumbrella1.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.rotate
@@ -38,6 +41,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,10 +54,17 @@ fun WeatherScreen(navController: NavController) {
     val hourly by viewModel.hourly.observeAsState(emptyList())
     val daily by viewModel.daily.observeAsState(emptyList())
     val sunriseSunset by viewModel.sunriseSunset.observeAsState(null)
+    val currentWeatherId by viewModel.currentWeatherId.observeAsState(null)
     val timeFormatter = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
 
     LaunchedEffect(Unit) {
-        viewModel.getWeatherForecast(latitude = 38.7223, longitude = -9.1393)
+        // Atualização periódica para refletir ícones e dados em tempo real
+        val lat = 38.7223
+        val lon = -9.1393
+        while (true) {
+            viewModel.getWeatherForecast(latitude = lat, longitude = lon)
+            kotlinx.coroutines.delay(5 * 60 * 1000) // 5 minutos
+        }
     }
     Scaffold(
         bottomBar = { AppBottomNavigationBar(navController) }
@@ -75,6 +86,7 @@ fun WeatherScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     "Meteorologia",
@@ -102,7 +114,8 @@ fun WeatherScreen(navController: NavController) {
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB)),
+                    shape = RoundedCornerShape(24.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -111,83 +124,111 @@ fun WeatherScreen(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // Ícone dinâmico conforme condição atual
-                        val descLower = (weatherData?.description ?: "").lowercase(Locale.getDefault())
-                        val currentPop = hourly.firstOrNull()?.precipitationProbability ?: 0.0
-                        val isRaining = currentPop >= 0.3 ||
-                                descLower.contains("chuva") ||
-                                descLower.contains("aguace") ||
-                                descLower.contains("chuvisco") ||
-                                descLower.contains("tempest") ||
-                                descLower.contains("trovo")
-                        val isCloudy = !isRaining && (
-                                descLower.contains("nublado") ||
-                                descLower.contains("nuvens") ||
-                                descLower.contains("encoberto") ||
-                                descLower.contains("nuvens dispersas") ||
-                                descLower.contains("poucas nuvens")
-                            )
+                        // Animação de chuva somente quando está REALMENTE a chover
+                        val currentId = currentWeatherId ?: 0
+                        val isRaining = (currentId in 200..599) || (currentId in 600..622)
+                        val isCloudy = !isRaining && (currentId in 801..804)
                         WeatherAnimatedIcon(isRaining = isRaining, isCloudy = isCloudy)
-                        Text("Lisboa, Portugal", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Lisboa, Portugal", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
                         val tempText = weatherData?.temperature?.let { String.format("%.1f°C", it) } ?: "--°C"
                         val descText = weatherData?.description ?: ""
-                        Text("$tempText — $descText", style = MaterialTheme.typography.headlineSmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("$tempText — $descText", style = MaterialTheme.typography.headlineMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(8.dp))
                         val humidityText = weatherData?.humidity?.let { "$it%" } ?: "--%"
                         val windText = weatherData?.windSpeed?.let { String.format("%.1f km/h", it) } ?: "-- km/h"
-                        Text("Humidade: $humidityText | Vento: $windText", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
-
-                        // Probabilidade de precipitação atual (se disponível) para dar contexto real
                         val popText = if (hourly.isNotEmpty()) {
                             val p = hourly.first().precipitationProbability
-                            p?.let { String.format(Locale.getDefault(), "Chuva agora: %.0f%%", it * 100) }
+                            p?.let { String.format(Locale.getDefault(), "%.0f%%", it * 100) }
                         } else null
-                        if (!popText.isNullOrBlank()) {
-                            Spacer(Modifier.height(6.dp))
-                            Text(popText!!, style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
+
+                        // Linha de chips: humidade, vento, chuva agora
+                        Spacer(Modifier.height(10.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            InfoChip(text = "Humidade $humidityText", icon = Icons.Default.WaterDrop)
+                            InfoChip(text = "Vento $windText", icon = Icons.Default.Air)
+                            if (!popText.isNullOrBlank()) {
+                                InfoChip(text = "Chuva ${popText}", icon = Icons.Default.WaterDrop)
+                            }
                         }
 
+                        // Linha de chips: nascer/pôr do sol
                         Spacer(Modifier.height(8.dp))
                         val sunriseText = sunriseSunset?.first?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
                         val sunsetText = sunriseSunset?.second?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
-                        Text("Nascer do sol: $sunriseText | Pôr do sol: $sunsetText", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            InfoChip(text = "Nascer $sunriseText", icon = Icons.Default.WbSunny)
+                            InfoChip(text = "Pôr $sunsetText", icon = Icons.Default.Brightness3)
+                        }
                     }
                 }
 
                 Spacer(Modifier.height(20.dp))
-                // Previsão 24 horas
+                // Previsão 24 horas (horizontal, estilo chips)
                 Text("Previsão (24h)", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)),
+                    shape = RoundedCornerShape(20.dp)
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-                        hourly.forEach { h ->
+                    androidx.compose.foundation.lazy.LazyRow(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(hourly.size) { index ->
+                            val h = hourly[index]
                             val hourText = timeFormatter.format(Date(h.dt * 1000))
-                            val tempText = String.format("%.0f°C", h.temp)
-                            val desc = h.weather.firstOrNull()?.description ?: ""
+                            val tempText = String.format("%.0f°", h.temp)
                             val pop = h.precipitationProbability?.let { String.format("%.0f%%", it * 100) } ?: "--%"
-                            Text("$hourText  •  $tempText  •  $desc  •  Chuva: $pop", style = MaterialTheme.typography.bodySmall, color = Color.Black)
+                            val wid = h.weather.firstOrNull()?.id ?: 0
+                            val icon = when {
+                                wid in 200..599 || wid in 600..622 || (h.precipitationProbability ?: 0.0) >= 0.3 -> Icons.Default.WaterDrop
+                                wid in 801..804 -> Icons.Default.Cloud
+                                else -> Icons.Default.WbSunny
+                            }
+                            HourChip(hourText = hourText, tempText = tempText, popText = pop, icon = icon)
                         }
                     }
                 }
 
                 Spacer(Modifier.height(16.dp))
-                // Previsão 5 dias
+                // Previsão 5 dias (lista limpa)
                 Text("Previsão (5 dias)", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)),
+                    shape = RoundedCornerShape(20.dp)
                 ) {
+                    val dayFormatter = remember { SimpleDateFormat("EEE, dd/MM", Locale("pt", "PT")) }
                     Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-                        val dayFormatter = remember { SimpleDateFormat("EEE, dd/MM", Locale("pt", "PT")) }
                         daily.forEach { d ->
                             val dayText = dayFormatter.format(Date(d.dt * 1000))
                             val minMax = String.format("%.0f° / %.0f°", d.temp.min, d.temp.max)
-                            val desc = d.weather.firstOrNull()?.description ?: ""
                             val pop = d.precipitationProbability?.let { String.format("%.0f%%", it * 100) } ?: "--%"
-                            Text("$dayText  •  $minMax  •  $desc  •  Chuva: $pop", style = MaterialTheme.typography.bodySmall, color = Color.Black)
+                            val descLower = d.weather.firstOrNull()?.description?.lowercase(Locale.getDefault()) ?: ""
+                            val icon = when {
+                                descLower.contains("chuva") || (d.precipitationProbability ?: 0.0) >= 0.3 -> Icons.Default.WaterDrop
+                                descLower.contains("nublado") || descLower.contains("nuvens") || descLower.contains("encoberto") -> Icons.Default.Cloud
+                                else -> Icons.Default.WbSunny
+                            }
+                            Row(
+                                Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(dayText, style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                                }
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(minMax, style = MaterialTheme.typography.bodyMedium, color = Color.Black)
+                                    Spacer(Modifier.width(12.dp))
+                                    Text(pop, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF1976D2), fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            Divider(color = Color.Black.copy(alpha = 0.08f))
                         }
                     }
                 }
@@ -223,7 +264,7 @@ private fun ProjectCreditsFooter() {
 // Ícones animados para estados de tempo: sol, chuva, nuvens
 @Composable
 private fun WeatherAnimatedIcon(isRaining: Boolean, isCloudy: Boolean) {
-    val size = 60.dp
+    val size = 80.dp
     when {
         isRaining -> RainAnimatedIcon(size)
         isCloudy -> CloudAnimatedIcon(size)
@@ -331,4 +372,46 @@ private fun RainAnimatedIcon(sizeDp: androidx.compose.ui.unit.Dp) {
             modifier = Modifier.fillMaxSize()
         )
     }
+}
+
+@Composable
+private fun HourChip(
+    hourText: String,
+    tempText: String,
+    popText: String,
+    icon: ImageVector
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+            Column {
+                Text(hourText, style = MaterialTheme.typography.labelMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(tempText, style = MaterialTheme.typography.bodyMedium, color = Color.Black)
+                    Text(popText, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF1976D2), fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InfoChip(text: String, icon: ImageVector) {
+    AssistChip(
+        onClick = {},
+        leadingIcon = {
+            Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+        },
+        label = { Text(text, color = Color.Black, fontWeight = FontWeight.Bold) },
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = Color.White
+        )
+    )
 }

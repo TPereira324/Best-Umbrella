@@ -3,6 +3,8 @@ package pt.iade.ei.bestumbrella1.ui.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.coVerify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -14,10 +16,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pt.iade.ei.bestumbrella1.data.Repository
-import pt.iade.ei.bestumbrella1.models.UserResponse
+import pt.iade.ei.bestumbrella1.network.UserResponse
+import pt.iade.ei.bestumbrella1.models.SessionManager
+import pt.iade.ei.bestumbrella1.viewmodels.AuthViewModel
 import pt.iade.ei.bestumbrella1.network.UserProfileResponse
 import pt.iade.ei.bestumbrella1.network.UserPreferences
-import pt.iade.ei.bestumbrella1.network.Location
 
 @ExperimentalCoroutinesApi
 class AuthViewModelTest {
@@ -27,11 +30,12 @@ class AuthViewModelTest {
 
     private lateinit var viewModel: AuthViewModel
     private val repository: Repository = mockk()
+    private val sessionManager: SessionManager = mockk(relaxed = true)
 
     @Before
     fun setup() {
         Dispatchers.setMain(Dispatchers.Unconfined)
-        viewModel = AuthViewModel(repository)
+        viewModel = AuthViewModel(repository, sessionManager)
     }
 
     @After
@@ -44,15 +48,22 @@ class AuthViewModelTest {
         // Arrange
         val email = "test@example.com"
         val password = "password123"
-        val userResponse = UserResponse(success = true, message = "Login successful")
-        
+        val userResponse = UserResponse(
+            id = "1",
+            name = "Test User",
+            email = email,
+            token = "fake-token-12345",
+            isSuccessful = true
+        )
         coEvery { repository.loginUser(email, password) } returns Result.success(userResponse)
         
         // Act
         viewModel.login(email, password)
         
         // Assert
-        assertEquals(userResponse, viewModel.loginResult.value)
+        assertEquals(true, viewModel.loginResult.value?.success)
+        assertEquals("Test User", viewModel.loginResult.value?.userName)
+        assertEquals("fake-token-12345", viewModel.loginResult.value?.token)
         assertEquals(false, viewModel.isLoading.value)
     }
 
@@ -69,7 +80,8 @@ class AuthViewModelTest {
         viewModel.login(email, password)
         
         // Assert
-        assertEquals(errorMessage, viewModel.error.value)
+        assertEquals(false, viewModel.loginResult.value?.success)
+        assertEquals(errorMessage, viewModel.loginResult.value?.message)
         assertEquals(false, viewModel.isLoading.value)
     }
 
@@ -79,15 +91,21 @@ class AuthViewModelTest {
         val name = "Test User"
         val email = "test@example.com"
         val password = "password123"
-        val userResponse = UserResponse(success = true, message = "Registration successful")
-        
-        coEvery { repository.registerUser(name, email, password) } returns Result.success(userResponse)
+        val userResponse = UserResponse(
+            id = "1",
+            name = name,
+            email = email,
+            token = "fake-token-12345",
+            isSuccessful = true
+        )
+        coEvery { repository.registerUser(name, email, password, null) } returns Result.success(userResponse)
         
         // Act
-        viewModel.register(name, email, password)
+        viewModel.register(name, email, password, null)
         
         // Assert
-        assertEquals(userResponse, viewModel.registerResult.value)
+        assertEquals(true, viewModel.registerResult.value?.success)
+        assertEquals(name, viewModel.registerResult.value?.userName)
         assertEquals(false, viewModel.isLoading.value)
     }
 
@@ -95,17 +113,13 @@ class AuthViewModelTest {
     fun `getUserProfile with valid token updates userProfile`() = runTest {
         // Arrange
         val userProfileResponse = UserProfileResponse(
-            id = 1,
+            id = "1",
             name = "Test User",
             email = "test@example.com",
             preferences = UserPreferences(
                 notificationsEnabled = true,
-                temperatureUnit = "C",
-                defaultLocation = Location(
-                    latitude = 38.7223,
-                    longitude = -9.1393,
-                    name = "Lisboa"
-                )
+                locationTracking = true,
+                weatherAlerts = true
             )
         )
         
@@ -115,7 +129,8 @@ class AuthViewModelTest {
         viewModel.getUserProfile()
         
         // Assert
-        assertEquals(userProfileResponse, viewModel.userProfile.value)
+        coVerify { sessionManager.saveName("Test User") }
+        coVerify { sessionManager.saveEmail("test@example.com") }
         assertEquals(false, viewModel.isLoading.value)
     }
 }

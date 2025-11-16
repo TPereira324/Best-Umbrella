@@ -19,12 +19,17 @@ public class UtilizadorDto {
 
     private List<AluguerSummaryDto> alugueres;
     private List<NotiDto> notificacoes;
+    private Boolean alertaChuvaAtivo;
+    private String alertaCidade;
+    private Double alertaLat;
+    private Double alertaLon;
 
     public UtilizadorDto() {}
 
     public UtilizadorDto(Integer utilizadorId, String nome, String email, String telefone,
                          LocalDateTime dataRegisto, Double rating,
-                         List<AluguerSummaryDto> alugueres, List<NotiDto> notificacoes) {
+                         List<AluguerSummaryDto> alugueres, List<NotiDto> notificacoes,
+                         Boolean alertaChuvaAtivo, String alertaCidade, Double alertaLat, Double alertaLon) {
         this.utilizadorId = utilizadorId;
         this.nome = nome;
         this.email = email;
@@ -33,6 +38,10 @@ public class UtilizadorDto {
         this.rating = rating;
         this.alugueres = alugueres;
         this.notificacoes = notificacoes;
+        this.alertaChuvaAtivo = alertaChuvaAtivo;
+        this.alertaCidade = alertaCidade;
+        this.alertaLat = alertaLat;
+        this.alertaLon = alertaLon;
     }
 
     public Integer getUtilizadorId() { return utilizadorId; }
@@ -51,4 +60,12 @@ public class UtilizadorDto {
     public void setAlugueres(List<AluguerSummaryDto> alugueres) { this.alugueres = alugueres; }
     public List<NotiDto> getNotificacoes() { return notificacoes; }
     public void setNotificacoes(List<NotiDto> notificacoes) { this.notificacoes = notificacoes; }
+    public Boolean getAlertaChuvaAtivo() { return alertaChuvaAtivo; }
+    public void setAlertaChuvaAtivo(Boolean alertaChuvaAtivo) { this.alertaChuvaAtivo = alertaChuvaAtivo; }
+    public String getAlertaCidade() { return alertaCidade; }
+    public void setAlertaCidade(String alertaCidade) { this.alertaCidade = alertaCidade; }
+    public Double getAlertaLat() { return alertaLat; }
+    public void setAlertaLat(Double alertaLat) { this.alertaLat = alertaLat; }
+    public Double getAlertaLon() { return alertaLon; }
+    public void setAlertaLon(Double alertaLon) { this.alertaLon = alertaLon; }
 }

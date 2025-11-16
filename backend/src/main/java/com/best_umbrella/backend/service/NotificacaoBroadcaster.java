@@ -22,10 +22,12 @@ public class NotificacaoBroadcaster {
     private static final long SSE_TIMEOUT_MS = 30 * 60 * 1000L; // 30 minutos
 
     private final Map<Long, CopyOnWriteArrayList<SseEmitter>> emittersPorUtilizador = new ConcurrentHashMap<>();
+    private final Map<SseEmitter, Long> criadoEm = new ConcurrentHashMap<>();
 
     public SseEmitter subscribe(Long utilizadorId) {
         SseEmitter emitter = new SseEmitter(SSE_TIMEOUT_MS);
         emittersPorUtilizador.computeIfAbsent(utilizadorId, k -> new CopyOnWriteArrayList<>()).add(emitter);
+        criadoEm.put(emitter, System.currentTimeMillis());
 
         emitter.onCompletion(() -> removerEmitter(utilizadorId, emitter));
         emitter.onTimeout(() -> removerEmitter(utilizadorId, emitter));
@@ -83,6 +85,21 @@ public class NotificacaoBroadcaster {
             lista.remove(emitter);
             if (lista.isEmpty()) {
                 emittersPorUtilizador.remove(utilizadorId);
+            }
+        }
+        criadoEm.remove(emitter);
+    }
+
+    @Scheduled(fixedRate = 60_000)
+    public void pruneInativos() {
+        long agora = System.currentTimeMillis();
+        for (Map.Entry<Long, CopyOnWriteArrayList<SseEmitter>> entry : emittersPorUtilizador.entrySet()) {
+            Long uid = entry.getKey();
+            for (SseEmitter emitter : entry.getValue()) {
+                Long created = criadoEm.getOrDefault(emitter, agora);
+                if (agora - created > SSE_TIMEOUT_MS) {
+                    removerEmitter(uid, emitter);
+                }
             }
         }
     }

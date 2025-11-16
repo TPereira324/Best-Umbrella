@@ -8,4 +8,5 @@ import com.best_umbrella.backend.model.Utilizador;
 @Repository
 public interface UtilizadorRepository extends JpaRepository<Utilizador, Long> {
     Utilizador findByEmail(String email);
+    java.util.List<Utilizador> findByAlertaChuvaAtivoTrue();
 }

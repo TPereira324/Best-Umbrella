@@ -46,6 +46,18 @@ public class Utilizador {
     @JsonManagedReference
     private List<Noti> notificacoes;
 
+    @Column(name = "alerta_chuva_ativo")
+    private Boolean alertaChuvaAtivo;
+
+    @Column(name = "alerta_cidade")
+    private String alertaCidade;
+
+    @Column(name = "alerta_lat")
+    private Double alertaLat;
+
+    @Column(name = "alerta_lon")
+    private Double alertaLon;
+
     // Getters e Setters
     public Integer getUtilizadorId() {
         return utilizadorId;
@@ -118,4 +130,16 @@ public class Utilizador {
     public void setNotificacoes(List<Noti> notificacoes) {
         this.notificacoes = notificacoes;
     }
+
+    public Boolean getAlertaChuvaAtivo() { return alertaChuvaAtivo; }
+    public void setAlertaChuvaAtivo(Boolean alertaChuvaAtivo) { this.alertaChuvaAtivo = alertaChuvaAtivo; }
+
+    public String getAlertaCidade() { return alertaCidade; }
+    public void setAlertaCidade(String alertaCidade) { this.alertaCidade = alertaCidade; }
+
+    public Double getAlertaLat() { return alertaLat; }
+    public void setAlertaLat(Double alertaLat) { this.alertaLat = alertaLat; }
+
+    public Double getAlertaLon() { return alertaLon; }
+    public void setAlertaLon(Double alertaLon) { this.alertaLon = alertaLon; }
 }

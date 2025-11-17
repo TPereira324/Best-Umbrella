@@ -40,7 +40,3 @@ fun AppContent() {
         MainNavigation(navController = navController)
     }
 }
-
- 
-
-// Créditos removidos a pedido: rodapé não é mais exibido globalmente

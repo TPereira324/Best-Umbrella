@@ -9,7 +9,7 @@ data class OpenWeatherCurrentResponse(
     val clouds: Clouds,
     val rain: Rain?,
     val sys: Sys?,
-    val dt: Long? // timestamp atual
+    val dt: Long?
 )
 
 data class Main(
@@ -18,10 +18,10 @@ data class Main(
 )
 
 data class Weather(
-    val id: Int?,        // código meteorológico (OpenWeather)
-    val main: String?,   // grupo principal (Clear, Clouds, Rain, etc.)
+    val id: Int?,
+    val main: String?,
     val description: String,
-    val icon: String?    // código do ícone (p.ex. 10d)
+    val icon: String?
 )
 
 data class Wind(
@@ -41,7 +41,7 @@ data class Sys(
     val sunset: Long?
 )
 
-// One Call models para previsão 24h, 5 dias e alertas
+
 data class OpenWeatherOneCallResponse(
     val timezone: String?,
     val current: Current?,
@@ -89,7 +89,7 @@ data class Alert(
     val description: String?
 )
 
-// Forecast (5 dias, intervalos de 3h)
+
 data class OpenWeatherForecastResponse(
     val list: List<ForecastItem>,
     val city: ForecastCity?

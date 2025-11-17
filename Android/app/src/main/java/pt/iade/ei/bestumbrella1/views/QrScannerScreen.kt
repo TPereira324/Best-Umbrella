@@ -157,7 +157,6 @@ fun QrScannerScreen(
                         modifier = Modifier.fillMaxSize(),
                         factory = { ctx ->
                     val previewView = PreviewView(ctx)
-                    // Melhor compatibilidade e preenchimento da área
                     previewView.scaleType = PreviewView.ScaleType.FILL_CENTER
                     previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                     val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
@@ -174,7 +173,6 @@ fun QrScannerScreen(
                                     .setTargetResolution(Size(1280, 720))
                                     .build().also {
                                         it.setAnalyzer(cameraExecutor, BarcodeAnalyser { code ->
-                                            // Pausar após primeira leitura e mostrar código
                                             if (scannedText != code) {
                                                 scannedText = code
                                                 Toast.makeText(ctx, "Código: $code", Toast.LENGTH_SHORT).show()
@@ -204,7 +202,6 @@ fun QrScannerScreen(
                         }
                     )
 
-                    // Overlay de mira
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -220,7 +217,6 @@ fun QrScannerScreen(
                                 )
                         )
 
-                        // Botão de flash
                         IconButton(
                             onClick = {
                                 torchEnabled = !torchEnabled
@@ -243,7 +239,6 @@ fun QrScannerScreen(
                             )
                         }
 
-                        // Botão para fechar o scanner e voltar às instruções
                         IconButton(
                             onClick = {
                                 startScanner = false

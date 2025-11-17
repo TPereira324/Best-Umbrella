@@ -24,7 +24,6 @@ interface OpenWeatherApiService {
         @Query("exclude") exclude: String = "minutely"
     ): Response<OpenWeatherOneCallResponse>
 
-    // Fallback gratuito: previsão de 5 dias (intervalos de 3h)
     @GET("data/2.5/forecast")
     suspend fun getFiveDayForecast(
         @Query("lat") latitude: Double,

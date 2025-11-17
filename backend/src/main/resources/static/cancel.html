@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pagamento cancelado • PayPal</title>
+  <title>Pagamento cancelado • Best Umbrella</title>
   <style>
     :root {
       --bg: #f5f7fa;
@@ -19,6 +19,7 @@
     body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
     .header { display: flex; align-items: center; gap: 12px; padding: 20px 24px; background: #fff; border-bottom: 1px solid var(--border); }
     .pp-logo { height: 28px; }
+    .brand { font-weight: 700; color: var(--text); }
     .container { max-width: 860px; margin: 32px auto; padding: 0 16px; }
     .hero { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
     .title { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 700; margin: 0 0 6px 0; }
@@ -42,11 +43,12 @@
 <body>
   <header class="header">
     <img src="/img/paypal-logo.svg" alt="PayPal" class="pp-logo" />
+    <span class="brand">Best Umbrella</span>
   </header>
   <main class="container">
     <section class="hero">
-      <h1 class="title"><span class="cross">✖</span> Pagamento cancelado no PayPal</h1>
-      <p class="subtitle">A operação foi cancelada antes da captura.</p>
+      <h1 class="title"><span class="cross">✖</span> Pagamento cancelado</h1>
+      <p class="subtitle">A operação foi cancelada antes da conclusão.</p>
 
       <div class="card">
         <p id="orderText" class="muted">A obter dados da ordem…</p>

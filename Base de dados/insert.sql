@@ -27,15 +27,6 @@ VALUES
 ('QR005', 'Disponível', 'Roxo', 'Compacto'),
 ('QR006', 'Disponível', 'Cinza', 'Automático');
 ---
-INSERT INTO Aluguer (utilizador_id, guarda_chuva_id, ponto_inicio_id, ponto_fim_id, custo, estado)
-VALUES
-(1, 1, 1, 2, 2.50, 'Concluído'),
-(2, 2, 2, 3, 3.00, 'Em curso'),
-(3, 3, 3, 4, 2.00, 'Cancelado'),
-(4, 4, 4, 5, 4.00, 'Concluído'),
-(5, 5, 5, 6, 3.50, 'Em curso'),
-(6, 6, 6, 7, 2.75, 'Concluído');
----
 INSERT INTO Zona (nome) VALUES
 ('Terreiro do Paço'),
 ('IADE'),

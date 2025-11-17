@@ -33,7 +33,7 @@ public class GuardaChuvaService {
     }
 
     public Optional<GuardaChuva> findById(Integer id) {
-        return guardaChuvaRepository.findById(Long.valueOf(id));
+        return guardaChuvaRepository.findById(id);
     }
 
     public GuardaChuva findByCodigoQr(String codigoQr) {
@@ -45,6 +45,6 @@ public class GuardaChuvaService {
     }
 
     public void deleteById(Integer id) {
-        guardaChuvaRepository.deleteById(Long.valueOf(id));
+        guardaChuvaRepository.deleteById(id);
     }
 }

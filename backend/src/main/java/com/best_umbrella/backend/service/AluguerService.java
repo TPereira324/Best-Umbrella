@@ -44,11 +44,11 @@ public class AluguerService {
     }
 
     public Aluguer iniciarAluguer(Long utilizadorId, Integer guardaChuvaId, Integer pontoInicioId) {
-        Utilizador utilizador = utilizadorRepository.findById(utilizadorId)
+        Utilizador utilizador = utilizadorRepository.findById(utilizadorId.intValue())
                 .orElseThrow(() -> new IllegalArgumentException("Utilizador não encontrado"));
-        GuardaChuva guardaChuva = guardaChuvaRepository.findById(Long.valueOf(guardaChuvaId))
+        GuardaChuva guardaChuva = guardaChuvaRepository.findById(guardaChuvaId)
                 .orElseThrow(() -> new IllegalArgumentException("Guarda-chuva não encontrado"));
-        PontodeAluguer pontoInicio = pontodeAluguerRepository.findById(Long.valueOf(pontoInicioId))
+        PontodeAluguer pontoInicio = pontodeAluguerRepository.findById(pontoInicioId)
                 .orElseThrow(() -> new IllegalArgumentException("Ponto de aluguer (início) não encontrado"));
 
         if (guardaChuva.getEstado() != null && !guardaChuva.getEstado().equalsIgnoreCase("DISPONIVEL")) {
@@ -79,7 +79,7 @@ public class AluguerService {
             throw new IllegalStateException("Aluguer não está ativo");
         }
 
-        PontodeAluguer pontoFim = pontodeAluguerRepository.findById(Long.valueOf(pontoFimId))
+        PontodeAluguer pontoFim = pontodeAluguerRepository.findById(pontoFimId)
                 .orElseThrow(() -> new IllegalArgumentException("Ponto de aluguer (fim) não encontrado"));
 
         aluguer.setPontoFim(pontoFim);

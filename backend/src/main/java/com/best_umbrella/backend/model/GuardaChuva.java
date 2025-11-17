@@ -17,25 +17,25 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "Guarda_chuva")
+@Table(name = "guardachuva")
 public class GuardaChuva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "guarda_chuva_id")
+    @Column(name = "gchuva_id")
     private Integer guardaChuvaId;
 
-    @Column(name = "codigo_qr", unique = true, nullable = false)
+    @Column(name = "gchuva_num", unique = true, nullable = false)
     private String codigoQr;
 
     private String estado;
     private String cor;
     private String tipo;
 
-    @Column(name = "data_registo")
+    @Column(name = "gchuva_datareg")
     private LocalDateTime dataRegisto;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ponto_id")
+    @JoinColumn(name = "est_id")
     @JsonBackReference
     private PontodeAluguer pontodeAluguer;
     

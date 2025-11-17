@@ -1,114 +1,80 @@
-CREATE DATABASE IF NOT EXISTS best_umbrella;
-USE best_umbrella;
-
--- ========================= 
--- Tabela: Utilizador 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Utilizador (
-    utilizador_id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    telefone VARCHAR(20),
-    data_registo DATETIME DEFAULT CURRENT_TIMESTAMP,
-    rating DECIMAL(3,2)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ========================= 
--- Tabela: Ponto_de_aluguer 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Ponto_de_aluguer (
-    ponto_id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    latitude DECIMAL(10,7) NOT NULL,
-    longitude DECIMAL(10,7) NOT NULL,
-    capacidade INT NOT NULL,
+-- Tabela GUARDACHUVA
+CREATE TABLE Guardachuva (
+    id SERIAL PRIMARY KEY,
+    codigo_qr VARCHAR(50) UNIQUE NOT NULL,
+    estado VARCHAR(50),
+    cor VARCHAR(30),
     tipo VARCHAR(50)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
--- ========================= 
--- Tabela: Guarda_chuva 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Guarda_chuva (
-    guarda_chuva_id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo_qr VARCHAR(100) UNIQUE NOT NULL,
-    estado VARCHAR(50) NOT NULL,
-    cor VARCHAR(50),
-    tipo VARCHAR(50),
-    ponto_id INT,
-    data_registo DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ponto_id) REFERENCES Ponto_de_aluguer(ponto_id)
-        ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Tabela TIPO
+CREATE TABLE Tipo (
+    id SERIAL PRIMARY KEY,
+    descricao VARCHAR(100)
+);
 
--- ========================= 
--- Tabela: Aluguer 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Aluguer (
-    aluguer_id INT AUTO_INCREMENT PRIMARY KEY,
-    utilizador_id INT,
-    guarda_chuva_id INT,
-    ponto_inicio_id INT,
-    ponto_fim_id INT,
-    data_inicio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    data_fim DATETIME,
-    custo DECIMAL(6,2),
-    estado VARCHAR(50),
-    FOREIGN KEY (utilizador_id) REFERENCES Utilizador(utilizador_id)
-        ON DELETE CASCADE,
-    FOREIGN KEY (guarda_chuva_id) REFERENCES Guarda_chuva(guarda_chuva_id)
-        ON DELETE SET NULL,
-    FOREIGN KEY (ponto_inicio_id) REFERENCES Ponto_de_aluguer(ponto_id)
-        ON DELETE SET NULL,
-    FOREIGN KEY (ponto_fim_id) REFERENCES Ponto_de_aluguer(ponto_id)
-        ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Tabela CON (Condição ou Configuração)
+CREATE TABLE Con (
+    id SERIAL PRIMARY KEY,
+    descricao VARCHAR(100),
+    tipo_id INT REFERENCES Tipo(id)
+);
 
--- ========================= 
--- Tabela: Notificacao 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Notificacao (
-    notificacao_id INT AUTO_INCREMENT PRIMARY KEY,
-    utilizador_id INT,
-    mensagem TEXT NOT NULL,
-    tipo VARCHAR(50),
-    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    estado VARCHAR(50),
-    FOREIGN KEY (utilizador_id) REFERENCES Utilizador(utilizador_id)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Tabela GE (Geografia ou Grupo Especial)
+CREATE TABLE GE (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    con_id INT REFERENCES Con(id)
+);
 
--- ========================= 
--- Tabela: Multa 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Multa (
-    multa_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    utilizador_id INT NULL,
-    aluguer_id INT NULL,
+-- Tabela UGR (Unidade de Gestão Regional)
+CREATE TABLE UGR (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    ge_id INT REFERENCES GE(id)
+);
 
-    valor DOUBLE NULL,
-    moeda VARCHAR(16) NULL,
-    estado VARCHAR(20) NULL,     
-    motivo VARCHAR(20) NULL,      
-    descricao VARCHAR(255) NULL,
+-- Tabela ESTADO (Estado atual do guarda-chuva ou sistema)
+CREATE TABLE Estado (
+    id SERIAL PRIMARY KEY,
+    descricao VARCHAR(100),
+    guardachuva_id INT REFERENCES Guardachuva(id)
+);
 
-    data_emissao DATETIME NULL,
-    data_vencimento DATETIME NULL,
-    data_pagamento DATETIME NULL,
+-- Tabela ESTAPA (Etapa ou fase do processo)
+CREATE TABLE Estapa (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    estado_id INT REFERENCES Estado(id)
+);
 
-    jurosAcumulados DOUBLE NULL,
-    descontoAplicado DOUBLE NULL,
+-- Tabela ZONA
+CREATE TABLE Zona (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100)
+);
 
-    INDEX idx_multa_utilizador (utilizador_id),
-    INDEX idx_multa_estado (estado),
-    INDEX idx_multa_vencimento (data_vencimento),
+-- Tabela CPDAD (Cidade ou ponto de atuação)
+CREATE TABLE CPDAD (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    zona_id INT REFERENCES Zona(id)
+);
 
-    CONSTRAINT fk_multa_utilizador
-        FOREIGN KEY (utilizador_id) REFERENCES Utilizador(utilizador_id)
-        ON UPDATE CASCADE ON DELETE SET NULL,
-
-    CONSTRAINT fk_multa_aluguer
-        FOREIGN KEY (aluguer_id) REFERENCES Aluguer(aluguer_id)
-        ON UPDATE CASCADE ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+-- Tabela UTILIZADOR
+CREATE TABLE Utilizador (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL, -- armazenar hash
+    telefone VARCHAR(20),
+    rating DECIMAL(2,1) CHECK (rating BETWEEN 0 AND 5),
+    perfil VARCHAR(50), -- ex: 'admin', 'gestor', 'cliente'
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Relacionamentos opcionais
+    zona_id INT REFERENCES Zona(id),
+    guarda_chuva_id INT REFERENCES Guardachuva(id),
+    ugr_id INT REFERENCES UGR(id)
+);

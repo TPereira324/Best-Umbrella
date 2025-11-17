@@ -13,7 +13,7 @@ CREATE TABLE Tipo (
     descricao VARCHAR(100)
 );
 
--- Tabela CON (Condição ou Configuração)
+-- Tabela COR (Condição ou Configuração)
 CREATE TABLE Cor (
     id SERIAL PRIMARY KEY,
     descricao VARCHAR(100),

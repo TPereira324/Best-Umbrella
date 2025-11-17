@@ -162,16 +162,7 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                     }
                 }
                 val request = UserRequest(email = email, password = password)
-                // 1) Tenta /users/login
-                var response = apiService.loginUser(request)
-                // 2) Se 404, tenta /auth/login
-                if (!response.isSuccessful && response.code() == 404) {
-                    response = apiService.loginAuth(request)
-                }
-                // 3) Se continuar falhando (404/400/415), tenta /login como form-url-encoded (username/password)
-                if (!response.isSuccessful && (response.code() == 404 || response.code() == 400 || response.code() == 415)) {
-                    response = apiService.loginForm(username = email, password = password)
-                }
+                val response = apiService.loginAuth(request)
                 if (response.isSuccessful) {
                     Result.success(response.body()!!)
                 } else {

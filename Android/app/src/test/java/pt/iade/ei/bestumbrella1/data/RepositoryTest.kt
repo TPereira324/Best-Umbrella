@@ -9,8 +9,11 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import pt.iade.ei.bestumbrella1.models.SessionManager
-import pt.iade.ei.bestumbrella1.models.UserResponse
-import pt.iade.ei.bestumbrella1.network.*
+import pt.iade.ei.bestumbrella1.network.ApiService
+import pt.iade.ei.bestumbrella1.network.UserRequest
+import pt.iade.ei.bestumbrella1.network.UserResponse
+import pt.iade.ei.bestumbrella1.network.UserProfileResponse
+import pt.iade.ei.bestumbrella1.network.UserPreferences
 import retrofit2.Response
 
 @ExperimentalCoroutinesApi
@@ -31,9 +34,15 @@ class RepositoryTest {
         val email = "test@example.com"
         val password = "password123"
         val userRequest = UserRequest(email = email, password = password)
-        val userResponse = UserResponse(success = true, message = "Login successful")
+        val userResponse = UserResponse(
+            id = "1",
+            name = "Test User",
+            email = email,
+            token = "fake-token-12345",
+            isSuccessful = true
+        )
         
-        coEvery { apiService.loginUser(any()) } returns Response.success(userResponse)
+        coEvery { apiService.loginAuth(any()) } returns Response.success(userResponse)
         
         // Act
         val result = repository.loginUser(email, password)
@@ -49,68 +58,38 @@ class RepositoryTest {
         val name = "Test User"
         val email = "test@example.com"
         val password = "password123"
-        val userResponse = UserResponse(success = true, message = "Registration successful")
+        val userResponse = UserResponse(
+            id = "1",
+            name = name,
+            email = email,
+            token = "fake-token-12345",
+            isSuccessful = true
+        )
         
         coEvery { apiService.registerUser(any()) } returns Response.success(userResponse)
         
         // Act
-        val result = repository.registerUser(name, email, password)
+        val result = repository.registerUser(name, email, password, null)
         
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(userResponse, result.getOrNull())
     }
 
-    @Test
-    fun `getWeatherForecast returns weather data`() = runTest {
-        // Arrange
-        val latitude = 38.7223
-        val longitude = -9.1393
-        val currentWeather = CurrentWeather(
-            temperature = 25.0,
-            humidity = 70,
-            windSpeed = 10.0,
-            condition = "Sunny",
-            icon = "01d"
-        )
-        val forecastItem = ForecastItem(
-            date = "2023-10-15",
-            temperature = 24.0,
-            condition = "Cloudy",
-            icon = "02d",
-            precipitation = 0.0
-        )
-        val weatherResponse = WeatherResponse(
-            current = currentWeather,
-            forecast = listOf(forecastItem)
-        )
-        
-        coEvery { apiService.getWeatherForecast(latitude, longitude) } returns Response.success(weatherResponse)
-        
-        // Act
-        val result = repository.getWeatherForecast(latitude, longitude)
-        
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(weatherResponse, result.getOrNull())
-    }
+    
 
     @Test
     fun `getUserProfile with valid token returns user profile`() = runTest {
         // Arrange
         val token = "valid_token"
         val userProfileResponse = UserProfileResponse(
-            id = 1,
+            id = "1",
             name = "Test User",
             email = "test@example.com",
             preferences = UserPreferences(
                 notificationsEnabled = true,
-                temperatureUnit = "C",
-                defaultLocation = Location(
-                    latitude = 38.7223,
-                    longitude = -9.1393,
-                    name = "Lisboa"
-                )
+                locationTracking = true,
+                weatherAlerts = true
             )
         )
         

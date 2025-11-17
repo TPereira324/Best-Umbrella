@@ -18,7 +18,10 @@ data class Main(
 )
 
 data class Weather(
-    val description: String
+    val id: Int?,        // código meteorológico (OpenWeather)
+    val main: String?,   // grupo principal (Clear, Clouds, Rain, etc.)
+    val description: String,
+    val icon: String?    // código do ícone (p.ex. 10d)
 )
 
 data class Wind(

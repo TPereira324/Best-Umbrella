@@ -78,3 +78,15 @@ CREATE TABLE Utilizador (
     guarda_chuva_id INT REFERENCES Guardachuva(id),
     ugr_id INT REFERENCES UGR(id)
 );
+
+CREATE TABLE Ponto_de_aluguer (
+    ponto_id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    latitude DECIMAL(8,6) NOT NULL,
+    longitude DECIMAL(9,6) NOT NULL,
+    capacidade INT NOT NULL,
+    tipo VARCHAR(50), -- Ex: 'Centro', 'Estação', 'Zona Urbana', etc.
+    zona_id INT REFERENCES Zona(id), -- opcional: ligação à tabela Zona
+    disponivel INT DEFAULT 0, -- número de guarda-chuvas disponíveis
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

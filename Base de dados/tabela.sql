@@ -14,7 +14,7 @@ CREATE TABLE Tipo (
 );
 
 -- Tabela CON (Condição ou Configuração)
-CREATE TABLE Con (
+CREATE TABLE Cor (
     id SERIAL PRIMARY KEY,
     descricao VARCHAR(100),
     tipo_id INT REFERENCES Tipo(id)

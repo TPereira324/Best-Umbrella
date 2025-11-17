@@ -90,3 +90,5 @@ CREATE TABLE Ponto_de_aluguer (
     disponivel INT DEFAULT 0, -- número de guarda-chuvas disponíveis
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+

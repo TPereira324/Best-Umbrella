@@ -67,11 +67,16 @@ public class AluguerController {
     @PostMapping("/start-by-qr")
     public ResponseEntity<?> startByQr(
             @RequestParam Long utilizadorId,
-            @RequestParam String codigoQr,
+            @RequestParam(required = false) String codigoQr,
+            @RequestParam(required = false, name = "qr") String scanned,
             @RequestParam Integer pontoInicioId
     ) {
         try {
-            GuardaChuva gc = guardaChuvaService.findByCodigoQr(codigoQr);
+            String code = resolveCodigoQr(scanned != null ? scanned : codigoQr);
+            if (code == null || code.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("QR inválido: não contém código");
+            }
+            GuardaChuva gc = guardaChuvaService.findByCodigoQr(code);
             if (gc == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Guarda-chuva com QR não encontrado");
             }
@@ -79,6 +84,44 @@ public class AluguerController {
             return ResponseEntity.status(HttpStatus.CREATED).body(toDto(aluguer));
         } catch (IllegalArgumentException | IllegalStateException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    private String resolveCodigoQr(String input) {
+        if (input == null) return null;
+        String s = input.trim();
+        int qIdx = s.indexOf('?');
+        if (s.startsWith("bumb://")) {
+            String query = qIdx >= 0 ? s.substring(qIdx + 1) : "";
+            for (String part : query.split("&")) {
+                int eq = part.indexOf('=');
+                String key = eq >= 0 ? part.substring(0, eq) : part;
+                String val = eq >= 0 ? part.substring(eq + 1) : "";
+                if ("code".equalsIgnoreCase(key)) {
+                    return decode(val);
+                }
+            }
+            return null;
+        }
+        if (s.startsWith("http://") || s.startsWith("https://")) {
+            String query = qIdx >= 0 ? s.substring(qIdx + 1) : "";
+            for (String part : query.split("&")) {
+                int eq = part.indexOf('=');
+                String key = eq >= 0 ? part.substring(0, eq) : part;
+                String val = eq >= 0 ? part.substring(eq + 1) : "";
+                if ("code".equalsIgnoreCase(key)) {
+                    return decode(val);
+                }
+            }
+        }
+        return s;
+    }
+
+    private String decode(String s) {
+        try {
+            return java.net.URLDecoder.decode(s, java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return s;
         }
     }
 

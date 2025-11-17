@@ -94,7 +94,8 @@ public class GuardaChuvaController {
     public ResponseEntity<byte[]> getQrPng(@PathVariable String codigoQr,
                                            @RequestParam(value = "size", defaultValue = "256") int size) {
         try {
-            byte[] img = generateQrPng(codigoQr, Math.max(128, Math.min(size, 1024)));
+            String deepLink = "bumb://rent?code=" + codigoQr;
+            byte[] img = generateQrPng(deepLink, Math.max(128, Math.min(size, 1024)));
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(img);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

@@ -120,15 +120,13 @@ CREATE TABLE notificacao (
     PRIMARY KEY (not_id)
 );
 
-create table ugeme  (
-					ugeme_id INT not null auto_increment,
-					ugeme_ugem_id INT not null,
-					ugeme_estado VARCHAR(255),
-					ugeme_evento VARCHAR(100), --'inicio_aluguer', 'fim_aluguer', 'multa_aplicada'
-					ugeme_data DATETIME not null DEFAULT CURRENT_TIMESTAMP,
-					primary key (ugeme_id)
-
-					
+CREATE TABLE ugeme (
+    ugeme_id INT NOT NULL AUTO_INCREMENT,
+    ugeme_ugem_id INT NOT NULL,
+    ugeme_estado VARCHAR(255),
+    ugeme_evento VARCHAR(100),
+    ugeme_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (ugeme_id)
 );
 
 

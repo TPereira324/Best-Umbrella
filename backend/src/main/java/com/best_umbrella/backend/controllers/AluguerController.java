@@ -3,6 +3,8 @@ package com.best_umbrella.backend.controllers;
 import com.best_umbrella.backend.dto.AluguerDto;
 import com.best_umbrella.backend.model.Aluguer;
 import com.best_umbrella.backend.service.AluguerService;
+import com.best_umbrella.backend.service.GuardaChuvaService;
+import com.best_umbrella.backend.model.GuardaChuva;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +27,12 @@ import java.util.Optional;
 public class AluguerController {
 
     private final AluguerService aluguerService;
+    private final GuardaChuvaService guardaChuvaService;
 
     @Autowired
-    public AluguerController(AluguerService aluguerService) {
+    public AluguerController(AluguerService aluguerService, GuardaChuvaService guardaChuvaService) {
         this.aluguerService = aluguerService;
+        this.guardaChuvaService = guardaChuvaService;
     }
 
     @GetMapping
@@ -54,6 +58,24 @@ public class AluguerController {
     ) {
         try {
             Aluguer aluguer = aluguerService.iniciarAluguer(utilizadorId, guardaChuvaId, pontoInicioId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(toDto(aluguer));
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/start-by-qr")
+    public ResponseEntity<?> startByQr(
+            @RequestParam Long utilizadorId,
+            @RequestParam String codigoQr,
+            @RequestParam Integer pontoInicioId
+    ) {
+        try {
+            GuardaChuva gc = guardaChuvaService.findByCodigoQr(codigoQr);
+            if (gc == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Guarda-chuva com QR não encontrado");
+            }
+            Aluguer aluguer = aluguerService.iniciarAluguer(utilizadorId, gc.getGuardaChuvaId(), pontoInicioId);
             return ResponseEntity.status(HttpStatus.CREATED).body(toDto(aluguer));
         } catch (IllegalArgumentException | IllegalStateException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

@@ -3,9 +3,9 @@ server:
 
 spring:
   application:
-    name: backend
+    name: umbrella_db
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/best_umbrella}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/umbrella_db}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver

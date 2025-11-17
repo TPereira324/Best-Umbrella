@@ -81,7 +81,6 @@ fun MainNavigation(navController: NavHostController) {
         }
         composable("payment/{qrCode}/{amount}") { backStackEntry ->
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
-            // Atualmente o PaymentScreen não recebe amount; valor será inserido manualmente.
             PaymentScreen(navController, qrCode)
         }
         composable("rentalDetails/{qrCode}") { backStackEntry ->

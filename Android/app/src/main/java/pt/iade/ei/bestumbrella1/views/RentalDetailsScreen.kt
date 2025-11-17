@@ -30,7 +30,6 @@ fun RentalDetailsScreen(
     val umbrella = remember(qrCode) { UmbrellaData.findByQrCode(qrCode) }
     val stationName = umbrella?.let { UmbrellaData.stationNameFor(it.pontoId) } ?: "Desconhecido"
     val price = remember(umbrella, qrCode) {
-        // Regra simples: preço de desbloqueio por tipo, default 2.99€
         when (umbrella?.tipo?.lowercase(Locale.ROOT)) {
             "automático" -> 3.49
             "compacto" -> 2.99

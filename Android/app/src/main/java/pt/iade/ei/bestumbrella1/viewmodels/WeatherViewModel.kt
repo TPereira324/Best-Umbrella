@@ -34,7 +34,6 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
     private val _sunriseSunset = MutableLiveData<Pair<Long?, Long?>>()
     val sunriseSunset: LiveData<Pair<Long?, Long?>> = _sunriseSunset
 
-    // Condição atual (real-time) para dirigir ícones dinâmicos com precisão
     private val _currentWeatherId = MutableLiveData<Int?>()
     val currentWeatherId: LiveData<Int?> = _currentWeatherId
 
@@ -69,8 +68,6 @@ class WeatherViewModel(private val repository: Repository) : ViewModel() {
                                 _hourly.value = h
                                 _daily.value = d
                                 _sunriseSunset.value = Pair(fc.city?.sunrise, fc.city?.sunset)
-                                // Sem One Call, não há "current"; manter o último valor ou null
-                                // _currentWeatherId.value = null
                             },
                             onFailure = { fe ->
                                 _error.value = listOfNotNull(

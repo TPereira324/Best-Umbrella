@@ -32,7 +32,7 @@ public class WeatherAlertService {
     }
 
     public NotiDto triggerIfRainForCity(Long utilizadorId, String city) {
-        Utilizador u = utilizadorRepository.findById(utilizadorId)
+        Utilizador u = utilizadorRepository.findById(utilizadorId.intValue())
                 .orElseThrow(() -> new IllegalArgumentException("Utilizador não encontrado: " + utilizadorId));
 
         if (!Boolean.TRUE.equals(u.getAlertaChuvaAtivo())) {
@@ -60,7 +60,7 @@ public class WeatherAlertService {
     }
 
     public NotiDto triggerIfRainForCoords(Long utilizadorId, double lat, double lon) {
-        Utilizador u = utilizadorRepository.findById(utilizadorId)
+        Utilizador u = utilizadorRepository.findById(utilizadorId.intValue())
                 .orElseThrow(() -> new IllegalArgumentException("Utilizador não encontrado: " + utilizadorId));
 
         if (!Boolean.TRUE.equals(u.getAlertaChuvaAtivo())) {

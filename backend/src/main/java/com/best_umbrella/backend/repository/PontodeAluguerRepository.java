@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.best_umbrella.backend.model.PontodeAluguer;
 
 @Repository
-public interface PontodeAluguerRepository extends JpaRepository<PontodeAluguer, Long> {
+public interface PontodeAluguerRepository extends JpaRepository<PontodeAluguer, Integer> {
 }

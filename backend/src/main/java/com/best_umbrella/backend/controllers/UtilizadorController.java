@@ -18,7 +18,7 @@ import java.util.Optional;
 import com.best_umbrella.backend.dto.NomeUpdateRequest;
 
 @RestController
-@RequestMapping("/api/Utilizador")
+@RequestMapping("/api/utilizadores")
 /**
  * Controlador dos endpoints de Utilizador.
  *

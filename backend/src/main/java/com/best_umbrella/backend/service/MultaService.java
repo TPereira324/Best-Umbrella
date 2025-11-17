@@ -56,7 +56,7 @@ public class MultaService {
     }
 
     public List<Multa> findByUtilizadorId(Long utilizadorId) {
-        Optional<Utilizador> utilizador = utilizadorRepository.findById(utilizadorId);
+        Optional<Utilizador> utilizador = utilizadorRepository.findById(utilizadorId.intValue());
         return utilizador.map(multaRepository::findByUtilizador).orElseGet(List::of);
     }
 

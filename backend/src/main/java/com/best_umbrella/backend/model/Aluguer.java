@@ -6,20 +6,20 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Aluguer")
+@Table(name = "ugem")
 public class Aluguer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "aluguer_id")
+    @Column(name = "ugem_id")
     private Long aluguerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "utilizador_id")
+    @JoinColumn(name = "ugem_ut_id")
     @JsonBackReference
     private Utilizador utilizador;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "guarda_chuva_id")
+    @JoinColumn(name = "ugem_gchuva_id")
     @JsonBackReference
     private GuardaChuva guardaChuva;
 
@@ -33,10 +33,10 @@ public class Aluguer {
     @JsonBackReference
     private PontodeAluguer pontoFim;
 
-    @Column(name = "data_inicio")
+    @Column(name = "ugem_datein")
     private LocalDateTime dataInicio;
 
-    @Column(name = "data_fim")
+    @Column(name = "ugem_datout")
     private LocalDateTime dataFim;
 
 

@@ -54,14 +54,14 @@
           "name": "Listar Utilizadores",
           "request": {
             "method": "GET",
-            "url": {"raw": "{{baseUrl}}/api/Utilizador", "host": ["{{baseUrl}}"], "path": ["api","Utilizador"]}
+            "url": {"raw": "{{baseUrl}}/api/utilizadores", "host": ["{{baseUrl}}"], "path": ["api","utilizadores"]}
           }
         },
         {
           "name": "Obter Utilizador por ID",
           "request": {
             "method": "GET",
-            "url": {"raw": "{{baseUrl}}/api/Utilizador/1", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1"]}
+            "url": {"raw": "{{baseUrl}}/api/utilizadores/1", "host": ["{{baseUrl}}"], "path": ["api","utilizadores","1"]}
           }
         },
         {
@@ -69,7 +69,7 @@
           "request": {
             "method": "POST",
             "header": [{"key": "Content-Type", "value": "application/json"}],
-            "url": {"raw": "{{baseUrl}}/api/Utilizador", "host": ["{{baseUrl}}"], "path": ["api","Utilizador"]},
+            "url": {"raw": "{{baseUrl}}/api/utilizadores", "host": ["{{baseUrl}}"], "path": ["api","utilizadores"]},
             "body": {"mode":"raw","raw":"{\n  \"nome\": \"Usuário Teste\",\n  \"email\": \"user@exemplo.com\",\n  \"telefone\": \"912345678\",\n  \"password\": \"senha\"\n}"}
           }
         },
@@ -78,7 +78,7 @@
           "request": {
             "method": "PUT",
             "header": [{"key": "Content-Type", "value": "application/json"}],
-            "url": {"raw": "{{baseUrl}}/api/Utilizador/1", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1"]},
+            "url": {"raw": "{{baseUrl}}/api/utilizadores/1", "host": ["{{baseUrl}}"], "path": ["api","utilizadores","1"]},
             "body": {"mode":"raw","raw":"{\n  \"nome\": \"Usuário Editado\",\n  \"email\": \"user@exemplo.com\",\n  \"telefone\": \"912345678\",\n  \"password\": \"senha\"\n}"}
           }
         },
@@ -87,7 +87,7 @@
           "request": {
             "method": "PATCH",
             "header": [{"key": "Content-Type", "value": "application/json"}],
-            "url": {"raw": "{{baseUrl}}/api/Utilizador/1/nome", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1","nome"]},
+            "url": {"raw": "{{baseUrl}}/api/utilizadores/1/nome", "host": ["{{baseUrl}}"], "path": ["api","utilizadores","1","nome"]},
             "body": {"mode":"raw","raw":"{\n  \"nome\": \"Novo Nome\"\n}"}
           }
         },
@@ -95,7 +95,7 @@
           "name": "Apagar Utilizador",
           "request": {
             "method": "DELETE",
-            "url": {"raw": "{{baseUrl}}/api/Utilizador/1", "host": ["{{baseUrl}}"], "path": ["api","Utilizador","1"]}
+            "url": {"raw": "{{baseUrl}}/api/utilizadores/1", "host": ["{{baseUrl}}"], "path": ["api","utilizadores","1"]}
           }
         }
       ]
@@ -142,16 +142,16 @@
     {
       "name": "Multa",
       "item": [
-        {"name":"Listar Multas","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa","host":["{{baseUrl}}"],"path":["api","Multa"]}}},
-        {"name":"Obter Multa por ID","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa/50","host":["{{baseUrl}}"],"path":["api","Multa","50"]}}},
-        {"name":"Multas por Utilizador","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa/utilizador/7","host":["{{baseUrl}}"],"path":["api","Multa","utilizador","7"]}}},
-        {"name":"Multas por Aluguer","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/Multa/aluguer/101","host":["{{baseUrl}}"],"path":["api","Multa","aluguer","101"]}}},
+        {"name":"Listar Multas","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/multas","host":["{{baseUrl}}"],"path":["api","multas"]}}},
+        {"name":"Obter Multa por ID","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/multas/50","host":["{{baseUrl}}"],"path":["api","multas","50"]}}},
+        {"name":"Multas por Utilizador","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/multas/utilizador/7","host":["{{baseUrl}}"],"path":["api","multas","utilizador","7"]}}},
+        {"name":"Multas por Aluguer","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/multas/aluguer/101","host":["{{baseUrl}}"],"path":["api","multas","aluguer","101"]}}},
         {
           "name": "Criar Multa (entidade)",
           "request": {
             "method": "POST",
             "header": [{"key":"Content-Type","value":"application/json"}],
-            "url": {"raw": "{{baseUrl}}/api/Multa", "host": ["{{baseUrl}}"], "path": ["api","Multa"]},
+            "url": {"raw": "{{baseUrl}}/api/multas", "host": ["{{baseUrl}}"], "path": ["api","multas"]},
             "body": {"mode":"raw","raw":"{\n  \"utilizador\": { \"utilizadorId\": 7 },\n  \"aluguer\": { \"aluguerId\": 101 },\n  \"valor\": 12.0,\n  \"moeda\": \"EUR\",\n  \"estado\": \"PENDENTE\",\n  \"motivo\": \"ATRASO\",\n  \"descricao\": \"Devolução 30min após o prazo\",\n  \"dataEmissao\": \"2025-05-10T12:45:00\",\n  \"dataVencimento\": \"2025-05-20T23:59:59\"\n}"}
           }
         },
@@ -160,9 +160,9 @@
           "request": {
             "method": "POST",
             "url": {
-              "raw": "{{baseUrl}}/api/Multa/atrelada?aluguerId=101&valor=12.0&motivo=ATRASO&descricao=Devolucao%20apos%20prazo&moeda=EUR",
+              "raw": "{{baseUrl}}/api/multas/atrelada?aluguerId=101&valor=12.0&motivo=ATRASO&descricao=Devolucao%20apos%20prazo&moeda=EUR",
               "host": ["{{baseUrl}}"],
-              "path": ["api","Multa","atrelada"],
+              "path": ["api","multas","atrelada"],
               "query": [
                 {"key":"aluguerId","value":"101"},
                 {"key":"valor","value":"12.0"},
@@ -173,8 +173,8 @@
             }
           }
         },
-        {"name":"Pagar Multa","request": {"method":"POST","url":{"raw":"{{baseUrl}}/api/Multa/50/pagar","host":["{{baseUrl}}"],"path":["api","Multa","50","pagar"]}}},
-        {"name":"Cancelar Multa","request": {"method":"POST","url":{"raw":"{{baseUrl}}/api/Multa/50/cancelar","host":["{{baseUrl}}"],"path":["api","Multa","50","cancelar"]}}}
+        {"name":"Pagar Multa","request": {"method":"POST","url":{"raw":"{{baseUrl}}/api/multas/50/pagar","host":["{{baseUrl}}"],"path":["api","multas","50","pagar"]}}},
+        {"name":"Cancelar Multa","request": {"method":"POST","url":{"raw":"{{baseUrl}}/api/multas/50/cancelar","host":["{{baseUrl}}"],"path":["api","multas","50","cancelar"]}}}
       ]
     },
     {
@@ -207,9 +207,10 @@
       ]
     },
     {
-      "name": "Rental Stations",
+      "name": "Pontos de Aluguer",
       "item": [
-        {"name":"Listar Estações","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/rental-stations","host":["{{baseUrl}}"],"path":["api","rental-stations"]}}}
+        {"name":"Listar Pontos","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/pontos-de-aluguer","host":["{{baseUrl}}"],"path":["api","pontos-de-aluguer"]}}},
+        {"name":"Obter Ponto por ID","request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/pontos-de-aluguer/1","host":["{{baseUrl}}"],"path":["api","pontos-de-aluguer","1"]}}}
       ]
     }
   ],

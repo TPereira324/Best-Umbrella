@@ -12,7 +12,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update     # usa 'update' se quiser que o Spring crie/atualize tabelas
+      ddl-auto: none     # usa 'update' se quiser que o Spring crie/atualize tabelas/caso não use none
     show-sql: true
     properties:
       hibernate:

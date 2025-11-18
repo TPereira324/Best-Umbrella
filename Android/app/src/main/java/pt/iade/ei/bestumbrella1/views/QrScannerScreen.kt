@@ -162,7 +162,7 @@ fun QrScannerScreen(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("Como usar:", style = MaterialTheme.typography.titleMedium, color = Color.Black)
                         Spacer(Modifier.height(8.dp))
-                        Text("1. Dirija-se a uma estação Best Umbrella", color = Color.Black)
+                        Text("1. Dirija-se a uma estação", color = Color.Black)
                         Text("2. Toque em \"Iniciar Scanner\"", color = Color.Black)
                         Text("3. Aponte a câmera para o código QR", color = Color.Black)
                         Text("4. Aguarde o desbloqueio automático", color = Color.Black)

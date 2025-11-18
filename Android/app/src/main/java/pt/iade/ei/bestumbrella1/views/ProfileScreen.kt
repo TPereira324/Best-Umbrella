@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -97,7 +99,7 @@ fun ProfileScreen(navController: NavController) {
 
                 if (profileBitmap != null) {
                     Image(
-                        bitmap = androidx.compose.ui.graphics.asImageBitmap(profileBitmap!!),
+                        bitmap = profileBitmap!!.asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier
                             .size(100.dp)
@@ -189,7 +191,14 @@ fun ProfileScreen(navController: NavController) {
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Atividade Recente", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Atividade Recente",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                         Spacer(Modifier.height(16.dp))
                         Icon(
                             Icons.Default.Umbrella,
@@ -198,12 +207,21 @@ fun ProfileScreen(navController: NavController) {
                             tint = Color(0xFF1565C0)
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text("Nenhuma atividade ainda", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Nenhuma atividade ainda",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                         Text(
                             "Sua primeira reserva aparecerá aqui",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Black,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

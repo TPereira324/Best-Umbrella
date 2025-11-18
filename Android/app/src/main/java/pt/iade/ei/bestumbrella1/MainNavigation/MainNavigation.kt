@@ -63,6 +63,10 @@ fun MainNavigation(navController: NavHostController) {
         }
 
         composable("map") { MapScreenWithMarkers(navController) }
+        composable("map/{station}") { backStackEntry ->
+            val station = backStackEntry.arguments?.getString("station")
+            MapScreenWithMarkers(navController, focusStation = station)
+        }
         composable("qrscanner") {
             QrScannerScreen(
                 navController = navController,
@@ -83,6 +87,17 @@ fun MainNavigation(navController: NavHostController) {
         composable("payment/{qrCode}/{amount}") { backStackEntry ->
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
             PaymentScreen(navController, qrCode)
+        }
+        composable("paypalCheckout/{amount}/{qrCode}") { backStackEntry ->
+            val amount = backStackEntry.arguments?.getString("amount")?.toDoubleOrNull() ?: 0.0
+            val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
+            pt.iade.ei.bestumbrella1.views.PayPalCheckoutScreen(navController, amount, qrCode)
+        }
+        composable("paypalCheckout/{amount}/{qrCode}/{action}") { backStackEntry ->
+            val amount = backStackEntry.arguments?.getString("amount")?.toDoubleOrNull() ?: 0.0
+            val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
+            val action = backStackEntry.arguments?.getString("action") ?: "start"
+            pt.iade.ei.bestumbrella1.views.PayPalCheckoutScreen(navController, amount, qrCode, action)
         }
         composable("rentalDetails/{qrCode}") { backStackEntry ->
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""

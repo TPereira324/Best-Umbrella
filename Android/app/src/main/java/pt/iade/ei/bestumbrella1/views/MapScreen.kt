@@ -19,7 +19,9 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,14 +70,36 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import java.util.Locale
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.width
+import androidx.core.content.ContextCompat
+import pt.iade.ei.bestumbrella1.di.AppModule
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import pt.iade.ei.bestumbrella1.BuildConfig
+import pt.iade.ei.bestumbrella1.models.UmbrellaData
+import kotlin.math.round
+
+
+
+
 
 
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapScreenWithMarkers(navController: NavController) {
+fun MapScreenWithMarkers(navController: NavController, focusStation: String? = null) {
     val context = LocalContext.current
+    val sessionManager = AppModule.provideSessionManager(context)
+    val scope = rememberCoroutineScope()
+    var rentalStartMs by remember { mutableStateOf<Long?>(null) }
+    var rentalQr by remember { mutableStateOf<String?>(null) }
+    var elapsedMs by remember { mutableStateOf(0L) }
+    var showEndSheet by remember { mutableStateOf(false) }
     val lisboaCenter = LatLng(38.7682, -9.0985)
     var selectedStation by remember { mutableStateOf<Station?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -95,6 +120,42 @@ fun MapScreenWithMarkers(navController: NavController) {
         )
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(lisboaCenter, 14.8f)
+    }
+
+    LaunchedEffect(focusStation) {
+        val target = focusStation?.let { name -> stations.find { it.name.equals(name, ignoreCase = true) } }
+        if (target != null) {
+            cameraPositionState.position = CameraPosition.fromLatLngZoom(target.location, 16.5f)
+            selectedStation = target
+        }
+    }
+    LaunchedEffect(Unit) {
+        rentalStartMs = sessionManager.getRentalStartMs()
+        rentalQr = sessionManager.getRentalQrCode()
+    }
+    LaunchedEffect(rentalStartMs) {
+        if (rentalStartMs != null) {
+            while (rentalStartMs != null) {
+                elapsedMs = System.currentTimeMillis() - (rentalStartMs ?: 0L)
+                kotlinx.coroutines.delay(1000)
+            }
+        }
+    }
+
+    var hasLocationPermission by remember { mutableStateOf(false) }
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        hasLocationPermission = result[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                result[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+    }
+    LaunchedEffect(Unit) {
+        val fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        val coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        hasLocationPermission = fine || coarse
+        if (!hasLocationPermission) {
+            locationPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+        }
     }
 
     Scaffold(
@@ -180,8 +241,8 @@ fun MapScreenWithMarkers(navController: NavController) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                properties = MapProperties(),
-                uiSettings = MapUiSettings()
+                properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
+                uiSettings = MapUiSettings(myLocationButtonEnabled = hasLocationPermission)
             ) {
                 val center = cameraPositionState.position.target
                 fun distanceKm(a: LatLng, b: LatLng): Double {
@@ -227,6 +288,94 @@ fun MapScreenWithMarkers(navController: NavController) {
                             true
                         }
                     )
+                }
+            }
+            if (rentalStartMs != null) {
+                val totalSeconds = (elapsedMs / 1000).toInt()
+                val h = totalSeconds / 3600
+                val m = (totalSeconds % 3600) / 60
+                val s = totalSeconds % 60
+                Card(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 12.dp)
+                        .fillMaxWidth(0.9f),
+                    colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.History, contentDescription = null, tint = Color(0xFF0D47A1))
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            "Uso do guarda-chuva: %02d:%02d:%02d".format(h, m, s),
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.weight(1f))
+                        AssistChip(
+                            onClick = { showEndSheet = true },
+                            label = { Text("Terminar", color = Color.Black, fontWeight = FontWeight.Bold) }
+                        )
+                    }
+                }
+            }
+            if (showEndSheet && rentalStartMs != null && rentalQr != null) {
+                val umbrella = UmbrellaData.findByQrCode(rentalQr!!)
+                val totalSeconds = (elapsedMs / 1000).toInt()
+                val hDisp = totalSeconds / 3600
+                val mDisp = (totalSeconds % 3600) / 60
+                val sDisp = totalSeconds % 60
+                val minutesRounded = (((elapsedMs + 59999L) / 60000L).toInt()).coerceAtLeast(1)
+                val baseFee = 0.30
+                fun ratePerMinute(tipo: String?): Double = when (tipo?.lowercase(Locale.ROOT)) {
+                    "manual" -> 0.15
+                    "compacto" -> 0.15
+                    "automático", "automatico" -> 0.15
+                    else -> 0.15
+                }
+                val ratePerMin = ratePerMinute(umbrella?.tipo)
+                val amount = round((baseFee + minutesRounded * ratePerMin) * 100) / 100.0
+
+                ModalBottomSheet(
+                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                    onDismissRequest = { showEndSheet = false }
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text("Terminar uso", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.height(8.dp))
+                        Text("Duração: %02d:%02d:%02d".format(hDisp, mDisp, sDisp), color = Color.Black)
+                        Text("Desbloqueio: €${"%.2f".format(baseFee)}", color = Color.Black)
+                        Text("Tarifa: €${"%.2f".format(ratePerMin)} / minuto", color = Color.Black)
+                        Text("Total a pagar: €${"%.2f".format(amount)}", color = Color(0xFF1B5E20), fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                showEndSheet = false
+                                val valueStr = String.format(Locale.US, "%.2f", amount)
+                                if (BuildConfig.PAYPAL_TEST_MODE) {
+                                    scope.launch { sessionManager.stopRental() }
+                                    navController.navigate("map")
+                                } else {
+                                    navController.navigate("paypalCheckout/${valueStr}/${rentalQr!!}/end")
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
+                        ) {
+                            Icon(Icons.Default.Payment, contentDescription = null, tint = Color.White)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Pagar e terminar", color = Color.White, fontWeight = FontWeight.Bold)
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        OutlinedButton(
+                            onClick = { showEndSheet = false },
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text("Cancelar", fontWeight = FontWeight.Bold) }
+                        Spacer(Modifier.height(8.dp))
+                        Text("Nota: após 24h poderá aplicar-se multa.", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    }
                 }
             }
             ExtendedFloatingActionButton(

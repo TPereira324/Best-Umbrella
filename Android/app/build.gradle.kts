@@ -13,6 +13,7 @@ val localProps = Properties().apply {
 val paypalClientId: String = localProps.getProperty("PAYPAL_CLIENT_ID") ?: ""
 // Chave da OpenWeather: usa a de local.properties ou cai no valor fornecido
 val weatherApiKey: String = localProps.getProperty("WEATHER_API_KEY") ?: "7d7353b5a696a31078211f46891b389e"
+val paypalTestMode: String = localProps.getProperty("PAYPAL_TEST_MODE") ?: "false"
 
 plugins {
     alias(libs.plugins.android.application)
@@ -36,6 +37,7 @@ android {
          buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
 
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"$paypalClientId\"")
+         buildConfigField("boolean", "PAYPAL_TEST_MODE", paypalTestMode)
          buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
 
         // Suporte a emuladores x86_64 e dispositivos ARM

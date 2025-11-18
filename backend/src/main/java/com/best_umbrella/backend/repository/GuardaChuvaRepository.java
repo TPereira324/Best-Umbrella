@@ -3,7 +3,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.best_umbrella.backend.model.GuardaChuva;
 import java.util.List;
 
-public interface GuardaChuvaRepository extends JpaRepository<GuardaChuva, Long> {
+public interface GuardaChuvaRepository extends JpaRepository<GuardaChuva, Integer> {
     GuardaChuva findByCodigoQr(String codigoQr);
 
     List<GuardaChuva> findByEstadoIgnoreCase(String estado);

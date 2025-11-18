@@ -60,7 +60,18 @@
               <option value="GBP">GBP</option>
             </select>
           </div>
-          <div class="field">
+<!-- xml -->
+<!-- Adicione estas dependências dentro de `dependencies` em `pom.xml` -->
+<dependency>
+  <groupId>com.google.zxing</groupId>
+  <artifactId>core</artifactId>
+  <version>3.5.2</version>
+</dependency>
+<dependency>
+  <groupId>com.google.zxing</groupId>
+  <artifactId>javase</artifactId>
+  <version>3.5.2</version>
+</dependency>          <div class="field">
             <label for="method">Método</label>
             <input type="text" id="method" name="method" value="paypal" />
           </div>

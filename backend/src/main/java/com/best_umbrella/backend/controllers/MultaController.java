@@ -13,7 +13,7 @@ import com.best_umbrella.backend.dto.MultaDto;
 import com.best_umbrella.backend.service.MultaService;
 
 @RestController
-@RequestMapping("/api/Multa")
+@RequestMapping("/api/multas")
 /**
  * Controlador dos endpoints de Multa.
  *

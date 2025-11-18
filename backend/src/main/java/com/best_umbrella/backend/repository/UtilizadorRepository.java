@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.best_umbrella.backend.model.Utilizador;
 
 @Repository
-public interface UtilizadorRepository extends JpaRepository<Utilizador, Long> {
+public interface UtilizadorRepository extends JpaRepository<Utilizador, Integer> {
     Utilizador findByEmail(String email);
     java.util.List<Utilizador> findByAlertaChuvaAtivoTrue();
 }

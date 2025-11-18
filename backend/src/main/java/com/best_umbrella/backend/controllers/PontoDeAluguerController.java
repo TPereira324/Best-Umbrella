@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/PontoDeAluguer")
+@RequestMapping("/api/pontos-de-aluguer")
 /**
  * Controlador dos endpoints de Pontos de Aluguer.
  *
@@ -41,7 +41,7 @@ public class PontoDeAluguerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PontoDeAluguerDto> getById(@PathVariable Integer id) {
-        Optional<PontodeAluguer> ponto = pontodeAluguerRepository.findById(Long.valueOf(id));
+        Optional<PontodeAluguer> ponto = pontodeAluguerRepository.findById(id);
         return ponto.map(p -> ResponseEntity.ok(toDto(p)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

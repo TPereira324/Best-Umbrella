@@ -75,6 +75,7 @@ fun MainNavigation(navController: NavHostController) {
         composable("adminUsers") { UsersAdminScreen(navController) }
         composable("weather") { WeatherScreen(navController) }
         composable("payment") { PaymentScreen(navController, qrCode = "") }
+        composable("paymentMap") { PaymentScreen(navController, qrCode = "MAP") }
         composable("payment/{qrCode}") { backStackEntry ->
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
             PaymentScreen(navController, qrCode)

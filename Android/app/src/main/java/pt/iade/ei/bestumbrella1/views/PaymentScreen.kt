@@ -147,7 +147,11 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                                             if (value != null) balance -= value
                                             amountText = TextFieldValue("")
 
-                                            navController.navigate("history")
+                                            val goTo = if (qrCode.isBlank()) "profile" else "map"
+                                            navController.navigate(goTo) {
+                                                popUpTo(goTo) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
                                         }
                                         "error" -> {
                                             val msg = result.message ?: "desconhecido"

@@ -10,3 +10,4 @@ public interface UtilizadorRepository extends JpaRepository<Utilizador, Integer>
     Utilizador findByEmail(String email);
     java.util.List<Utilizador> findByAlertaChuvaAtivoTrue();
 }
+//hello

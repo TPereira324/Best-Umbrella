@@ -69,3 +69,4 @@ public class UtilizadorDto {
     public Double getAlertaLon() { return alertaLon; }
     public void setAlertaLon(Double alertaLon) { this.alertaLon = alertaLon; }
 }
+// hello

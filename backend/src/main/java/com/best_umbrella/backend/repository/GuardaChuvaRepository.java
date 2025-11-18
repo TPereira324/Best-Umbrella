@@ -8,3 +8,4 @@ public interface GuardaChuvaRepository extends JpaRepository<GuardaChuva, Intege
 
     List<GuardaChuva> findByEstadoIgnoreCase(String estado);
 }
+// hello

@@ -9,3 +9,4 @@ import com.best_umbrella.backend.model.Aluguer;
 public interface AluguerRepository extends JpaRepository<Aluguer, Long> {
 }
 
+// hello

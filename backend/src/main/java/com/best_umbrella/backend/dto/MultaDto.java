@@ -72,3 +72,4 @@ public class MultaDto {
     public Double getDescontoAplicado() { return descontoAplicado; }
     public void setDescontoAplicado(Double descontoAplicado) { this.descontoAplicado = descontoAplicado; }
 }
+// hello

@@ -13,3 +13,4 @@ public interface NotiRepository extends JpaRepository<Noti, Long> {
     List<Noti> findByTipo(String tipo);
     List<Noti> findByEstado(String estado);
 }
+//hello

@@ -25,11 +25,14 @@ public class GuardaChuvaService {
         if (estado == null || estado.isBlank()) {
             return guardaChuvaRepository.findAll();
         }
-        return guardaChuvaRepository.findByEstadoIgnoreCase(estado.trim());
+        if ("DISPONIVEL".equalsIgnoreCase(estado.trim())) {
+            return guardaChuvaRepository.findByPontodeAluguerIsNotNull();
+        }
+        return guardaChuvaRepository.findAll();
     }
 
     public List<GuardaChuva> findDisponiveis() {
-        return guardaChuvaRepository.findByEstadoIgnoreCase("DISPONIVEL");
+        return guardaChuvaRepository.findByPontodeAluguerIsNotNull();
     }
 
     public Optional<GuardaChuva> findById(Integer id) {

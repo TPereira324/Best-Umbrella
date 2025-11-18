@@ -27,9 +27,20 @@ public class GuardaChuva {
     @Column(name = "gchuva_num", unique = true, nullable = false)
     private String codigoQr;
 
+    @Transient
     private String estado;
+
+    @Transient
     private String cor;
+
+    @Transient
     private String tipo;
+
+    @Column(name = "gchuva_cor_id")
+    private Integer corId;
+
+    @Column(name = "gchuva_tipo_id")
+    private Integer tipoId;
 
     @Column(name = "gchuva_datareg")
     private LocalDateTime dataRegisto;
@@ -82,6 +93,22 @@ public class GuardaChuva {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public Integer getCorId() {
+        return corId;
+    }
+
+    public void setCorId(Integer corId) {
+        this.corId = corId;
+    }
+
+    public Integer getTipoId() {
+        return tipoId;
+    }
+
+    public void setTipoId(Integer tipoId) {
+        this.tipoId = tipoId;
     }
 
     public LocalDateTime getDataRegisto() {

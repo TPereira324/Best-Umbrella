@@ -106,7 +106,14 @@ fun QrScannerScreen(
             ) {
                 
                 Spacer(Modifier.height(8.dp))
-                Text("Scanner QR", style = MaterialTheme.typography.headlineMedium, color = Color.Black)
+                Text(
+                    "Scanner QR",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
                 Spacer(Modifier.height(50.dp))
                 Text(
                     "Escaneie o código QR do guarda-chuva para desbloquear",
@@ -116,8 +123,21 @@ fun QrScannerScreen(
                 Spacer(Modifier.height(50.dp))
                 Icon(Icons.Default.QrCodeScanner, contentDescription = null, modifier = Modifier.size(96.dp), tint = Color.Black)
                 Spacer(Modifier.height(16.dp))
-                Text("Pronto para escanear", style = MaterialTheme.typography.titleMedium, color = Color.Black)
-                Text("Toque no botão abaixo para ativar a câmera", style = MaterialTheme.typography.bodySmall, color = Color.Black)
+                Text(
+                    "Pronto para escanear",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+                Text(
+                    "Toque no botão abaixo para ativar a câmera",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
                 Spacer(Modifier.height(35.dp))
                 Button(onClick = {
                     if (hasCameraPermission) {

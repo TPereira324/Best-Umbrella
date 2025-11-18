@@ -153,7 +153,7 @@ fun MoonAnimatedIcon(size: Dp) {
     Icon(
         Icons.Default.Brightness3,
         contentDescription = null,
-        tint = Color(0xFFB0BEC5),
+        tint = Color(0xFF1976D2),
         modifier = Modifier.size(size).scale(scale)
     )
 }

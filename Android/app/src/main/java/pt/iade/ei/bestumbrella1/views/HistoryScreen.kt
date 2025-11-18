@@ -65,7 +65,9 @@ fun HistoryScreen(navController: NavController) {
                     "Histórico",
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
                 Spacer(Modifier.height(16.dp))
 

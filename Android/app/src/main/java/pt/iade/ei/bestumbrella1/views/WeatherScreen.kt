@@ -77,7 +77,9 @@ fun WeatherScreen(navController: NavController) {
                 Text(
                     "Meteorologia",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -146,7 +148,7 @@ fun WeatherScreen(navController: NavController) {
                         val sunriseText = sunriseSunset?.first?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
                         val sunsetText = sunriseSunset?.second?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            InfoChip(text = "Nascer $sunriseText", icon = Icons.Default.WbSunny)
+                            InfoChip(text = "Nascer $sunriseText", icon = Icons.Default.WbSunny, tint = Color(0xFFFFC107))
                             InfoChip(text = "Pôr $sunsetText", icon = Icons.Default.Brightness3)
                         }
                     }
@@ -176,7 +178,8 @@ fun WeatherScreen(navController: NavController) {
                                 wid in 801..804 -> Icons.Default.Cloud
                                 else -> Icons.Default.WbSunny
                             }
-                            HourChip(hourText = hourText, tempText = tempText, popText = pop, icon = icon)
+                            val chipTint = if (wid in 801..804) Color(0xFF90A4AE) else Color(0xFF1976D2)
+                            HourChip(hourText = hourText, tempText = tempText, popText = pop, icon = icon, tint = chipTint)
                         }
                     }
                 }
@@ -213,7 +216,10 @@ fun WeatherScreen(navController: NavController) {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+                                    val dayTint = if (
+                                        descLower.contains("nublado") || descLower.contains("nuvens") || descLower.contains("encoberto")
+                                    ) Color(0xFF90A4AE) else Color(0xFF1976D2)
+                                    Icon(icon, contentDescription = null, tint = dayTint)
                                     Spacer(Modifier.width(8.dp))
                                     Text(dayText, style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                                 }

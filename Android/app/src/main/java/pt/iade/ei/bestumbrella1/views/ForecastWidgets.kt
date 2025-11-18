@@ -23,7 +23,8 @@ fun HourChip(
     hourText: String,
     tempText: String,
     popText: String,
-    icon: ImageVector
+    icon: ImageVector,
+    tint: Color = Color(0xFF1976D2)
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -34,7 +35,7 @@ fun HourChip(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+            Icon(icon, contentDescription = null, tint = tint)
             androidx.compose.foundation.layout.Column {
                 Text(hourText, style = MaterialTheme.typography.labelMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -47,11 +48,11 @@ fun HourChip(
 }
 
 @Composable
-fun InfoChip(text: String, icon: ImageVector) {
+fun InfoChip(text: String, icon: ImageVector, tint: Color = Color(0xFF1976D2)) {
     AssistChip(
         onClick = {},
         leadingIcon = {
-            Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+            Icon(icon, contentDescription = null, tint = tint)
         },
         label = { Text(text, color = Color.Black, fontWeight = FontWeight.Bold) },
         colors = AssistChipDefaults.assistChipColors(

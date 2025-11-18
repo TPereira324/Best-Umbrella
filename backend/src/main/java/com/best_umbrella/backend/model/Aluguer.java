@@ -23,10 +23,12 @@ public class Aluguer {
     @JsonBackReference
     private GuardaChuva guardaChuva;
 
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ponto_inicio_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    @JsonBackReference
     private PontodeAluguer pontoInicio;
 
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
     private PontodeAluguer pontoFim;
 
     @Column(name = "ugem_datein")

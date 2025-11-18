@@ -9,7 +9,7 @@ public class Multa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mul_id")
-    private Long multaId;
+    private Integer multaId;
 
     @ManyToOne
     @JoinColumn(name = "mul_ut_id")
@@ -40,11 +40,11 @@ public class Multa {
     private Double descontoAplicado;
 
     // Getters e Setters
-    public Long getMultaId() {
+    public Integer getMultaId() {
         return multaId;
     }
 
-    public void setMultaId(Long multaId) {
+    public void setMultaId(Integer multaId) {
         this.multaId = multaId;
     }
 

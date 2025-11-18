@@ -19,18 +19,14 @@ public class Aluguer {
     private Utilizador utilizador;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ugem_gchuva_id")
+    @JoinColumn(name = "ugem_chuva_id")
     @JsonBackReference
     private GuardaChuva guardaChuva;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ponto_inicio_id")
-    @JsonBackReference
+    @Transient
     private PontodeAluguer pontoInicio;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ponto_fim_id")
-    @JsonBackReference
+    @Transient
     private PontodeAluguer pontoFim;
 
     @Column(name = "ugem_datein")
@@ -41,7 +37,9 @@ public class Aluguer {
 
 
     // return Date
+    @Transient
     private Double custo;
+    @Transient
     private String estado;
 
     // Getters e Setters

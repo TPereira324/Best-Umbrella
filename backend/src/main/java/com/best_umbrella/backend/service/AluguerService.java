@@ -51,8 +51,8 @@ public class AluguerService {
         PontodeAluguer pontoInicio = pontodeAluguerRepository.findById(pontoInicioId)
                 .orElseThrow(() -> new IllegalArgumentException("Ponto de aluguer (início) não encontrado"));
 
-        if (guardaChuva.getEstado() != null && !guardaChuva.getEstado().equalsIgnoreCase("DISPONIVEL")) {
-            throw new IllegalStateException("Guarda-chuva não está disponível para aluguer");
+        if (guardaChuva.getPontodeAluguer() == null) {
+            throw new IllegalStateException("Guarda-chuva não está disponível no ponto para aluguer");
         }
 
         Aluguer aluguer = new Aluguer();
@@ -60,11 +60,9 @@ public class AluguerService {
         aluguer.setGuardaChuva(guardaChuva);
         aluguer.setPontoInicio(pontoInicio);
         aluguer.setDataInicio(LocalDateTime.now());
-        aluguer.setEstado("ATIVO");
+        aluguer.setEstado(null);
         aluguer.setCusto(null);
 
-        // Atualiza estado do guarda-chuva
-        guardaChuva.setEstado("ALUGADO");
         // Quando inicia, o guarda-chuva sai do ponto
         guardaChuva.setPontodeAluguer(null);
 
@@ -75,16 +73,14 @@ public class AluguerService {
     public Aluguer terminarAluguer(Long aluguerId, Integer pontoFimId) {
         Aluguer aluguer = aluguerRepository.findById(aluguerId)
                 .orElseThrow(() -> new IllegalArgumentException("Aluguer não encontrado"));
-        if (aluguer.getEstado() == null || !aluguer.getEstado().equalsIgnoreCase("ATIVO")) {
-            throw new IllegalStateException("Aluguer não está ativo");
-        }
+        // validação simples sem campo de estado persistente
 
         PontodeAluguer pontoFim = pontodeAluguerRepository.findById(pontoFimId)
                 .orElseThrow(() -> new IllegalArgumentException("Ponto de aluguer (fim) não encontrado"));
 
         aluguer.setPontoFim(pontoFim);
         aluguer.setDataFim(LocalDateTime.now());
-        aluguer.setEstado("TERMINADO");
+        aluguer.setEstado(null);
 
         // Cálculo de custo simples para demo (sem cobrança real)
         if (aluguer.getDataInicio() != null && aluguer.getDataFim() != null) {
@@ -98,7 +94,6 @@ public class AluguerService {
         // Atualiza guarda-chuva de volta para disponível no ponto final
         GuardaChuva gc = aluguer.getGuardaChuva();
         if (gc != null) {
-            gc.setEstado("DISPONIVEL");
             gc.setPontodeAluguer(pontoFim);
             guardaChuvaRepository.save(gc);
         }

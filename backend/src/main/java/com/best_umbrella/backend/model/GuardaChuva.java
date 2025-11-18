@@ -27,15 +27,6 @@ public class GuardaChuva {
     @Column(name = "gchuva_num", unique = true, nullable = false)
     private String codigoQr;
 
-    @Transient
-    private String estado;
-
-    @Transient
-    private String cor;
-
-    @Transient
-    private String tipo;
-
     @Column(name = "gchuva_cor_id")
     private Integer corId;
 
@@ -49,7 +40,7 @@ public class GuardaChuva {
     @JoinColumn(name = "est_id")
     @JsonBackReference
     private PontodeAluguer pontodeAluguer;
-    
+
     @OneToMany(mappedBy = "guardaChuva", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Aluguer> alugueres;
@@ -69,30 +60,6 @@ public class GuardaChuva {
 
     public void setCodigoQr(String codigoQr) {
         this.codigoQr = codigoQr;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getCor() {
-        return cor;
-    }
-
-    public void setCor(String cor) {
-        this.cor = cor;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public Integer getCorId() {

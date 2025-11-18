@@ -27,9 +27,11 @@ public class GuardaChuva {
     @Column(name = "gchuva_num", unique = true, nullable = false)
     private String codigoQr;
 
-    private String estado;
-    private String cor;
-    private String tipo;
+    @Column(name = "gchuva_cor_id")
+    private Integer corId;
+
+    @Column(name = "gchuva_tipo_id")
+    private Integer tipoId;
 
     @Column(name = "gchuva_datareg")
     private LocalDateTime dataRegisto;
@@ -38,7 +40,7 @@ public class GuardaChuva {
     @JoinColumn(name = "est_id")
     @JsonBackReference
     private PontodeAluguer pontodeAluguer;
-    
+
     @OneToMany(mappedBy = "guardaChuva", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Aluguer> alugueres;
@@ -60,28 +62,20 @@ public class GuardaChuva {
         this.codigoQr = codigoQr;
     }
 
-    public String getEstado() {
-        return estado;
+    public Integer getCorId() {
+        return corId;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setCorId(Integer corId) {
+        this.corId = corId;
     }
 
-    public String getCor() {
-        return cor;
+    public Integer getTipoId() {
+        return tipoId;
     }
 
-    public void setCor(String cor) {
-        this.cor = cor;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setTipoId(Integer tipoId) {
+        this.tipoId = tipoId;
     }
 
     public LocalDateTime getDataRegisto() {

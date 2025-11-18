@@ -6,5 +6,5 @@ import java.util.List;
 public interface GuardaChuvaRepository extends JpaRepository<GuardaChuva, Integer> {
     GuardaChuva findByCodigoQr(String codigoQr);
 
-    List<GuardaChuva> findByEstadoIgnoreCase(String estado);
+    List<GuardaChuva> findByPontodeAluguerIsNotNull();
 }

@@ -146,9 +146,8 @@ public class GuardaChuvaController {
         return new GuardaChuvaDto(
                 gc.getGuardaChuvaId(),
                 gc.getCodigoQr(),
-                gc.getEstado(),
-                gc.getCor(),
-                gc.getTipo(),
+                gc.getCorId(),
+                gc.getTipoId(),
                 gc.getDataRegisto(),
                 pontoId,
                 aluguerDtos

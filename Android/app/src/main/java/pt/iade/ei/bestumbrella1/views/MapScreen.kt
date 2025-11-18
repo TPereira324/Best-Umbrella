@@ -52,11 +52,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.BitmapDescriptor
-import pt.iade.ei.bestumbrella1.views.map.FilterBar
 import pt.iade.ei.bestumbrella1.views.map.Station
 import pt.iade.ei.bestumbrella1.views.map.StationBottomSheet
-import pt.iade.ei.bestumbrella1.views.map.StationFilter
-import pt.iade.ei.bestumbrella1.views.map.distanceKm
 import pt.iade.ei.bestumbrella1.views.map.umbrellaMarkerIcon
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -80,7 +77,7 @@ fun MapScreenWithMarkers(navController: NavController) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
 
-    var currentFilter by remember { mutableStateOf(StationFilter.ALL) }
+
 
     val stations = listOf(
         Station("IADE", LatLng(38.7818, -9.10251), 3, 6),
@@ -110,12 +107,7 @@ fun MapScreenWithMarkers(navController: NavController) {
                     },
 
                     )
-                FilterBar(
-                    stations = stations,
-                    center = cameraPositionState.position.target,
-                    current = currentFilter,
-                    onChange = { currentFilter = it }
-                )
+
 
             }
         },
@@ -204,27 +196,9 @@ fun MapScreenWithMarkers(navController: NavController) {
                 properties = MapProperties(),
                 uiSettings = MapUiSettings()
             ) {
-                val center = cameraPositionState.position.target
-                fun distanceKm(a: LatLng, b: LatLng): Double {
-                    val R = 6371.0
-                    val dLat = Math.toRadians(b.latitude - a.latitude)
-                    val dLon = Math.toRadians(b.longitude - a.longitude)
-                    val lat1 = Math.toRadians(a.latitude)
-                    val lat2 = Math.toRadians(b.latitude)
-                    val aa =
-                        Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(
-                            dLon / 2
-                        ) * Math.sin(dLon / 2)
-                    val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
-                    return R * c
-                }
 
-                val filtered = when (currentFilter) {
-                    StationFilter.ALL -> stations
-                    StationFilter.AVAILABLE -> stations.filter { it.available > 0 }
-                    StationFilter.NEARBY -> stations.sortedBy { distanceKm(it.location, center) }
-                        .take(5)
-                }
+
+                val filtered = stations
                 filtered.forEach { station ->
                     val snippet = "Disponíveis: ${station.available}/${station.total}\n" +
                             String.format(

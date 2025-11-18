@@ -24,12 +24,12 @@ public class Aluguer {
     private GuardaChuva guardaChuva;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ponto_inicio_id")
+    @JoinColumn(name = "ponto_inicio_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     @JsonBackReference
     private PontodeAluguer pontoInicio;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ponto_fim_id")
+    @JoinColumn(name = "ponto_fim_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     @JsonBackReference
     private PontodeAluguer pontoFim;
 
@@ -41,6 +41,7 @@ public class Aluguer {
 
 
     // return Date
+    @Column(name = "ugem_custo")
     private Double custo;
     private String estado;
 

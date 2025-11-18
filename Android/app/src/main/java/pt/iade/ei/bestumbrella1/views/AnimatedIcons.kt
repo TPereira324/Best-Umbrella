@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness3
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
@@ -29,10 +30,11 @@ import kotlin.math.min
 import kotlin.random.Random
 
 @Composable
-fun WeatherAnimatedIcon(isRaining: Boolean, isCloudy: Boolean) {
+fun WeatherAnimatedIcon(isRaining: Boolean, isCloudy: Boolean, isNight: Boolean) {
     val size = 80.dp
     when {
         isRaining -> RainAnimatedIcon(size)
+        isNight -> MoonAnimatedIcon(size)
         isCloudy -> CloudAnimatedIcon(size)
         else -> SunAnimatedIcon(size)
     }
@@ -134,4 +136,24 @@ fun RainAnimatedIcon(sizeDp: Dp) {
             modifier = Modifier.fillMaxSize()
         )
     }
+}
+
+@Composable
+fun MoonAnimatedIcon(size: Dp) {
+    val transition = rememberInfiniteTransition(label = "moon")
+    val scale by transition.animateFloat(
+        initialValue = 0.95f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "moon-scale"
+    )
+    Icon(
+        Icons.Default.Brightness3,
+        contentDescription = null,
+        tint = Color(0xFFB0BEC5),
+        modifier = Modifier.size(size).scale(scale)
+    )
 }

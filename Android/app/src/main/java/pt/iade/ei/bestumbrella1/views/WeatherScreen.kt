@@ -113,11 +113,16 @@ fun WeatherScreen(navController: NavController) {
                         val currentId = currentWeatherId ?: 0
                         val isRaining = (currentId in 200..599) || (currentId in 600..622)
                         val isCloudy = !isRaining && (currentId in 801..804)
-                        WeatherAnimatedIcon(isRaining = isRaining, isCloudy = isCloudy)
+                        val nowSec = System.currentTimeMillis() / 1000
+                        val sr = sunriseSunset?.first ?: 0
+                        val ss = sunriseSunset?.second ?: 0
+                        val isNight = sr > 0 && ss > 0 && (nowSec < sr || nowSec >= ss)
+                        WeatherAnimatedIcon(isRaining = isRaining, isCloudy = isCloudy, isNight = isNight)
                         Text("Lisboa, Portugal", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
                         val tempText = weatherData?.temperature?.let { String.format("%.1f°C", it) } ?: "--°C"
                         val descText = weatherData?.description ?: ""
-                        Text("$tempText — $descText", style = MaterialTheme.typography.headlineMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(tempText, style = MaterialTheme.typography.headlineLarge, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(descText, style = MaterialTheme.typography.titleMedium, color = Color.Black)
                         Spacer(Modifier.height(8.dp))
                         val humidityText = weatherData?.humidity?.let { "$it%" } ?: "--%"
                         val windText = weatherData?.windSpeed?.let { String.format("%.1f km/h", it) } ?: "-- km/h"
@@ -186,9 +191,14 @@ fun WeatherScreen(navController: NavController) {
                     shape = RoundedCornerShape(20.dp)
                 ) {
                     val dayFormatter = remember { SimpleDateFormat("EEE, dd/MM", Locale("pt", "PT")) }
+                    val todayCal = java.util.Calendar.getInstance()
                     Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
                         daily.forEach { d ->
-                            val dayText = dayFormatter.format(Date(d.dt * 1000))
+                            val date = Date(d.dt * 1000)
+                            val cal = java.util.Calendar.getInstance()
+                            cal.time = date
+                            val isSameDay = cal.get(java.util.Calendar.YEAR) == todayCal.get(java.util.Calendar.YEAR) && cal.get(java.util.Calendar.DAY_OF_YEAR) == todayCal.get(java.util.Calendar.DAY_OF_YEAR)
+                            val dayText = if (isSameDay) "Hoje" else dayFormatter.format(date)
                             val minMax = String.format("%.0f° / %.0f°", d.temp.min, d.temp.max)
                             val pop = d.precipitationProbability?.let { String.format("%.0f%%", it * 100) } ?: "--%"
                             val descLower = d.weather.firstOrNull()?.description?.lowercase(Locale.getDefault()) ?: ""

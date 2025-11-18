@@ -98,27 +98,6 @@ fun MapScreenWithMarkers(navController: NavController) {
     }
 
     Scaffold(
-        topBar = {
-            Column {
-                TopAppBar(
-                    title = {
-                        Text(
-                            "Best Umbrella ☂️",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-
-                    )
-                FilterBar(
-                    stations = stations,
-                    center = cameraPositionState.position.target,
-                    current = currentFilter,
-                    onChange = { currentFilter = it }
-                )
-
-            }
-        },
         bottomBar = {
             NavigationBar(containerColor = Color.White, contentColor = Color(0xFF1976D2)) {
                 NavigationBarItem(
@@ -285,6 +264,6 @@ fun MapScreenWithMarkers(navController: NavController) {
                     }
                 }
             }
-            }
         }
     }
+}

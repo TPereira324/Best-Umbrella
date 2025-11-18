@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,16 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
     var paymentMessage by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Pagamento", color = Color.Black, fontWeight = FontWeight.Bold) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("map") }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
+                    }
+                }
+            )
+        },
         bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         Box(

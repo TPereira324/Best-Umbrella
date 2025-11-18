@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,6 +38,7 @@ fun HistoryScreen(navController: NavController) {
         RentalEntry("Ontem, 18:10", "Baixa-Chiado", "Rossio", 0.25, "17 min"),
         RentalEntry("Há 3 dias", "Marquês de Pombal", "Terreiro do Paço", 1.20, "26h 05min")
     )
+    val sortedEntries = remember(entries) { entries.sortedByDescending { historySortKey(it.date) } }
 
     Scaffold(
         bottomBar = { AppBottomNavigationBar(navController) }
@@ -95,7 +97,7 @@ fun HistoryScreen(navController: NavController) {
                 Spacer(Modifier.height(16.dp))
 
                 LazyColumn {
-                    items(entries) { entry ->
+                    items(sortedEntries) { entry ->
                         val durationHours = extractHours(entry.duration)
                         val multa = if (durationHours > 24) 100.0 else 0.0
                         val totalCost = entry.cost + multa
@@ -166,5 +168,29 @@ fun extractHours(duration: String): Int {
     val regex = Regex("(\\d+)h")
     val match = regex.find(duration)
     return match?.groupValues?.get(1)?.toIntOrNull() ?: 0
+}
+
+private fun historySortKey(dateStr: String): Long {
+    val cal = java.util.Calendar.getInstance()
+    cal.set(java.util.Calendar.SECOND, 0)
+    cal.set(java.util.Calendar.MILLISECOND, 0)
+    var hour = 0
+    var minute = 0
+    val timeMatch = Regex("(\\d{2}):(\\d{2})").find(dateStr)
+    if (timeMatch != null) {
+        hour = timeMatch.groupValues[1].toIntOrNull() ?: 0
+        minute = timeMatch.groupValues[2].toIntOrNull() ?: 0
+    }
+    when {
+        dateStr.startsWith("Hoje", ignoreCase = true) -> {}
+        dateStr.startsWith("Ontem", ignoreCase = true) -> cal.add(java.util.Calendar.DAY_OF_MONTH, -1)
+        dateStr.startsWith("Há", ignoreCase = true) -> {
+            val d = Regex("Há\\s+(\\d+)\\s+dias").find(dateStr)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+            cal.add(java.util.Calendar.DAY_OF_MONTH, -d)
+        }
+    }
+    cal.set(java.util.Calendar.HOUR_OF_DAY, hour)
+    cal.set(java.util.Calendar.MINUTE, minute)
+    return cal.timeInMillis
 }
 

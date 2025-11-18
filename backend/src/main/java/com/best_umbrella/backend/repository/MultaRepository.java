@@ -15,3 +15,4 @@ public interface MultaRepository extends JpaRepository<Multa, Integer> {
     List<Multa> findByAluguer(Aluguer aluguer);
     List<Multa> findByEstado(String estado);
 }
+// hello

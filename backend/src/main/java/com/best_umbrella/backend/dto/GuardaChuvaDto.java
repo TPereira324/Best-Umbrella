@@ -46,3 +46,4 @@ public class GuardaChuvaDto {
     public List<AluguerSummaryDto> getAlugueres() { return alugueres; }
     public void setAlugueres(List<AluguerSummaryDto> alugueres) { this.alugueres = alugueres; }
 }
+// hello

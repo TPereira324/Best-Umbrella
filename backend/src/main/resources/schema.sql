@@ -7,6 +7,8 @@ ALTER TABLE ugem
   ADD COLUMN IF NOT EXISTS ponto_inicio_id INT NULL,
   ADD COLUMN IF NOT EXISTS ponto_fim_id INT NULL;
 
+
 -- Nota: FKs opcionais (evitamos aqui para não falhar se já existirem)
 -- ALTER TABLE ugem ADD CONSTRAINT fk_ugem_inicio FOREIGN KEY (ponto_inicio_id) REFERENCES estacao(est_id);
 -- ALTER TABLE ugem ADD CONSTRAINT fk_ugem_fim FOREIGN KEY (ponto_fim_id) REFERENCES estacao(est_id);
+-- Fim do arquivo schema.sql

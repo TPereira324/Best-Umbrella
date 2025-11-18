@@ -42,5 +42,4 @@ public class SecurityConfig {
 }
 
 //SecurityConfig
-// liberar TUDO para a apresentação beta
 //hello world

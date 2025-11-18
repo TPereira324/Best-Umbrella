@@ -10,7 +10,7 @@ import com.best_umbrella.backend.model.Utilizador;
 import com.best_umbrella.backend.model.Aluguer;
 
 @Repository
-public interface MultaRepository extends JpaRepository<Multa, Long> {
+public interface MultaRepository extends JpaRepository<Multa, Integer> {
     List<Multa> findByUtilizador(Utilizador utilizador);
     List<Multa> findByAluguer(Aluguer aluguer);
     List<Multa> findByEstado(String estado);

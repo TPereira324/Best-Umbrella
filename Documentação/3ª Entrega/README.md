@@ -253,7 +253,7 @@ Os protótipos desenvolvidos no Figma incluem:
 * **Entrega 1 – 05/10/2025:** Ideia inicial, requisitos, mercado e mockups.
 * **Entrega 2 – início 11/2025:** Protótipo funcional com autenticação, mapa e QR Code.
 * **Entrega 3 – 14/12/2025:** Versão final com API de meteorologia, testes e refinamento UI/UX.
-
+![Image](https://github.com/user-attachments/assets/00cc96c1-20a5-45b4-88e2-8662eb73a03d)
 ---
 
 ## **Conclusão**

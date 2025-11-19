@@ -25,13 +25,7 @@ import androidx.navigation.NavController
 import pt.iade.ei.bestumbrella1.views.map.Station
 import pt.iade.ei.bestumbrella1.di.AppModule
 import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
-import pt.iade.ei.bestumbrella1.views.MapMarkersContent
-import pt.iade.ei.bestumbrella1.views.RentalEndSheet
-import pt.iade.ei.bestumbrella1.views.UsageTimerFab
-import pt.iade.ei.bestumbrella1.views.ScannerFab
-import pt.iade.ei.bestumbrella1.views.MainBottomBar
- 
+
 
 
 
@@ -68,7 +62,7 @@ fun MapScreenWithMarkers(navController: NavController, focusStation: String? = n
     
 
     Scaffold(
-        bottomBar = { MainBottomBar(navController) }
+        bottomBar = { AppBottomNavigationBar(navController) }
     ) { padding ->
         Box(
             modifier = Modifier

@@ -47,7 +47,7 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
             TopAppBar(
                 title = { Text("Pagamento", color = Color.Black, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("map") }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
                     }
                 }

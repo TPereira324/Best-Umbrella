@@ -1,194 +1,268 @@
-#  Best Umbrella  
-
-**Projeto Mobile – Universidade Europeia / IADE**  
-**Licenciatura em Engenharia Informática – 3º Semestre (2025/2026)**  
+Aqui está o **README.md completo e final**, já com a secção de **Base de Dados atualizada** com base no teu script.
+Está totalmente pronto para **copiar e colar** 👉
 
 ---
 
-##  Identificação
-- **Grupo:** G03  
-- **Elementos:** Fábio Texeira, Feleciano Barata, Márcio Quintas, Joybeth Mateus e Taha-Wur Pereira.   
-- **Nome do Projeto:** Best Umbrella  
+# **Best Umbrella**
+
+**Projeto Mobile – Universidade Europeia / IADE**
+**Licenciatura em Engenharia Informática – 3º Semestre (2025/2026)**
 
 ---
 
-##  Descrição  
+## **Identificação**
 
-O **Best Umbrella** é uma aplicação móvel que surgiu para resolver um problema comum em cidades: ser apanhado pela chuva sem proteção e acabar por comprar um guarda-chuva descartável de baixa qualidade.  
-A proposta é simples e sustentável: oferecer um serviço de **aluguer temporário de guarda-chuvas** em pontos estratégicos da cidade, como universidades, estações, cafés parceiros e centros comerciais.  
-
-O projeto aposta num modelo inovador e acessível, sem necessidade de infraestruturas caras como máquinas automáticas. Basta um **smartphone** e um **QR Code** para aceder ao serviço.  
-
----
-
-##  Objetivos  
-
-O principal objetivo do Best Umbrella é disponibilizar uma **experiência urbana prática, sustentável e inteligente**.  
-Mais do que apenas um sistema de aluguer, o projeto pretende educar os utilizadores para hábitos de consumo conscientes, diminuindo o desperdício associado a guarda-chuvas descartáveis.  
-
-Diferente de outras soluções internacionais, a app posiciona-se como uma alternativa **flexível, de baixo custo e altamente escalável**, capaz de crescer rapidamente em qualquer cidade através de **parcerias locais**.  
-
-Com a integração de **APIs meteorológicas**, o Best Umbrella não apenas responde a necessidades imediatas, mas também atua de forma **proativa**, enviando notificações quando a chuva está prestes a começar, incentivando a reserva antecipada.  
+* **Grupo:** G03
+* **Elementos:** Fábio Teixeira, Feleciano Barata e Taha-Wur Pereira
+* **Nome do Projeto:** Best Umbrella
 
 ---
 
-## Público-Alvo  
+## **Descrição do Projeto**
 
-- **Estudantes e trabalhadores urbanos** que se deslocam frequentemente e necessitam de soluções rápidas.  
-- **Turistas**, que preferem alugar em vez de comprar um guarda-chuva que dificilmente irão usar mais de uma vez.  
-- **Empresas e estabelecimentos parceiros**, que podem beneficiar de visibilidade e aumento do fluxo de clientes ao oferecerem pontos de recolha/devolução.  
+O **Best Umbrella** é uma aplicação móvel criada para resolver um problema urbano comum: ser apanhado pela chuva sem proteção e acabar por comprar guarda-chuvas descartáveis de baixa qualidade.
 
----
+A solução passa por oferecer um sistema inovador e sustentável de **aluguer temporário de guarda-chuvas** em pontos estratégicos da cidade, como universidades, estações de transporte, cafés parceiros e centros comerciais.
 
-##  Pesquisa de Mercado  
-
-Existem empresas internacionais que já exploram o conceito de partilha de guarda-chuvas:  
-
-- **Rentbrella (Brasil):** disponibiliza guarda-chuvas através de **estações automáticas** instaladas em locais estratégicos. Embora eficiente, exige investimento elevado em infraestrutura física.  
-- **UmbraCity (Canadá):** opera principalmente em **campus universitários**, funcionando como uma biblioteca de guarda-chuvas para estudantes e professores. É útil em ambientes académicos, mas pouco escalável a nível urbano.  
-
-O **Best Umbrella** diferencia-se por não depender de máquinas ou sistemas centralizados. Em vez disso, aposta em **QR Codes em pontos parceiros**, garantindo **baixo custo de implementação, maior flexibilidade e expansão rápida**.  
+Ao contrário de soluções que dependem de máquinas automáticas caras, o Best Umbrella funciona apenas com **QR Codes e um smartphone**, permitindo uma implementação rápida, económica e escalável.
 
 ---
 
-## Guiões de Teste  
+## **Objetivos**
 
-A aplicação foi pensada com diferentes cenários de utilização que simulam situações reais:  
+O projeto pretende disponibilizar uma experiência **prática, sustentável e inteligente**, promovendo hábitos de consumo conscientes e reduzindo o desperdício.
 
-**1. Alugar um guarda-chuva**  
-O utilizador abre a aplicação, consulta o mapa e identifica um ponto de aluguer próximo. Ao chegar ao local, faz o scan do QR Code para desbloquear o guarda-chuva e o sistema regista automaticamente o início do aluguer.  
+Distingue-se por ser uma solução **flexível, de baixo custo e altamente escalável**, facilmente replicável em qualquer cidade através de parcerias locais.
 
-**2. Devolver um guarda-chuva**  
-Depois de utilizar, o utilizador escolhe no mapa um ponto de devolução. No local, faz novamente o scan do QR Code e o sistema confirma a entrega, encerrando o aluguer.  
-
-**3. Receber alerta de chuva**  
-Com base na API meteorológica, a app envia uma notificação quando a chuva está prestes a começar. O utilizador recebe o alerta no telemóvel e pode reservar de imediato um guarda-chuva num ponto próximo.  
-
-**4. Consultar histórico de alugueres**  
-O utilizador pode aceder ao seu perfil e verificar todos os alugueres efetuados, incluindo datas, locais de recolha e devolução, e custos associados.  
+A integração com **APIs meteorológicas** permite prever chuva e enviar notificações proativas, incentivando o utilizador a reservar um guarda-chuva antes de ser surpreendido pelo mau tempo.
 
 ---
 
-##  Requisitos  
+## **Público-Alvo**
 
-**Funcionais**  
-O sistema deve permitir que o utilizador se registe e faça login de forma segura, que reserve um guarda-chuva antecipadamente, que inicie e encerre um aluguer através da leitura de QR Codes e que consulte o histórico de utilizações. Além disso, a aplicação deve enviar notificações meteorológicas e possibilitar a avaliação da experiência em cada ponto parceiro.  
-
-**Não Funcionais**  
-A aplicação deve ser compatível com Android 10 ou superior, garantir conformidade com o RGPD e proteger todos os dados pessoais através de encriptação. A base de dados deverá ser relacional, segura e escalável, e a interface deve apresentar uma navegação intuitiva, rápida e acessível para qualquer utilizador.  
+* Estudantes e trabalhadores urbanos.
+* Turistas que precisam de soluções temporárias.
+* Estabelecimentos parceiros que beneficiam da presença de pontos de aluguer.
 
 ---
 
-##  Modelo de Domínio  
+## **Pesquisa de Mercado**
 
- modelo inicial é composto por quatro entidades principais que estruturam o sistema:  
-- **Utilizador**, que possui identificação única, nome, email, password encriptada e um rating associado.  
-- **GuardaChuva**, identificado por um estado e localização, sendo registado em diferentes pontos da cidade.  
-- **Aluguer**, que guarda toda a informação relativa ao processo, como as datas de início e fim, custo e associação ao utilizador.  
--  **Ponto de Aluguer**, que representa o local físico e o parceiro responsável pelo guarda-chuva.  
+Existem iniciativas internacionais semelhantes, como:
 
-Este modelo poderá ser expandido com novas entidades, como notificações personalizadas e sistema de fidelização.  
+* **Rentbrella (Brasil)** – utiliza estações automáticas, mas exige elevados custos de infraestrutura.
+* **UmbraCity (Canadá)** – focada em campus universitários, com menor escalabilidade urbana.
 
----
-
-
-## Modelo de Pagamento  
-
-Para garantir uma experiência simples, rápida e segura, o **Best Umbrella** aposta em métodos de pagamento digitais amplamente utilizados e fáceis de integrar.  
-
-### Método de Pagamento Disponível  
-- **PayPal** → opção internacionalmente reconhecida, ideal para turistas e utilizadores que preferem não utilizar cartões locais.  
-
-### Modelos de Utilização  
-- **Pay-per-use (pagar por utilização):** o utilizador paga apenas pelo tempo de utilização do guarda-chuva (ex.: 1€ por 24h).  
-- **Depósito reembolsável:** um valor de caução (ex.: 5€) é bloqueado no momento do aluguer e libertado assim que o guarda-chuva é devolvido corretamente. Caso não haja devolução, o depósito cobre o custo de reposição.  
-
-- **Campanhas promocionais:** descontos e primeiros minutos grátis, em colaboração com parceiros locais (universidades, cafés, centros comerciais).  
-
-### Depósito de Segurança  
-O **depósito reembolsável** é o elemento-chave do sistema:  
-1. O valor da caução é bloqueado no PayPal no momento da reserva.  
-2. O utilizador recolhe o guarda-chuva e utiliza-o normalmente.  
-3. Quando faz a devolução via QR Code, o sistema liberta automaticamente o depósito.  
-4. Se não devolver no prazo definido, o valor é cobrado como penalização, garantindo sustentabilidade ao serviço.  
-
-Este método cria um equilíbrio entre confiança no utilizador e proteção da infraestrutura, tornando o sistema justo e eficiente.  
-
----
-## Base de Dados
-
-A base de dados do projeto Best Umbrella foi desenvolvida em MySQL, adotando um modelo relacional para garantir integridade, consistência e bom desempenho.
-A estrutura foi concebida para suportar todas as funcionalidades centrais da aplicação, incluindo gestão de utilizadores, aluguer de guarda-chuvas, localização de pontos de aluguer, envio de notificações e histórico de transações.
-
-**Estrutura das Entidades**
-
-A modelação da base de dados é composta por cinco entidades principais, interligadas através de chaves primárias e estrangeiras, assegurando coerência e integridade referencial:
- 
-  **Utilizador**
-
- **GuardaChuva**
-  
-   **Aluguer**
-
- **PontoAluguer**
- 
-  **Notificação**
-
-Utilizador-> Tabela que guarda as informações dos utilizadores, incluindo dados pessoais, credenciais e classificação média.
-
-Ponto de Aluguer->Tabela que representa os locais físicos onde os guarda-chuvas podem ser recolhidos ou devolvidos.
-
-Guarda-Chuva->Tabela que identifica cada guarda-chuva através de um código QR único e armazena o seu estado e características.
-
-Aluguer->Tabela que regista cada transação de aluguer, relacionando o utilizador, guarda-chuva e pontos de recolha/devolução.
-
-Notificação->Tabela responsável por armazenar mensagens e alertas enviados aos utilizadores, como alertas meteorológicos ou confirmações de reserva.
-
-
-
-
-
-##  Mockups  
-
-Os primeiros protótipos desenvolvidos no Figma apresentam:  
-- Um **mapa interativo** com os pontos de aluguer disponíveis.  
-- Um **ecrã de reserva** que confirma a disponibilidade e o tempo de utilização.  
-- Um **scanner de QR Code** integrado na aplicação, que simplifica o processo de recolha e devolução.  
-- Um **histórico de alugueres** com detalhes sobre datas, locais e custos.  
-- Um **sistema de notificações**, que alerta para chuva iminente ou promoções de parceiros.
-
-  
-![Image](https://github.com/user-attachments/assets/1b8c5b17-d196-43b8-9fc4-36824bd220b6)
-![Image](https://github.com/user-attachments/assets/e3f869b1-8709-4810-9ccc-105f3af92131)
-![Image](https://github.com/user-attachments/assets/525e4ce8-746c-49c4-8048-9b8f918c87c0)
-![Image](https://github.com/user-attachments/assets/d8fc13cc-7ddc-4e66-bc7b-21356d7f5db6)
-![Image](https://github.com/user-attachments/assets/9873ea8b-089c-4f68-84f1-4bb9b743a8a3)
- 
+O **Best Umbrella** diferencia-se por não depender de máquinas.
+Os **QR Codes** permitem uma implementação económica e altamente flexível.
 
 ---
 
+## **Guiões de Teste**
 
-## Roadmap  
+### **1. Alugar um guarda-chuva**
 
-- **Entrega 1 (05 de outubro 2025):** Ideia do projeto, pesquisa de mercado, definição de requisitos e mockups iniciais.  
-- **Entrega 2 (início de novembro 2025):** Protótipo funcional com autenticação, mapa interativo, sistema de reservas e integração do QR Code.  
-- **Entrega 3 (até 14 de dezembro 2025):** Versão final da aplicação com API meteorológica integrada, testes completos, refinamento da interface e apresentação final.  
+O utilizador consulta o mapa, escolhe um ponto, lê o QR Code e inicia o aluguer automaticamente.
 
-![Image](https://github.com/user-attachments/assets/00cc96c1-20a5-45b4-88e2-8662eb73a03d)
+### **2. Devolver o guarda-chuva**
+
+No ponto escolhido, lê novamente o QR Code e o sistema finaliza o aluguer.
+
+### **3. Receber alerta de chuva**
+
+A API meteorológica envia uma notificação quando a chuva se aproxima, sugerindo uma reserva imediata.
+
+### **4. Consultar histórico**
+
+O utilizador acede ao perfil e vê todos os alugueres com datas, locais e custos.
+
 ---
 
-##  Conclusão  
+## **Requisitos**
 
-O **Best Umbrella** é mais do que uma simples aplicação de aluguer é uma resposta tecnológica a um problema urbano real. O projeto alia **sustentabilidade, inovação e conveniência**, oferecendo uma alternativa prática e responsável para os utilizadores.  
+### **Funcionais**
 
-Com um modelo escalável, sem dependência de infraestruturas complexas, o Best Umbrella está preparado para crescer em diferentes cidades, promovendo **mobilidade urbana sustentável** e incentivando o consumo consciente.  
+* Registo e login seguro.
+* Reserva e aluguer via QR Code.
+* Consulta de histórico.
+* Notificações meteorológicas.
+* Avaliação da experiência.
+
+### **Não Funcionais**
+
+* Compatibilidade com Android 10+.
+* Conformidade com RGPD.
+* Encriptação de dados sensíveis.
+* Interface rápida, intuitiva e acessível.
+* Base de dados relacional e escalável.
 
 ---
 
+# **Base de Dados**
 
+A base de dados do **Best Umbrella** foi implementada em **MySQL**, organizada segundo um modelo relacional sólido que garante integridade, desempenho e suporte completo às funcionalidades da aplicação.
+O sistema inclui gestão de utilizadores, guarda-chuvas, localização, alugueres, multas, notificações e histórico de eventos.
 
+---
 
+## **Entidades Principais**
 
+### 🟦 **1. Utilizador** (`utilizador`)
 
+Armazena informações dos utilizadores:
 
+* Nome, email, password, telefone
+* Data de registo
+* Rating
 
+**Relacionamentos:**
+
+* Alugueres (UGEM)
+* Multas
+* Notificações
+
+---
+
+### 🟧 **2. Guarda-Chuva** (`guardachuva`)
+
+Cada guarda-chuva contém:
+
+* Número identificador
+* Data de registo
+* Cor (FK → `cor`)
+* Tipo (FK → `tipo`)
+
+**Relacionado com:**
+
+* Movimentos entre estações (GE)
+* Alugueres (UGEM)
+
+---
+
+### 🟥 **3. Localização**
+
+Sistema geográfico dividido em três níveis:
+
+* **Cidade** (`cidade`)
+* **Zona** (`zona`, FK → cidade)
+* **Estação** (`estacao`, FK → zona)
+
+  * Nome, latitude, longitude, capacidade
+
+---
+
+### 🟩 **4. Movimentação de Guarda-Chuvas — GE** (`ge`)
+
+Regista entrada e saída de cada guarda-chuva em cada estação:
+
+* Data de entrada
+* Data de saída
+* Guarda-chuva (FK)
+* Estação (FK)
+
+---
+
+### 🟨 **5. Aluguer — UGEM** (`ugem`)
+
+Regista o aluguer feito pelo utilizador:
+
+* Data de início
+* Data de fim
+* Guarda-chuva (FK)
+* Utilizador (FK)
+
+---
+
+### 🟥 **6. Multas — `multa`**
+
+Inclui:
+
+* Utilizador (FK)
+* Data de emissão e vencimento
+* Motivo
+* Valor
+
+---
+
+### 🟪 **7. Ligação entre Aluguer e Multa — MUGEM** (`mugem`)
+
+Liga cada multa ao aluguer que a originou.
+
+---
+
+### 🟫 **8. Histórico de Eventos — UGEME** (`ugeme`)
+
+Regista eventos ocorridos durante o aluguer:
+
+* Estado
+* Tipo de evento (início, fim, multa aplicada, etc.)
+* Data/hora (timestamp automático)
+
+---
+
+### 🟦 **9. Estado do Guarda-Chuva — `estado`**
+
+Regista estados associados a eventos específicos (FK → `ugeme`).
+
+---
+
+### 🟪 **10. Notificações — `notificacao`**
+
+Representa notificações enviadas ao utilizador, como:
+
+* Alertas meteorológicos
+* Confirmações
+* Avisos
+
+Contém mensagem, timestamp e FK → utilizador.
+
+---
+
+## **Resumo do Modelo Relacional**
+
+| Categoria                | Tabelas                 |
+| ------------------------ | ----------------------- |
+| Localização              | cidade, zona, estacao   |
+| Guarda-chuva             | guardachuva, cor, tipo  |
+| Movimentos               | ge                      |
+| Utilizadores e Alugueres | utilizador, ugem, ugeme |
+| Multas                   | multa, mugem            |
+| Notificações             | notificacao             |
+| Estado                   | estado                  |
+
+O modelo implementa todas as foreign keys necessárias para manter integridade referencial entre as entidades.
+
+---
+
+## **Mockups**
+
+Os protótipos desenvolvidos no Figma incluem:
+
+* Mapa interativo
+* Ecrã de reserva
+* Scanner de QR Code
+* Histórico detalhado
+* Notificações inteligentes
+
+(Imagens inseridas conforme o original do projeto.)
+
+---
+
+## **Roadmap**
+
+* **Entrega 1 – 05/10/2025:** Ideia inicial, requisitos, mercado e mockups.
+* **Entrega 2 – início 11/2025:** Protótipo funcional com autenticação, mapa e QR Code.
+* **Entrega 3 – 14/12/2025:** Versão final com API de meteorologia, testes e refinamento UI/UX.
+
+---
+
+## **Conclusão**
+
+O **Best Umbrella** apresenta uma solução tecnológica simples e sustentável para um problema real das cidades.
+Com um modelo escalável, baixo custo de implementação e experiência fluida para o utilizador, o projeto está preparado para crescer e apoiar uma mobilidade mais inteligente e consciente.
+
+---
+
+Se quiseres, posso também gerar:
+📄 **versão PDF**, 🎞️ **PowerPoint**, 🖼️ **diagrama ER**, 🌐 **versão para GitHub com badges**.
+É só pedir!

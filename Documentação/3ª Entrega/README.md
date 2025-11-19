@@ -244,8 +244,8 @@ Os protótipos desenvolvidos no Figma incluem:
 * Histórico detalhado
 * Notificações inteligentes
 
-![Image](https://github.com/user-attachments/assets/98d4cba2-d12b-4394-b8dc-d8993901a6e7)
 ![Image](https://github.com/user-attachments/assets/da434d7e-8a2b-47da-880e-97e8dc918fb3)
+![Image](https://github.com/user-attachments/assets/98d4cba2-d12b-4394-b8dc-d8993901a6e7)
 ![Image](https://github.com/user-attachments/assets/b76acc17-3db9-41ba-b754-77c04f79d93b)
 ![Image](https://github.com/user-attachments/assets/6a3e8cd6-cb69-46b8-97cb-bbcb7eb15fec)
 ![Image](https://github.com/user-attachments/assets/3e8cba96-1d2c-44bb-b266-6db6289db222)

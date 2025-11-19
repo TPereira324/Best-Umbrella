@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import android.net.Uri
 import androidx.navigation.compose.rememberNavController
 
 data class RentalEntry(
@@ -65,7 +66,9 @@ fun HistoryScreen(navController: NavController) {
                     "Histórico",
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
                 Spacer(Modifier.height(16.dp))
 
@@ -117,20 +120,24 @@ fun HistoryScreen(navController: NavController) {
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        Icons.Default.LocationOn,
-                                        tint = Color(0xFF2196F3),
-                                        contentDescription = null
-                                    )
+                                    IconButton(onClick = { navController.navigate("map/${Uri.encode(entry.from)}") }) {
+                                        Icon(
+                                            Icons.Default.LocationOn,
+                                            tint = Color(0xFF2196F3),
+                                            contentDescription = null
+                                        )
+                                    }
                                     Spacer(Modifier.width(4.dp))
                                     Text("De: ${entry.from}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                                 }
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        Icons.Default.LocationOn,
-                                        tint = Color(0xFFF44336),
-                                        contentDescription = null
-                                    )
+                                    IconButton(onClick = { navController.navigate("map/${Uri.encode(entry.to)}") }) {
+                                        Icon(
+                                            Icons.Default.LocationOn,
+                                            tint = Color(0xFFF44336),
+                                            contentDescription = null
+                                        )
+                                    }
                                     Spacer(Modifier.width(4.dp))
                                     Text("Para: ${entry.to}", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                                 }

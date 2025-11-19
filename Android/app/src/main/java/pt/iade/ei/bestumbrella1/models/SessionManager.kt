@@ -18,6 +18,8 @@ class SessionManager(context: Context) {
         private val EMAIL_KEY = stringPreferencesKey("email")
         private val NAME_KEY = stringPreferencesKey("name")
         private val TOKEN_KEY = stringPreferencesKey("token")
+        private val RENTAL_START_MS_KEY = stringPreferencesKey("rental_start_ms")
+        private val RENTAL_QR_KEY = stringPreferencesKey("rental_qr")
     }
 
     suspend fun saveEmail(email: String) {
@@ -73,6 +75,31 @@ class SessionManager(context: Context) {
 
     private suspend fun getValue(key: Preferences.Key<String>): String? {
         return dataStore.data.map { it[key] }.first()
+    }
+
+    suspend fun startRental(qrCode: String) {
+        saveValue(RENTAL_QR_KEY, qrCode)
+        saveValue(RENTAL_START_MS_KEY, System.currentTimeMillis().toString())
+    }
+
+    suspend fun stopRental() {
+        dataStore.edit { prefs ->
+            prefs.remove(RENTAL_QR_KEY)
+            prefs.remove(RENTAL_START_MS_KEY)
+        }
+    }
+
+    suspend fun getRentalStartMs(): Long? {
+        val v = getValue(RENTAL_START_MS_KEY)
+        return v?.toLongOrNull()
+    }
+
+    suspend fun getRentalQrCode(): String? {
+        return getValue(RENTAL_QR_KEY)
+    }
+
+    suspend fun isRentalActive(): Boolean {
+        return getRentalStartMs() != null && !getRentalQrCode().isNullOrEmpty()
     }
 }
 

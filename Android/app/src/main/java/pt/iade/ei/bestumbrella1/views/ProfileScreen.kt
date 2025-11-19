@@ -7,6 +7,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -20,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,6 +47,17 @@ fun ProfileScreen(navController: NavController) {
     var userEmail by remember { mutableStateOf<String?>(null) }
     var userName by remember { mutableStateOf<String?>(null) }
     var isAdmin by remember { mutableStateOf(false) }
+    var profileBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            try {
+                context.contentResolver.openInputStream(uri)?.use { stream ->
+                    val bmp = BitmapFactory.decodeStream(stream)
+                    profileBitmap = bmp
+                }
+            } catch (_: Exception) { }
+        }
+    }
     
     LaunchedEffect(Unit) {
         userEmail = sessionManager.getEmail()
@@ -75,12 +97,25 @@ fun ProfileScreen(navController: NavController) {
                 )
                 Spacer(Modifier.height(16.dp))
 
-                Icon(
-                    Icons.Default.AccountCircle,
-                    contentDescription = null,
-                    modifier = Modifier.size(100.dp),
-                    tint = Color.White
-                )
+                if (profileBitmap != null) {
+                    Image(
+                        bitmap = profileBitmap!!.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                            .clickable { imagePicker.launch("image/*") }
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.AccountCircle,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clickable { imagePicker.launch("image/*") },
+                        tint = Color.White
+                    )
+                }
                 Text(
                     text = (userName ?: userEmail ?: "Utilizador"),
                     style = MaterialTheme.typography.bodyMedium,
@@ -88,14 +123,7 @@ fun ProfileScreen(navController: NavController) {
                     fontWeight = FontWeight.Bold
                 )
 
-                AssistChip(
-                    onClick = {},
-                    label = { Text("Eco Warrior", color = Color.Black, fontWeight = FontWeight.Bold) },
-                    modifier = Modifier.padding(top = 6.dp)
-                )
-
                 Spacer(Modifier.height(24.dp))
-
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -108,15 +136,15 @@ fun ProfileScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("0", fontSize = 22.sp, color = Color(0xFF1565C0))
+                            Text("7", fontSize = 22.sp, color = Color(0xFF1565C0))
                             Text("Usos", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("50", fontSize = 22.sp, color = Color(0xFF1565C0))
+                            Text("100", fontSize = 22.sp, color = Color(0xFF1565C0))
                             Text("Pontos", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("€0.28", fontSize = 22.sp, color = Color(0xFF1565C0))
+                            Text("€2.08", fontSize = 22.sp, color = Color(0xFF1565C0))
                             Text("Poupado", style = MaterialTheme.typography.bodySmall, color = Color.Black, fontWeight = FontWeight.Bold)
                         }
                     }
@@ -163,7 +191,14 @@ fun ProfileScreen(navController: NavController) {
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Atividade Recente", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Atividade Recente",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                         Spacer(Modifier.height(16.dp))
                         Icon(
                             Icons.Default.Umbrella,
@@ -172,38 +207,27 @@ fun ProfileScreen(navController: NavController) {
                             tint = Color(0xFF1565C0)
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text("Nenhuma atividade ainda", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Nenhuma atividade ainda",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                         Text(
                             "Sua primeira reserva aparecerá aqui",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Black,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
 
                 Spacer(Modifier.height(5.dp))
 
-                
-                if (isAdmin) {
-                    Button(
-                        onClick = { navController.navigate("adminUsers") },
-                        modifier = Modifier
-                            .height(50.dp)
-                            .padding(bottom = 8.dp)
-                        ,
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            "Utilizadores",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    }
-                }
 
                 Button(
                     onClick = {

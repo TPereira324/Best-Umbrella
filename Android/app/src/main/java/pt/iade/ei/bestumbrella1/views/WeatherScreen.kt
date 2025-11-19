@@ -77,7 +77,9 @@ fun WeatherScreen(navController: NavController) {
                 Text(
                     "Meteorologia",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -113,11 +115,16 @@ fun WeatherScreen(navController: NavController) {
                         val currentId = currentWeatherId ?: 0
                         val isRaining = (currentId in 200..599) || (currentId in 600..622)
                         val isCloudy = !isRaining && (currentId in 801..804)
-                        WeatherAnimatedIcon(isRaining = isRaining, isCloudy = isCloudy)
+                        val nowSec = System.currentTimeMillis() / 1000
+                        val sr = sunriseSunset?.first ?: 0
+                        val ss = sunriseSunset?.second ?: 0
+                        val isNight = sr > 0 && ss > 0 && (nowSec < sr || nowSec >= ss)
+                        WeatherAnimatedIcon(isRaining = isRaining, isCloudy = isCloudy, isNight = isNight)
                         Text("Lisboa, Portugal", style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
                         val tempText = weatherData?.temperature?.let { String.format("%.1f°C", it) } ?: "--°C"
                         val descText = weatherData?.description ?: ""
-                        Text("$tempText — $descText", style = MaterialTheme.typography.headlineMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(tempText, style = MaterialTheme.typography.headlineLarge, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(descText, style = MaterialTheme.typography.titleMedium, color = Color.Black)
                         Spacer(Modifier.height(8.dp))
                         val humidityText = weatherData?.humidity?.let { "$it%" } ?: "--%"
                         val windText = weatherData?.windSpeed?.let { String.format("%.1f km/h", it) } ?: "-- km/h"
@@ -141,7 +148,7 @@ fun WeatherScreen(navController: NavController) {
                         val sunriseText = sunriseSunset?.first?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
                         val sunsetText = sunriseSunset?.second?.let { timeFormatter.format(Date(it * 1000)) } ?: "--:--"
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            InfoChip(text = "Nascer $sunriseText", icon = Icons.Default.WbSunny)
+                            InfoChip(text = "Nascer $sunriseText", icon = Icons.Default.WbSunny, tint = Color(0xFFFFC107))
                             InfoChip(text = "Pôr $sunsetText", icon = Icons.Default.Brightness3)
                         }
                     }
@@ -171,7 +178,8 @@ fun WeatherScreen(navController: NavController) {
                                 wid in 801..804 -> Icons.Default.Cloud
                                 else -> Icons.Default.WbSunny
                             }
-                            HourChip(hourText = hourText, tempText = tempText, popText = pop, icon = icon)
+                            val chipTint = if (wid in 801..804) Color(0xFF90A4AE) else Color(0xFF1976D2)
+                            HourChip(hourText = hourText, tempText = tempText, popText = pop, icon = icon, tint = chipTint)
                         }
                     }
                 }
@@ -186,9 +194,14 @@ fun WeatherScreen(navController: NavController) {
                     shape = RoundedCornerShape(20.dp)
                 ) {
                     val dayFormatter = remember { SimpleDateFormat("EEE, dd/MM", Locale("pt", "PT")) }
+                    val todayCal = java.util.Calendar.getInstance()
                     Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
                         daily.forEach { d ->
-                            val dayText = dayFormatter.format(Date(d.dt * 1000))
+                            val date = Date(d.dt * 1000)
+                            val cal = java.util.Calendar.getInstance()
+                            cal.time = date
+                            val isSameDay = cal.get(java.util.Calendar.YEAR) == todayCal.get(java.util.Calendar.YEAR) && cal.get(java.util.Calendar.DAY_OF_YEAR) == todayCal.get(java.util.Calendar.DAY_OF_YEAR)
+                            val dayText = if (isSameDay) "Hoje" else dayFormatter.format(date)
                             val minMax = String.format("%.0f° / %.0f°", d.temp.min, d.temp.max)
                             val pop = d.precipitationProbability?.let { String.format("%.0f%%", it * 100) } ?: "--%"
                             val descLower = d.weather.firstOrNull()?.description?.lowercase(Locale.getDefault()) ?: ""
@@ -203,7 +216,10 @@ fun WeatherScreen(navController: NavController) {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(icon, contentDescription = null, tint = Color(0xFF1976D2))
+                                    val dayTint = if (
+                                        descLower.contains("nublado") || descLower.contains("nuvens") || descLower.contains("encoberto")
+                                    ) Color(0xFF90A4AE) else Color(0xFF1976D2)
+                                    Icon(icon, contentDescription = null, tint = dayTint)
                                     Spacer(Modifier.width(8.dp))
                                     Text(dayText, style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
                                 }

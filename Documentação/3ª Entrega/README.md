@@ -1,8 +1,3 @@
-Aqui está o **README.md completo e final**, já com a secção de **Base de Dados atualizada** com base no teu script.
-Está totalmente pronto para **copiar e colar** 👉
-
----
-
 # **Best Umbrella**
 
 **Projeto Mobile – Universidade Europeia / IADE**

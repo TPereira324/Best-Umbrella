@@ -13,7 +13,7 @@ import com.best_umbrella.backend.dto.MultaDto;
 import com.best_umbrella.backend.service.MultaService;
 
 @RestController
-@RequestMapping("/api/Multa")
+@RequestMapping("/api/multas")
 /**
  * Controlador dos endpoints de Multa.
  *
@@ -47,14 +47,14 @@ public class MultaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MultaDto> getMultaById(@PathVariable Long id) {
+    public ResponseEntity<MultaDto> getMultaById(@PathVariable Integer id) {
         Optional<Multa> multa = multaService.findById(id);
         return multa.map(m -> ResponseEntity.ok(toDto(m)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/utilizador/{utilizadorId}")
-    public ResponseEntity<List<MultaDto>> getMultasByUtilizador(@PathVariable Long utilizadorId) {
+    public ResponseEntity<List<MultaDto>> getMultasByUtilizador(@PathVariable Integer utilizadorId) {
         List<MultaDto> dtos = multaService.findByUtilizadorId(utilizadorId).stream()
                 .map(this::toDto)
                 .toList();
@@ -89,21 +89,21 @@ public class MultaController {
     }
 
     @PostMapping("/{id}/pagar")
-    public ResponseEntity<MultaDto> pagarMulta(@PathVariable Long id) {
+    public ResponseEntity<MultaDto> pagarMulta(@PathVariable Integer id) {
         Optional<Multa> multa = multaService.pagarMulta(id);
         return multa.map(m -> ResponseEntity.ok(toDto(m)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/{id}/cancelar")
-    public ResponseEntity<MultaDto> cancelarMulta(@PathVariable Long id) {
+    public ResponseEntity<MultaDto> cancelarMulta(@PathVariable Integer id) {
         Optional<Multa> multa = multaService.cancelarMulta(id);
         return multa.map(m -> ResponseEntity.ok(toDto(m)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     private MultaDto toDto(Multa m) {
-        Long uid = m.getUtilizador() != null ? Long.valueOf(m.getUtilizador().getUtilizadorId()) : null;
+        Integer uid = m.getUtilizador() != null ? m.getUtilizador().getUtilizadorId() : null;
         Long aid = m.getAluguer() != null ? m.getAluguer().getAluguerId() : null;
         return new MultaDto(
                 m.getMultaId(),
@@ -122,3 +122,4 @@ public class MultaController {
         );
     }
 }
+//hello world

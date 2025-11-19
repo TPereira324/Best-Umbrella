@@ -34,7 +34,7 @@ public class MultaService {
         return multaRepository.findAll();
     }
 
-    public Optional<Multa> findById(Long id) {
+    public Optional<Multa> findById(Integer id) {
         return multaRepository.findById(id);
     }
 
@@ -51,11 +51,11 @@ public class MultaService {
         return multaRepository.save(multa);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         multaRepository.deleteById(id);
     }
 
-    public List<Multa> findByUtilizadorId(Long utilizadorId) {
+    public List<Multa> findByUtilizadorId(Integer utilizadorId) {
         Optional<Utilizador> utilizador = utilizadorRepository.findById(utilizadorId);
         return utilizador.map(multaRepository::findByUtilizador).orElseGet(List::of);
     }
@@ -81,7 +81,7 @@ public class MultaService {
         return multaRepository.save(multa);
     }
 
-    public Optional<Multa> pagarMulta(Long multaId) {
+    public Optional<Multa> pagarMulta(Integer multaId) {
         Optional<Multa> multaOpt = multaRepository.findById(multaId);
         multaOpt.ifPresent(m -> {
             if (!"PENDENTE".equalsIgnoreCase(m.getEstado())) {
@@ -94,7 +94,7 @@ public class MultaService {
         return multaOpt;
     }
 
-    public Optional<Multa> cancelarMulta(Long multaId) {
+    public Optional<Multa> cancelarMulta(Integer multaId) {
         Optional<Multa> multaOpt = multaRepository.findById(multaId);
         multaOpt.ifPresent(m -> {
             if (!"PENDENTE".equalsIgnoreCase(m.getEstado())) {
@@ -106,3 +106,4 @@ public class MultaService {
         return multaOpt;
     }
 }
+// hello

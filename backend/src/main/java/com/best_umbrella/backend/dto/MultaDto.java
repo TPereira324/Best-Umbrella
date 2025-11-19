@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
  * como jurosAcumulados e descontoAplicado.
  */
 public class MultaDto {
-    private Long multaId;
-    private Long utilizadorId;
+    private Integer multaId;
+    private Integer utilizadorId;
     private Long aluguerId;
     private Double valor;
     private String moeda;
@@ -26,7 +26,7 @@ public class MultaDto {
 
     public MultaDto() {}
 
-    public MultaDto(Long multaId, Long utilizadorId, Long aluguerId, Double valor, String moeda,
+    public MultaDto(Integer multaId, Integer utilizadorId, Long aluguerId, Double valor, String moeda,
                     String estado, String motivo, String descricao,
                     LocalDateTime dataEmissao, LocalDateTime dataVencimento, LocalDateTime dataPagamento,
                     Double jurosAcumulados, Double descontoAplicado) {
@@ -45,10 +45,10 @@ public class MultaDto {
         this.descontoAplicado = descontoAplicado;
     }
 
-    public Long getMultaId() { return multaId; }
-    public void setMultaId(Long multaId) { this.multaId = multaId; }
-    public Long getUtilizadorId() { return utilizadorId; }
-    public void setUtilizadorId(Long utilizadorId) { this.utilizadorId = utilizadorId; }
+    public Integer getMultaId() { return multaId; }
+    public void setMultaId(Integer multaId) { this.multaId = multaId; }
+    public Integer getUtilizadorId() { return utilizadorId; }
+    public void setUtilizadorId(Integer utilizadorId) { this.utilizadorId = utilizadorId; }
     public Long getAluguerId() { return aluguerId; }
     public void setAluguerId(Long aluguerId) { this.aluguerId = aluguerId; }
     public Double getValor() { return valor; }
@@ -72,3 +72,4 @@ public class MultaDto {
     public Double getDescontoAplicado() { return descontoAplicado; }
     public void setDescontoAplicado(Double descontoAplicado) { this.descontoAplicado = descontoAplicado; }
 }
+// hello

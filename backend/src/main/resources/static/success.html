@@ -3,142 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pagamento aprovado • PayPal</title>
+  <title>Pagamento aprovado • Best Umbrella</title>
   <style>
     :root {
       --bg: #f5f7fa;
       --text: #1f2d3d;
       --muted: #6b7c93;
-      --primary: #0070ba; /* PayPal blue */
+      --primary: #0070ba;
       --primary-dark: #005ea6;
       --success: #2ecc71;
       --card: #ffffff;
       --border: #e6ecf3;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 20px 24px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-    }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+    .header { display: flex; align-items: center; gap: 12px; padding: 20px 24px; background: #fff; border-bottom: 1px solid var(--border); }
     .pp-logo { height: 28px; }
-    .container {
-      max-width: 860px;
-      margin: 32px auto;
-      padding: 0 16px;
-    }
-    .hero {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    }
-    .title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0 0 6px 0;
-    }
-    .title .check {
-      color: var(--success);
-      font-size: 26px;
-    }
+    .brand { font-weight: 700; color: var(--text); }
+    .container { max-width: 860px; margin: 32px auto; padding: 0 16px; }
+    .hero { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+    .title { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 800; margin: 0 0 6px 0; }
+    .title .check { color: var(--success); font-size: 26px; }
     .subtitle { color: var(--muted); margin: 0 0 18px 0; }
-    .card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px;
-    }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
     .order-id { font-weight: 600; }
     .actions { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
-    .btn {
-      appearance: none;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 18px;
-      font-weight: 600;
-      cursor: pointer;
-    }
+    .btn { appearance: none; border: none; border-radius: 8px; padding: 12px 18px; font-weight: 600; cursor: pointer; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-dark); }
-    .btn[disabled] { cursor: not-allowed; opacity: 0.65; }
     .link { color: var(--primary); text-decoration: none; font-weight: 600; }
     .link:hover { text-decoration: underline; }
-    details { margin-top: 10px; }
-    summary { cursor: pointer; color: var(--primary); }
-    .result {
-      margin-top: 18px;
-      background: #0b1e3b;
-      color: #e6f0ff;
-      border-radius: 8px;
-      padding: 14px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      overflow: auto;
-      max-height: 320px;
-      border: 1px solid #0e2b57;
-    }
-    .muted { color: var(--muted); }
+    @media (max-width: 640px) { .title { font-size: 20px; } }
   </style>
 </head>
 <body>
   <header class="header">
     <img src="/img/paypal-logo.svg" alt="PayPal" class="pp-logo" />
+    <span class="brand">Best Umbrella</span>
   </header>
   <main class="container">
     <section class="hero">
-      <h1 class="title"><span class="check">✔</span> Pagamento aprovado no PayPal</h1>
-      <p class="subtitle">Pagamento aprovado. Pode fechar esta janela.</p>
-
+      <h1 class="title"><span class="check">✔</span> Pagamento aprovado</h1>
+      <p class="subtitle">O pagamento foi concluído com sucesso.</p>
       <div class="card">
         <p id="orderText" class="muted">A obter dados da ordem…</p>
-        <!-- detalhes técnicos removidos por pedido -->
-
         <div class="actions">
           <a class="link" href="/">Voltar ao início</a>
         </div>
       </div>
     </section>
   </main>
-
   <script>
     function parseParams() {
       const usp = new URLSearchParams(window.location.search);
       return {
-        orderId: usp.get('orderId') || usp.get('token') || '',
-        value: usp.get('value') || '',
-        currency: usp.get('currency') || '',
-        status: usp.get('status') || 'APPROVED'
+        orderId: usp.get('orderId') || usp.get('token') || ''
       };
     }
-
-    function setText(el, text) { el.textContent = text || ''; }
-
     (function init() {
       const { orderId } = parseParams();
-
       const txt = document.getElementById('orderText');
       if (orderId) {
         txt.innerHTML = `Ordem <span class="order-id">${orderId}</span> aprovada.`;
       } else {
-        txt.textContent = 'Ordem aprovada. Não foi possível identificar o orderId (token). Volte e tente novamente.';
+        txt.textContent = 'Pagamento aprovado. Não foi possível identificar o orderId.';
       }
     })();
   </script>
-  </body>
-  </html>
-    <!-- Bloco antigo de debug removido -->
-  </body>
+</body>
 </html>

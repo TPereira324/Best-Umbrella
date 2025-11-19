@@ -37,3 +37,4 @@ public class PontoDeAluguerDto {
     public Integer getQuantidadeGuardaChuvas() { return quantidadeGuardaChuvas; }
     public void setQuantidadeGuardaChuvas(Integer quantidadeGuardaChuvas) { this.quantidadeGuardaChuvas = quantidadeGuardaChuvas; }
 }
+// hello

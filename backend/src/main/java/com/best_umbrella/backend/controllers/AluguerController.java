@@ -3,6 +3,8 @@ package com.best_umbrella.backend.controllers;
 import com.best_umbrella.backend.dto.AluguerDto;
 import com.best_umbrella.backend.model.Aluguer;
 import com.best_umbrella.backend.service.AluguerService;
+import com.best_umbrella.backend.service.GuardaChuvaService;
+import com.best_umbrella.backend.model.GuardaChuva;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/Aluguer")
+@RequestMapping("/api/alugueres")
 /**
  * Controlador dos endpoints de Aluguer.
  *
@@ -25,10 +27,12 @@ import java.util.Optional;
 public class AluguerController {
 
     private final AluguerService aluguerService;
+    private final GuardaChuvaService guardaChuvaService;
 
     @Autowired
-    public AluguerController(AluguerService aluguerService) {
+    public AluguerController(AluguerService aluguerService, GuardaChuvaService guardaChuvaService) {
         this.aluguerService = aluguerService;
+        this.guardaChuvaService = guardaChuvaService;
     }
 
     @GetMapping
@@ -57,6 +61,67 @@ public class AluguerController {
             return ResponseEntity.status(HttpStatus.CREATED).body(toDto(aluguer));
         } catch (IllegalArgumentException | IllegalStateException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/start-by-qr")
+    public ResponseEntity<?> startByQr(
+            @RequestParam Long utilizadorId,
+            @RequestParam(required = false) String codigoQr,
+            @RequestParam(required = false, name = "qr") String scanned,
+            @RequestParam Integer pontoInicioId
+    ) {
+        try {
+            String code = resolveCodigoQr(scanned != null ? scanned : codigoQr);
+            if (code == null || code.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("QR inválido: não contém código");
+            }
+            GuardaChuva gc = guardaChuvaService.findByCodigoQr(code);
+            if (gc == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Guarda-chuva com QR não encontrado");
+            }
+            Aluguer aluguer = aluguerService.iniciarAluguer(utilizadorId, gc.getGuardaChuvaId(), pontoInicioId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(toDto(aluguer));
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    private String resolveCodigoQr(String input) {
+        if (input == null) return null;
+        String s = input.trim();
+        int qIdx = s.indexOf('?');
+        if (s.startsWith("bumb://")) {
+            String query = qIdx >= 0 ? s.substring(qIdx + 1) : "";
+            for (String part : query.split("&")) {
+                int eq = part.indexOf('=');
+                String key = eq >= 0 ? part.substring(0, eq) : part;
+                String val = eq >= 0 ? part.substring(eq + 1) : "";
+                if ("code".equalsIgnoreCase(key)) {
+                    return decode(val);
+                }
+            }
+            return null;
+        }
+        if (s.startsWith("http://") || s.startsWith("https://")) {
+            String query = qIdx >= 0 ? s.substring(qIdx + 1) : "";
+            for (String part : query.split("&")) {
+                int eq = part.indexOf('=');
+                String key = eq >= 0 ? part.substring(0, eq) : part;
+                String val = eq >= 0 ? part.substring(eq + 1) : "";
+                if ("code".equalsIgnoreCase(key)) {
+                    return decode(val);
+                }
+            }
+        }
+        return s;
+    }
+
+    private String decode(String s) {
+        try {
+            return java.net.URLDecoder.decode(s, java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return s;
         }
     }
 
@@ -91,3 +156,4 @@ public class AluguerController {
         );
     }
 }
+// hello world

@@ -88,7 +88,11 @@ public class AuthController {
                 )).toList(),
                 u.getNotificacoes() == null ? java.util.List.of() : u.getNotificacoes().stream().map(n -> new com.best_umbrella.backend.dto.NotiDto(
                         n.getNotificacaoId(), n.getMensagem(), n.getTipo(), n.getDataEnvio(), n.getEstado()
-                )).toList()
+                )).toList(),
+                u.getAlertaChuvaAtivo(),
+                u.getAlertaCidade(),
+                u.getAlertaLat(),
+                u.getAlertaLon()
         );
     }
 
@@ -98,3 +102,4 @@ public class AuthController {
                 && value.length() >= 60;
     }
 }
+// Hello world

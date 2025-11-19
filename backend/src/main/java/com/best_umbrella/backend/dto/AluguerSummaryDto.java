@@ -50,3 +50,4 @@ public class AluguerSummaryDto {
     public Integer getPontoFimId() { return pontoFimId; }
     public void setPontoFimId(Integer pontoFimId) { this.pontoFimId = pontoFimId; }
 }
+// hello world

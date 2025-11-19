@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping({"/users", "/api/users"})
 /**
  * Controlador de autenticação legado (compatibilidade).
  *
@@ -88,7 +88,11 @@ public class LegacyAuthController {
                 )).toList(),
                 u.getNotificacoes() == null ? java.util.List.of() : u.getNotificacoes().stream().map(n -> new com.best_umbrella.backend.dto.NotiDto(
                         n.getNotificacaoId(), n.getMensagem(), n.getTipo(), n.getDataEnvio(), n.getEstado()
-                )).toList()
+                )).toList(),
+                u.getAlertaChuvaAtivo(),
+                u.getAlertaCidade(),
+                u.getAlertaLat(),
+                u.getAlertaLon()
         );
     }
 
@@ -98,3 +102,4 @@ public class LegacyAuthController {
                 && value.length() >= 60;
     }
 }
+// hello world

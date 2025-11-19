@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/Notificacao")
+@RequestMapping("/api/notificacoes")
 public class NotificacaoController {
 
     private final WeatherAlertService weatherAlertService;
@@ -35,3 +35,4 @@ public class NotificacaoController {
         return ResponseEntity.ok(dto);
     }
 }
+//hello world

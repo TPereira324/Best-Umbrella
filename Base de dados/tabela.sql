@@ -1,114 +1,223 @@
-CREATE DATABASE IF NOT EXISTS best_umbrella;
-USE best_umbrella;
+create table guardachuva (
+gchuva_id int not null auto_increment,
+gchuva_num VARCHAR(60) not null, 		    
+ gchuva_datareg Date not null,
+    gchuva_cor_id INT,
+	gchuva_tipo_id INT,
+	primary key (gchuva_id)	
 
--- ========================= 
--- Tabela: Utilizador 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Utilizador (
-    utilizador_id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    telefone VARCHAR(20),
-    data_registo DATETIME DEFAULT CURRENT_TIMESTAMP,
-    rating DECIMAL(3,2)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
+		     		     
+create table cor (
+	cor_id int not null auto_increment,
+	cor_name VARCHAR(40) not null, 	
+	primary key (cor_id)
+);
 
--- ========================= 
--- Tabela: Ponto_de_aluguer 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Ponto_de_aluguer (
-    ponto_id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    latitude DECIMAL(10,7) NOT NULL,
-    longitude DECIMAL(10,7) NOT NULL,
-    capacidade INT NOT NULL,
-    tipo VARCHAR(50)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ========================= 
--- Tabela: Guarda_chuva 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Guarda_chuva (
-    guarda_chuva_id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo_qr VARCHAR(100) UNIQUE NOT NULL,
-    estado VARCHAR(50) NOT NULL,
-    cor VARCHAR(50),
-    tipo VARCHAR(50),
-    ponto_id INT,
-    data_registo DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ponto_id) REFERENCES Ponto_de_aluguer(ponto_id)
-        ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+create table tipo (
+	tip_id int not null auto_increment,
+	tip_name VARCHAR(40) not null, 
+	primary key (tip_id)
+);
 
--- ========================= 
--- Tabela: Aluguer 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Aluguer (
-    aluguer_id INT AUTO_INCREMENT PRIMARY KEY,
-    utilizador_id INT,
-    guarda_chuva_id INT,
-    ponto_inicio_id INT,
-    ponto_fim_id INT,
-    data_inicio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    data_fim DATETIME,
-    custo DECIMAL(6,2),
-    estado VARCHAR(50),
-    FOREIGN KEY (utilizador_id) REFERENCES Utilizador(utilizador_id)
-        ON DELETE CASCADE,
-    FOREIGN KEY (guarda_chuva_id) REFERENCES Guarda_chuva(guarda_chuva_id)
-        ON DELETE SET NULL,
-    FOREIGN KEY (ponto_inicio_id) REFERENCES Ponto_de_aluguer(ponto_id)
-        ON DELETE SET NULL,
-    FOREIGN KEY (ponto_fim_id) REFERENCES Ponto_de_aluguer(ponto_id)
-        ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ========================= 
--- Tabela: Notificacao 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Notificacao (
-    notificacao_id INT AUTO_INCREMENT PRIMARY KEY,
-    utilizador_id INT,
-    mensagem TEXT NOT NULL,
-    tipo VARCHAR(50),
-    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    estado VARCHAR(50),
-    FOREIGN KEY (utilizador_id) REFERENCES Utilizador(utilizador_id)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+create table cidade (
+	cid_id int not null auto_increment,
+	cid_name VARCHAR(40) not null, 					
+	primary key (cid_id)
+);
 
--- ========================= 
--- Tabela: Multa 
--- ========================= 
-CREATE TABLE IF NOT EXISTS Multa (
-    multa_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    utilizador_id INT NULL,
-    aluguer_id INT NULL,
 
-    valor DOUBLE NULL,
-    moeda VARCHAR(16) NULL,
-    estado VARCHAR(20) NULL,     
-    motivo VARCHAR(20) NULL,      
-    descricao VARCHAR(255) NULL,
 
-    data_emissao DATETIME NULL,
-    data_vencimento DATETIME NULL,
-    data_pagamento DATETIME NULL,
 
-    jurosAcumulados DOUBLE NULL,
-    descontoAplicado DOUBLE NULL,
+create table zona (
+zon_id int not null auto_increment,
+zon_name VARCHAR(40) not null,
+zon_cid_id INT not null,
+primary key (zon_id)
+);
 
-    INDEX idx_multa_utilizador (utilizador_id),
-    INDEX idx_multa_estado (estado),
-    INDEX idx_multa_vencimento (data_vencimento),
 
-    CONSTRAINT fk_multa_utilizador
-        FOREIGN KEY (utilizador_id) REFERENCES Utilizador(utilizador_id)
-        ON UPDATE CASCADE ON DELETE SET NULL,
+create table estacao (
+est_id int not null auto_increment,
+est_name VARCHAR(40) not null,
+est_zon_id INT not null,
+est_lat DOUBLE,
+est_long DOUBLE,
+est_cap INT,
+primary key (est_id)
+);
 
-    CONSTRAINT fk_multa_aluguer
-        FOREIGN KEY (aluguer_id) REFERENCES Aluguer(aluguer_id)
-        ON UPDATE CASCADE ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+create table ge (
+ge_id int not null auto_increment,
+ge_datein date not null,
+ge_datout date,
+ge_gchuva_id INT not null,
+ge_est_id INT not null,
+primary key (ge_id)
+);
+
+
+
+
+create table ugem (
+ugem_id int not null auto_increment,
+ugem_datein date not null,
+ugem_datout date,
+ugem_gchuva_id INT not null,
+ugem_ut_id INT not null,
+primary key (ugem_id)
+);
+
+
+
+
+
+CREATE TABLE multa (
+ mul_id INT NOT NULL AUTO_INCREMENT,
+ mul_ut_id INT NOT NULL,
+mul_dataem DATE NOT NULL,
+mul_dataven DATE NOT NULL,
+ mul_moeda VARCHAR(255),
+ mul_mot VARCHAR(255),
+ mul_valor DECIMAL(10,2),
+ PRIMARY KEY (mul_id)
+);
+
+
+create table mugem (			
+mugem_id INT not null auto_increment,
+mugem_ugem_id INT not null,
+mugem_mul_id INT not null,
+primary key (mugem_id)
+					
+
+
+);
+
+create table utilizador (
+ut_id int not null auto_increment,
+ut_name VARCHAR(255),
+ut_email VARCHAR (255),
+ut_password VARCHAR (255),
+ut_telefone VARCHAR (255),
+ut_datareg DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ut_rating DOUBLE,
+primary key (ut_id)
+);
+
+
+
+
+
+CREATE TABLE notificacao (
+    not_id INT NOT NULL AUTO_INCREMENT,
+    ut_not_id INT NOT NULL,
+    not_msg VARCHAR(255),
+    dataenv DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (not_id)
+);
+
+CREATE TABLE ugeme (
+    ugeme_id INT NOT NULL AUTO_INCREMENT,
+    ugeme_ugem_id INT NOT NULL,
+    ugeme_estado VARCHAR(255),
+    ugeme_evento VARCHAR(100),
+    ugeme_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (ugeme_id)
+);
+
+
+create table estado  (
+					estado_id INT not null auto_increment,
+					estado_name VARCHAR(255),
+					est_ugeme_id INT not null,
+					primary key (estado_id)
+);
+
+
+
+-- Foreign Keys
+
+alter table guardachuva
+add constraint guardahuva_fk_cor
+foreign key (gchuva_cor_id) references cor(cor_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela guardachuva
+ALTER TABLE guardachuva
+ADD CONSTRAINT guardachuva_fk_tipo
+FOREIGN KEY (gchuva_tipo_id) REFERENCES tipo(tip_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela zona
+ALTER TABLE zona
+ADD CONSTRAINT zona_fk_cidade
+FOREIGN KEY (zon_cid_id) REFERENCES cidade(cid_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela estacao
+ALTER TABLE estacao
+ADD CONSTRAINT estacao_fk_zona
+FOREIGN KEY (est_zon_id) REFERENCES zona(zon_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela ge
+ALTER TABLE ge
+ADD CONSTRAINT ge_fk_guardachuva
+FOREIGN KEY (ge_gchuva_id) REFERENCES guardachuva(gchuva_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE ge
+ADD CONSTRAINT ge_fk_estacao
+FOREIGN KEY (ge_est_id) REFERENCES estacao(est_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela ugem
+ALTER TABLE ugem
+ADD CONSTRAINT ugem_fk_guardachuva
+FOREIGN KEY (ugem_gchuva_id) REFERENCES guardachuva(gchuva_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE ugem
+ADD CONSTRAINT ugem_fk_utilizador
+FOREIGN KEY (ugem_ut_id) REFERENCES utilizador(ut_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela multa
+ALTER TABLE multa
+ADD CONSTRAINT multa_fk_utilizador
+FOREIGN KEY (mul_ut_id) REFERENCES utilizador(ut_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela mugem
+ALTER TABLE mugem
+ADD CONSTRAINT mugem_fk_ugem
+FOREIGN KEY (mugem_ugem_id) REFERENCES ugem(ugem_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE mugem
+ADD CONSTRAINT mugem_fk_multa
+FOREIGN KEY (mugem_mul_id) REFERENCES multa(mul_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela notificacao
+ALTER TABLE notificacao
+ADD CONSTRAINT notificacao_fk_utilizador
+FOREIGN KEY (ut_not_id) REFERENCES utilizador(ut_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela ugeme
+ALTER TABLE ugeme
+ADD CONSTRAINT ugeme_fk_ugem
+FOREIGN KEY (ugeme_ugem_id) REFERENCES ugem(ugem_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Foreign Keys para a tabela estado
+ALTER TABLE estado
+ADD CONSTRAINT estado_fk_ugeme
+FOREIGN KEY (est_ugeme_id) REFERENCES ugeme(ugeme_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
 

@@ -37,8 +37,8 @@ public class PayPalService {
                     .brandName("Best Umbrella")
                     .landingPage("LOGIN")
                     .userAction("PAY_NOW")
-                    .returnUrl("http://localhost:8080/success.html")
-                    .cancelUrl("http://localhost:8080/paypal.html");
+                    .returnUrl("http://10.0.2.2:8080/success.html")
+                    .cancelUrl("http://10.0.2.2:8080/paypal.html");
             orderRequest.applicationContext(appCtx);
             
             // Configurar unidade de compra
@@ -111,3 +111,4 @@ public class PayPalService {
         }
     }
 }
+// hello

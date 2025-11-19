@@ -14,28 +14,30 @@ import jakarta.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "Utilizador")
+@Table(name = "utilizador")
 public class Utilizador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "utilizador_id")
+    @Column(name = "ut_id")
     private Integer utilizadorId;
 
-    @Column(name = "nome")
+    @Column(name = "ut_name")
     private String nome;
 
-    
-    @Column(unique = true)
+    @Column(name = "ut_email", unique = true)
     private String email;
 
     //cumpridor
+    @Column(name = "ut_password")
     private String password;
 
+    @Column(name = "ut_telefone")
     private String telefone;
 
-    @Column(name = "data_registo")
+    @Column(name = "ut_datareg")
     private LocalDateTime dataRegisto;
 
+    @Column(name = "ut_rating")
     private Double rating;
 
     @OneToMany(mappedBy = "utilizador", fetch = FetchType.LAZY)
@@ -45,6 +47,18 @@ public class Utilizador {
     @OneToMany(mappedBy = "utilizador", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Noti> notificacoes;
+
+    @Column(name = "alerta_chuva_ativo")
+    private Boolean alertaChuvaAtivo;
+
+    @Column(name = "alerta_cidade")
+    private String alertaCidade;
+
+    @Column(name = "alerta_lat")
+    private Double alertaLat;
+
+    @Column(name = "alerta_lon")
+    private Double alertaLon;
 
     // Getters e Setters
     public Integer getUtilizadorId() {
@@ -118,4 +132,17 @@ public class Utilizador {
     public void setNotificacoes(List<Noti> notificacoes) {
         this.notificacoes = notificacoes;
     }
+
+    public Boolean getAlertaChuvaAtivo() { return alertaChuvaAtivo; }
+    public void setAlertaChuvaAtivo(Boolean alertaChuvaAtivo) { this.alertaChuvaAtivo = alertaChuvaAtivo; }
+
+    public String getAlertaCidade() { return alertaCidade; }
+    public void setAlertaCidade(String alertaCidade) { this.alertaCidade = alertaCidade; }
+
+    public Double getAlertaLat() { return alertaLat; }
+    public void setAlertaLat(Double alertaLat) { this.alertaLat = alertaLat; }
+
+    public Double getAlertaLon() { return alertaLon; }
+    public void setAlertaLon(Double alertaLon) { this.alertaLon = alertaLon; }
 }
+// hello

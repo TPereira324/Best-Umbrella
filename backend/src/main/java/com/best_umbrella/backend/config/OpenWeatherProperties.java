@@ -18,3 +18,4 @@ public class OpenWeatherProperties {
     public String getUnits() { return units; }
     public String getLang() { return lang; }
 }
+// hello world

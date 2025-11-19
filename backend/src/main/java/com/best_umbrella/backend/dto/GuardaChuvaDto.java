@@ -12,22 +12,20 @@ import java.util.List;
 public class GuardaChuvaDto {
     private Integer guardaChuvaId;
     private String codigoQr;
-    private String estado;
-    private String cor;
-    private String tipo;
+    private Integer corId;
+    private Integer tipoId;
     private LocalDateTime dataRegisto;
     private Integer pontoId;
     private List<AluguerSummaryDto> alugueres;
 
     public GuardaChuvaDto() {}
 
-    public GuardaChuvaDto(Integer guardaChuvaId, String codigoQr, String estado, String cor, String tipo,
+    public GuardaChuvaDto(Integer guardaChuvaId, String codigoQr, Integer corId, Integer tipoId,
                           LocalDateTime dataRegisto, Integer pontoId, List<AluguerSummaryDto> alugueres) {
         this.guardaChuvaId = guardaChuvaId;
         this.codigoQr = codigoQr;
-        this.estado = estado;
-        this.cor = cor;
-        this.tipo = tipo;
+        this.corId = corId;
+        this.tipoId = tipoId;
         this.dataRegisto = dataRegisto;
         this.pontoId = pontoId;
         this.alugueres = alugueres;
@@ -37,12 +35,10 @@ public class GuardaChuvaDto {
     public void setGuardaChuvaId(Integer guardaChuvaId) { this.guardaChuvaId = guardaChuvaId; }
     public String getCodigoQr() { return codigoQr; }
     public void setCodigoQr(String codigoQr) { this.codigoQr = codigoQr; }
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-    public String getCor() { return cor; }
-    public void setCor(String cor) { this.cor = cor; }
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public Integer getCorId() { return corId; }
+    public void setCorId(Integer corId) { this.corId = corId; }
+    public Integer getTipoId() { return tipoId; }
+    public void setTipoId(Integer tipoId) { this.tipoId = tipoId; }
     public LocalDateTime getDataRegisto() { return dataRegisto; }
     public void setDataRegisto(LocalDateTime dataRegisto) { this.dataRegisto = dataRegisto; }
     public Integer getPontoId() { return pontoId; }
@@ -50,3 +46,4 @@ public class GuardaChuvaDto {
     public List<AluguerSummaryDto> getAlugueres() { return alugueres; }
     public void setAlugueres(List<AluguerSummaryDto> alugueres) { this.alugueres = alugueres; }
 }
+// hello

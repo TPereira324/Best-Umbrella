@@ -29,7 +29,7 @@ public class UtilizadorService {
     }
 
     public Optional<Utilizador> findById(Long id) {
-        return utilizadorRepository.findById(id);
+        return utilizadorRepository.findById(id.intValue());
     }
 
     public Utilizador findByEmail(String email) {
@@ -52,7 +52,7 @@ public class UtilizadorService {
     }
 
     public void deleteById(Long id) {
-        utilizadorRepository.deleteById(id);
+        utilizadorRepository.deleteById(id.intValue());
     }
 
     private boolean isBCryptHash(String value) {
@@ -61,3 +61,4 @@ public class UtilizadorService {
                 && value.length() >= 60;
     }
 }
+//hello

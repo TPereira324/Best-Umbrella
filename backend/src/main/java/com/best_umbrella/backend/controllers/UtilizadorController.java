@@ -18,7 +18,7 @@ import java.util.Optional;
 import com.best_umbrella.backend.dto.NomeUpdateRequest;
 
 @RestController
-@RequestMapping("/api/Utilizador")
+@RequestMapping("/api/utilizadores")
 /**
  * Controlador dos endpoints de Utilizador.
  *
@@ -73,6 +73,50 @@ public class UtilizadorController {
         return ResponseEntity.ok(toDto(saved));
     }
 
+    @PutMapping("/{id}/alerta-chuva")
+    public ResponseEntity<UtilizadorDto> setAlertaChuva(@PathVariable Long id, @RequestParam("ativo") boolean ativo) {
+        Optional<Utilizador> opt = utilizadorService.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Utilizador u = opt.get();
+        u.setAlertaChuvaAtivo(ativo);
+        Utilizador saved = utilizadorService.save(u);
+        return ResponseEntity.ok(toDto(saved));
+    }
+
+    @PutMapping("/{id}/alerta-local/cidade")
+    public ResponseEntity<UtilizadorDto> setAlertaCidade(@PathVariable Long id, @RequestParam("cidade") String cidade) {
+        Optional<Utilizador> opt = utilizadorService.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Utilizador u = opt.get();
+        u.setAlertaCidade(cidade);
+        // limpar coords se cidade definida
+        u.setAlertaLat(null);
+        u.setAlertaLon(null);
+        Utilizador saved = utilizadorService.save(u);
+        return ResponseEntity.ok(toDto(saved));
+    }
+
+    @PutMapping("/{id}/alerta-local/coords")
+    public ResponseEntity<UtilizadorDto> setAlertaCoords(@PathVariable Long id,
+                                                         @RequestParam("lat") Double lat,
+                                                         @RequestParam("lon") Double lon) {
+        Optional<Utilizador> opt = utilizadorService.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Utilizador u = opt.get();
+        u.setAlertaLat(lat);
+        u.setAlertaLon(lon);
+        // limpar cidade se coords definidas
+        u.setAlertaCidade(null);
+        Utilizador saved = utilizadorService.save(u);
+        return ResponseEntity.ok(toDto(saved));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUtilizador(@PathVariable Long id) {
         if (!utilizadorService.findById(Long.valueOf(id)).isPresent()) {
@@ -112,7 +156,11 @@ public class UtilizadorController {
                 u.getDataRegisto(),
                 u.getRating(),
                 aluguerDtos,
-                notis
+                notis,
+                u.getAlertaChuvaAtivo(),
+                u.getAlertaCidade(),
+                u.getAlertaLat(),
+                u.getAlertaLon()
         );
     }
 
@@ -136,3 +184,4 @@ public class UtilizadorController {
         return new NotiDto(n.getNotificacaoId(), n.getMensagem(), n.getTipo(), n.getDataEnvio(), n.getEstado());
     }
 }
+// hello world

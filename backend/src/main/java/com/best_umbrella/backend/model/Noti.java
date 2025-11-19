@@ -7,25 +7,25 @@ import jakarta.persistence.FetchType;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Notificacao")
+@Table(name = "notificacao")
 public class Noti {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notificacao_id")
+    @Column(name = "not_id")
     private Long notificacaoId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "utilizador_id")
+    @JoinColumn(name = "ut_not_id")
     @JsonBackReference
     private Utilizador utilizador;
 
-    @Column(nullable = false)
+    @Column(name = "not_msg", nullable = false)
     private String mensagem;
     
     private String tipo;
 
-    @Column(name = "data_envio")
+    @Column(name = "dataenv")
     private LocalDateTime dataEnvio;
 
     private String estado;
@@ -79,3 +79,4 @@ public class Noti {
         this.estado = estado;
     }
 }
+// hello

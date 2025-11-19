@@ -73,3 +73,4 @@ public class DataInitializer implements CommandLineRunner {
         utilizadorService.save(u);
     }
 }
+// hello world

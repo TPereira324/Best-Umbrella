@@ -7,17 +7,21 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.List;
 
 @Entity
-@Table(name = "Ponto_de_aluguer")
+@Table(name = "estacao")
 public class PontodeAluguer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ponto_id")
+    @Column(name = "est_id")
     private Integer pontoId;
 
+    @Column(name = "est_name")
     private String nome;
+    @Column(name = "est_lat")
     private Double latitude;
+    @Column(name = "est_long")
     private Double longitude;
+    @Column(name = "est_cap")
     private Integer capacidade;
     private String tipo;
 
@@ -106,3 +110,4 @@ public class PontodeAluguer {
         this.alugueresTermino = alugueresTermino;
     }
 }
+// hello

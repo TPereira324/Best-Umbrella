@@ -4,31 +4,33 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Multa")
+@Table(name = "multa")
 public class Multa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "multa_id")
-    private Long multaId;
+    @Column(name = "mul_id")
+    private Integer multaId;
 
     @ManyToOne
-    @JoinColumn(name = "utilizador_id")
+    @JoinColumn(name = "mul_ut_id")
     private Utilizador utilizador;
 
     @ManyToOne
-    @JoinColumn(name = "aluguer_id")
+    @JoinColumn(name = "ugem_id")
     private Aluguer aluguer;
 
+    @Column(name = "mul_valor")
     private Double valor;
     private String  moeda;
-    private String estado; // PENDENTE, PAGO, CANCELADO
-    private String motivo; // ATRASO, DANO, PERDA
+    private String estado;
+    @Column(name = "mul_mot")
+    private String motivo;
     private String descricao;
 
-    @Column(name = "data_emissao")
+    @Column(name = "mul_dataem")
     private LocalDateTime dataEmissao;
 
-    @Column(name = "data_vencimento")
+    @Column(name = "mul_dataven")
     private LocalDateTime dataVencimento;
 
     @Column(name = "data_pagamento")
@@ -38,11 +40,11 @@ public class Multa {
     private Double descontoAplicado;
 
     // Getters e Setters
-    public Long getMultaId() {
+    public Integer getMultaId() {
         return multaId;
     }
 
-    public void setMultaId(Long multaId) {
+    public void setMultaId(Integer multaId) {
         this.multaId = multaId;
     }
 
@@ -142,3 +144,4 @@ public class Multa {
         this.descontoAplicado = descontoAplicado;
     }
 }
+// hello

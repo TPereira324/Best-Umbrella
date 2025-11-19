@@ -32,8 +32,13 @@ public class WeatherAlertService {
     }
 
     public NotiDto triggerIfRainForCity(Long utilizadorId, String city) {
-        Utilizador u = utilizadorRepository.findById(utilizadorId)
+        Utilizador u = utilizadorRepository.findById(utilizadorId.intValue())
                 .orElseThrow(() -> new IllegalArgumentException("Utilizador não encontrado: " + utilizadorId));
+
+        if (!Boolean.TRUE.equals(u.getAlertaChuvaAtivo())) {
+            log.info("Alertas de chuva desativados para utilizador {}", utilizadorId);
+            return null;
+        }
 
         OpenWeatherDto weather = openWeatherService.currentByCity(city);
         if (!isRain(weather)) {
@@ -55,8 +60,13 @@ public class WeatherAlertService {
     }
 
     public NotiDto triggerIfRainForCoords(Long utilizadorId, double lat, double lon) {
-        Utilizador u = utilizadorRepository.findById(utilizadorId)
+        Utilizador u = utilizadorRepository.findById(utilizadorId.intValue())
                 .orElseThrow(() -> new IllegalArgumentException("Utilizador não encontrado: " + utilizadorId));
+
+        if (!Boolean.TRUE.equals(u.getAlertaChuvaAtivo())) {
+            log.info("Alertas de chuva desativados para utilizador {}", utilizadorId);
+            return null;
+        }
 
         OpenWeatherDto weather = openWeatherService.currentByCoords(lat, lon);
         if (!isRain(weather)) {
@@ -77,6 +87,29 @@ public class WeatherAlertService {
         return dto;
     }
 
+    @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 * * * *")
+    public void verificarChuvaAutomatica() {
+        var lista = utilizadorRepository.findByAlertaChuvaAtivoTrue();
+        if (lista == null || lista.isEmpty()) {
+            return;
+        }
+        for (Utilizador u : lista) {
+            try {
+                boolean temCoords = u.getAlertaLat() != null && u.getAlertaLon() != null;
+                boolean temCidade = u.getAlertaCidade() != null && !u.getAlertaCidade().isBlank();
+                if (temCoords) {
+                    triggerIfRainForCoords(Long.valueOf(u.getUtilizadorId()), u.getAlertaLat(), u.getAlertaLon());
+                } else if (temCidade) {
+                    triggerIfRainForCity(Long.valueOf(u.getUtilizadorId()), u.getAlertaCidade());
+                } else {
+                    triggerIfRainForCity(Long.valueOf(u.getUtilizadorId()), "Lisboa");
+                }
+            } catch (Exception e) {
+                log.warn("Falha ao verificar chuva para utilizador {}: {}", u.getUtilizadorId(), e.getMessage());
+            }
+        }
+    }
+
     private boolean isRain(OpenWeatherDto dto) {
         String condition = dto.getCondition() == null ? "" : dto.getCondition().toLowerCase();
         String icon = dto.getIcon() == null ? "" : dto.getIcon();
@@ -94,3 +127,4 @@ public class WeatherAlertService {
         return new NotiDto(n.getNotificacaoId(), n.getMensagem(), n.getTipo(), n.getDataEnvio(), n.getEstado());
     }
 }
+// hello

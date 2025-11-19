@@ -15,6 +15,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.io.ByteArrayOutputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.best_umbrella.backend.model.GuardaChuva;
 import com.best_umbrella.backend.model.Aluguer;
@@ -77,6 +90,18 @@ public class GuardaChuvaController {
         }
     }
 
+    @GetMapping(value = "/codigo/{codigoQr}/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getQrPng(@PathVariable String codigoQr,
+                                           @RequestParam(value = "size", defaultValue = "256") int size) {
+        try {
+            String deepLink = "bumb://rent?code=" + codigoQr;
+            byte[] img = generateQrPng(deepLink, Math.max(128, Math.min(size, 1024)));
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(img);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @GetMapping("/disponiveis")
     public ResponseEntity<?> getDisponiveis() {
         List<GuardaChuva> disponiveis = guardaChuvaService.findDisponiveis();
@@ -121,9 +146,8 @@ public class GuardaChuvaController {
         return new GuardaChuvaDto(
                 gc.getGuardaChuvaId(),
                 gc.getCodigoQr(),
-                gc.getEstado(),
-                gc.getCor(),
-                gc.getTipo(),
+                gc.getCorId(),
+                gc.getTipoId(),
                 gc.getDataRegisto(),
                 pontoId,
                 aluguerDtos
@@ -145,4 +169,17 @@ public class GuardaChuvaController {
                 fimId
         );
     }
+
+    private static byte[] generateQrPng(String text, int size) throws Exception {
+        QRCodeWriter writer = new QRCodeWriter();
+        Map<EncodeHintType, Object> hints = new HashMap<>();
+        hints.put(EncodeHintType.MARGIN, 1);
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+        BitMatrix matrix = writer.encode(text, BarcodeFormat.QR_CODE, size, size, hints);
+        BufferedImage image = MatrixToImageWriter.toBufferedImage(matrix);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "PNG", baos);
+        return baos.toByteArray();
+    }
 }
+// hello world

@@ -25,15 +25,18 @@ public class GuardaChuvaService {
         if (estado == null || estado.isBlank()) {
             return guardaChuvaRepository.findAll();
         }
-        return guardaChuvaRepository.findByEstadoIgnoreCase(estado.trim());
+        if ("DISPONIVEL".equalsIgnoreCase(estado.trim())) {
+            return guardaChuvaRepository.findByPontodeAluguerIsNotNull();
+        }
+        return guardaChuvaRepository.findAll();
     }
 
     public List<GuardaChuva> findDisponiveis() {
-        return guardaChuvaRepository.findByEstadoIgnoreCase("DISPONIVEL");
+        return guardaChuvaRepository.findByPontodeAluguerIsNotNull();
     }
 
     public Optional<GuardaChuva> findById(Integer id) {
-        return guardaChuvaRepository.findById(Long.valueOf(id));
+        return guardaChuvaRepository.findById(id);
     }
 
     public GuardaChuva findByCodigoQr(String codigoQr) {
@@ -45,6 +48,7 @@ public class GuardaChuvaService {
     }
 
     public void deleteById(Integer id) {
-        guardaChuvaRepository.deleteById(Long.valueOf(id));
+        guardaChuvaRepository.deleteById(id);
     }
 }
+// hello

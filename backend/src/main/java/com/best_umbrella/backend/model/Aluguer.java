@@ -6,42 +6,42 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Aluguer")
+@Table(name = "ugem")
 public class Aluguer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "aluguer_id")
+    @Column(name = "ugem_id")
     private Long aluguerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "utilizador_id")
+    @JoinColumn(name = "ugem_ut_id")
     @JsonBackReference
     private Utilizador utilizador;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "guarda_chuva_id")
+    @JoinColumn(name = "ugem_chuva_id")
     @JsonBackReference
     private GuardaChuva guardaChuva;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ponto_inicio_id")
+    @JoinColumn(name = "ponto_inicio_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     @JsonBackReference
     private PontodeAluguer pontoInicio;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ponto_fim_id")
-    @JsonBackReference
     private PontodeAluguer pontoFim;
 
-    @Column(name = "data_inicio")
+    @Column(name = "ugem_datein")
     private LocalDateTime dataInicio;
 
-    @Column(name = "data_fim")
+    @Column(name = "ugem_datout")
     private LocalDateTime dataFim;
 
 
     // return Date
+    @Transient
     private Double custo;
+    @Transient
     private String estado;
 
     // Getters e Setters
@@ -117,3 +117,4 @@ public class Aluguer {
         this.estado = estado;
     }
 }
+// hello

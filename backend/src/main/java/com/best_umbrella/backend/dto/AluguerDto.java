@@ -49,3 +49,4 @@ public class AluguerDto {
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
 }
+//hello world

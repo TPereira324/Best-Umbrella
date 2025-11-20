@@ -52,6 +52,7 @@ fun QrScannerScreen(
     var torchEnabled by remember { mutableStateOf(false) }
     var shouldStartAfterPermission by remember { mutableStateOf(false) }
     var scannedText by remember { mutableStateOf("") }
+    var pendingCode by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
@@ -198,24 +199,7 @@ fun QrScannerScreen(
                                             if (scannedText != code) {
                                                 scannedText = code
                                                 Toast.makeText(ctx, "Código: $code", Toast.LENGTH_SHORT).show()
-                                                startScanner = false
-                                                onCodeScanned(code)
-                                                val repo = pt.iade.ei.bestumbrella1.di.AppModule.provideRepository(ctx)
-                                                val session = pt.iade.ei.bestumbrella1.di.AppModule.provideSessionManager(ctx)
-                                                scope.launch {
-                                                    val result = repo.startRentalByQr(code)
-                                                    result.fold(
-                                                        onSuccess = {
-                                                            val resolved = resolveCodeForNav(code)
-                                                            session.startRental(resolved)
-                                                            navController.navigate("rentalDetails/${resolved}")
-                                                        },
-                                                        onFailure = {
-                                                            Toast.makeText(ctx, it.message ?: "Falha ao iniciar aluguer", Toast.LENGTH_LONG).show()
-                                                        }
-                                                    )
-                                                }
-                                                cameraProviderRef?.unbindAll()
+                                                pendingCode = code
                                             }
                                         })
                                     }
@@ -294,6 +278,31 @@ fun QrScannerScreen(
 
                     }
                 }
+            }
+            if (pendingCode != null) {
+                AlertDialog(
+                    onDismissRequest = { pendingCode = null },
+                    title = { Text("Código detetado") },
+                    text = { Text(pendingCode!!) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            val code = pendingCode!!
+                            val resolved = resolveCodeForNav(code)
+                            pendingCode = null
+                            startScanner = false
+                            onCodeScanned(resolved)
+                            navController.navigate("payment/${resolved}")
+                            cameraProviderRef?.unbindAll()
+                        }) { Text("Confirmar") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            pendingCode = null
+                            scannedText = ""
+                            startScanner = true
+                        }) { Text("Continuar a escanear") }
+                    }
+                )
             }
         }
     }

@@ -20,6 +20,7 @@ import pt.iade.ei.bestumbrella1.network.Hourly
 import pt.iade.ei.bestumbrella1.network.Daily
 import pt.iade.ei.bestumbrella1.network.DailyTemp
 import pt.iade.ei.bestumbrella1.network.Weather
+import pt.iade.ei.bestumbrella1.network.AluguerDto
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -209,6 +210,63 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                     Result.success(adjusted)
                 } else {
                     Result.failure(Exception("Falha ao submeter devolução: HTTP ${response.code()} ${response.message()}"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    private fun resolveQrCode(input: String): String {
+        val s = input.trim()
+        val qIdx = s.indexOf('?')
+        if (s.startsWith("bumb://")) {
+            val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
+            for (part in query.split('&')) {
+                val eq = part.indexOf('=')
+                val key = if (eq >= 0) part.substring(0, eq) else part
+                val valStr = if (eq >= 0) part.substring(eq + 1) else ""
+                if (key.equals("code", ignoreCase = true)) {
+                    return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
+                }
+            }
+            return ""
+        }
+        if (s.startsWith("http://") || s.startsWith("https://")) {
+            val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
+            for (part in query.split('&')) {
+                val eq = part.indexOf('=')
+                val key = if (eq >= 0) part.substring(0, eq) else part
+                val valStr = if (eq >= 0) part.substring(eq + 1) else ""
+                if (key.equals("code", ignoreCase = true)) {
+                    return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
+                }
+            }
+        }
+        return s
+    }
+
+    suspend fun startRentalByQr(scanned: String): Result<AluguerDto> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val token = sessionManager.getAuthToken()
+                val userIdStr = sessionManager.getUserId()
+                if (token.isNullOrEmpty() || userIdStr.isNullOrEmpty()) {
+                    return@withContext Result.failure(Exception("Usuário não autenticado"))
+                }
+                val userId = userIdStr.toLongOrNull() ?: return@withContext Result.failure(Exception("ID de usuário inválido"))
+                val code = resolveQrCode(scanned)
+                val pontoId = pt.iade.ei.bestumbrella1.models.UmbrellaData.findByQrCode(code)?.pontoId ?: 1
+                val response = apiService.startByQr(
+                    utilizadorId = userId,
+                    codigoQr = code,
+                    qr = scanned,
+                    pontoInicioId = pontoId
+                )
+                if (response.isSuccessful && response.body() != null) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception("Falha ao iniciar aluguer: HTTP ${response.code()} ${response.message()}"))
                 }
             } catch (e: Exception) {
                 Result.failure(e)

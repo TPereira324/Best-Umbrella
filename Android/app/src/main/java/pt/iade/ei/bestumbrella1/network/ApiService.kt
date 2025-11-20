@@ -13,6 +13,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Field
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import pt.iade.ei.bestumbrella1.network.AluguerDto
 
 interface ApiService {
     @POST("users/register")
@@ -59,6 +60,15 @@ interface ApiService {
 
     @GET("Utilizador")
     suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<UserProfileResponse>>
+
+    @FormUrlEncoded
+    @POST("alugueres/start-by-qr")
+    suspend fun startByQr(
+        @Field("utilizadorId") utilizadorId: Long,
+        @Field("codigoQr") codigoQr: String?,
+        @Field("qr") qr: String?,
+        @Field("pontoInicioId") pontoInicioId: Int
+    ): Response<AluguerDto>
 }
 
 

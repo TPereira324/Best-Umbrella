@@ -18,6 +18,7 @@ class SessionManager(context: Context) {
         private val EMAIL_KEY = stringPreferencesKey("email")
         private val NAME_KEY = stringPreferencesKey("name")
         private val TOKEN_KEY = stringPreferencesKey("token")
+        private val USER_ID_KEY = stringPreferencesKey("user_id")
         private val RENTAL_START_MS_KEY = stringPreferencesKey("rental_start_ms")
         private val RENTAL_QR_KEY = stringPreferencesKey("rental_qr")
     }
@@ -44,6 +45,12 @@ class SessionManager(context: Context) {
 
     suspend fun getToken(): String? {
         return getValue(TOKEN_KEY)
+    }
+    suspend fun saveUserId(userId: String) {
+        saveValue(USER_ID_KEY, userId)
+    }
+    suspend fun getUserId(): String? {
+        return getValue(USER_ID_KEY)
     }
     
     suspend fun getAuthToken(): String? {

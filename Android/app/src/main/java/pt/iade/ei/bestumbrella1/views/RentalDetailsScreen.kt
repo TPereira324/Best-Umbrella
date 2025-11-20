@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.remember
 import pt.iade.ei.bestumbrella1.models.UmbrellaData
+import coil.compose.AsyncImage
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -91,6 +92,19 @@ fun RentalDetailsScreen(
                     ) {
                         Text("Código do Guarda-Chuva:", fontWeight = FontWeight.Bold, color = Color.Black)
                         Text(umbrella?.codigoQr ?: qrCode, color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+
+                        Spacer(Modifier.height(12.dp))
+                        Text("QR para desbloqueio", fontWeight = FontWeight.Bold, color = Color.Black)
+                        val qrUrl = remember(qrCode) { 
+                            val base = pt.iade.ei.bestumbrella1.BuildConfig.API_BASE_URL.removeSuffix("/")
+                            val origin = base.removeSuffix("/api")
+                            "$origin/api/guardachuvas/codigo/${umbrella?.codigoQr ?: qrCode}/qrcode?size=256"
+                        }
+                        AsyncImage(
+                            model = qrUrl,
+                            contentDescription = null,
+                            modifier = Modifier.size(180.dp)
+                        )
 
                         Spacer(Modifier.height(8.dp))
                         Text("Localização: $stationName", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)

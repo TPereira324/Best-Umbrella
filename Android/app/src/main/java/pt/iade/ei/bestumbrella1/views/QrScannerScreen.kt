@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import java.util.concurrent.Executors
 import android.util.Size
+import kotlinx.coroutines.launch
  
 
 @SuppressLint("SuspiciousIndentation")
@@ -51,6 +52,7 @@ fun QrScannerScreen(
     var torchEnabled by remember { mutableStateOf(false) }
     var shouldStartAfterPermission by remember { mutableStateOf(false) }
     var scannedText by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
     
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
     DisposableEffect(Unit) {
@@ -197,8 +199,22 @@ fun QrScannerScreen(
                                                 scannedText = code
                                                 Toast.makeText(ctx, "Código: $code", Toast.LENGTH_SHORT).show()
                                                 startScanner = false
-                                                
                                                 onCodeScanned(code)
+                                                val repo = pt.iade.ei.bestumbrella1.di.AppModule.provideRepository(ctx)
+                                                val session = pt.iade.ei.bestumbrella1.di.AppModule.provideSessionManager(ctx)
+                                                scope.launch {
+                                                    val result = repo.startRentalByQr(code)
+                                                    result.fold(
+                                                        onSuccess = {
+                                                            val resolved = resolveCodeForNav(code)
+                                                            session.startRental(resolved)
+                                                            navController.navigate("rentalDetails/${resolved}")
+                                                        },
+                                                        onFailure = {
+                                                            Toast.makeText(ctx, it.message ?: "Falha ao iniciar aluguer", Toast.LENGTH_LONG).show()
+                                                        }
+                                                    )
+                                                }
                                                 cameraProviderRef?.unbindAll()
                                             }
                                         })
@@ -281,4 +297,33 @@ fun QrScannerScreen(
             }
         }
     }
+}
+
+private fun resolveCodeForNav(input: String): String {
+    val s = input.trim()
+    val qIdx = s.indexOf('?')
+    if (s.startsWith("bumb://")) {
+        val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
+        for (part in query.split('&')) {
+            val eq = part.indexOf('=')
+            val key = if (eq >= 0) part.substring(0, eq) else part
+            val valStr = if (eq >= 0) part.substring(eq + 1) else ""
+            if (key.equals("code", ignoreCase = true)) {
+                return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
+            }
+        }
+        return ""
+    }
+    if (s.startsWith("http://") || s.startsWith("https://")) {
+        val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
+        for (part in query.split('&')) {
+            val eq = part.indexOf('=')
+            val key = if (eq >= 0) part.substring(0, eq) else part
+            val valStr = if (eq >= 0) part.substring(eq + 1) else ""
+            if (key.equals("code", ignoreCase = true)) {
+                return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
+            }
+        }
+    }
+    return s
 }

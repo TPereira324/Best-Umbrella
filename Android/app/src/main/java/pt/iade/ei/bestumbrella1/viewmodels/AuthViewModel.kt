@@ -31,6 +31,7 @@ class AuthViewModel(private val repository: Repository, private val sessionManag
                 result.fold(
                     onSuccess = { response ->
                         response.token?.let { sessionManager.saveToken(it) }
+                        sessionManager.saveUserId(response.id)
                         sessionManager.saveName(response.name)
                         sessionManager.saveEmail(response.email)
                         _loginResult.value = AuthResponse(
@@ -69,6 +70,7 @@ class AuthViewModel(private val repository: Repository, private val sessionManag
                 result.fold(
                     onSuccess = { response ->
                         response.token?.let { sessionManager.saveToken(it) }
+                        sessionManager.saveUserId(response.id)
                         sessionManager.saveName(response.name)
                         sessionManager.saveEmail(response.email)
                         _registerResult.value = AuthResponse(

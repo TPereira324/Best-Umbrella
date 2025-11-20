@@ -76,7 +76,7 @@ O utilizador acede ao perfil e vê todos os alugueres com datas, locais e custos
 
 ## **Enquadramento das Unidades Curriculares**
 
-###**Programação de Dispositivos Móveis**
+### **Programação de Dispositivos Móveis**
 
 O desenvolvimento da aplicação Best Umbrella foi realizado em Kotlin utilizando Jetpack Compose como framework principal.
 Foram aplicados conhecimentos como:

@@ -194,7 +194,19 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                 )
 
                 if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
+                    val body = response.body()!!
+                    val origin = BuildConfig.API_BASE_URL.removeSuffix("/")
+                        .removeSuffix("/api")
+                    val full = if (!body.imageUrl.isNullOrBlank() && body.imageUrl!!.startsWith("/")) {
+                        origin + body.imageUrl
+                    } else body.imageUrl
+                    val adjusted = pt.iade.ei.bestumbrella1.network.ReturnResponse(
+                        success = body.success,
+                        message = body.message,
+                        returnId = body.returnId,
+                        imageUrl = full
+                    )
+                    Result.success(adjusted)
                 } else {
                     Result.failure(Exception("Falha ao submeter devolução: HTTP ${response.code()} ${response.message()}"))
                 }

@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import java.util.concurrent.Executors
 import android.util.Size
+import kotlinx.coroutines.launch
  
 
 @SuppressLint("SuspiciousIndentation")
@@ -51,6 +52,8 @@ fun QrScannerScreen(
     var torchEnabled by remember { mutableStateOf(false) }
     var shouldStartAfterPermission by remember { mutableStateOf(false) }
     var scannedText by remember { mutableStateOf("") }
+    var pendingCode by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
     
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
     DisposableEffect(Unit) {
@@ -196,10 +199,7 @@ fun QrScannerScreen(
                                             if (scannedText != code) {
                                                 scannedText = code
                                                 Toast.makeText(ctx, "Código: $code", Toast.LENGTH_SHORT).show()
-                                                startScanner = false
-                                                
-                                                onCodeScanned(code)
-                                                cameraProviderRef?.unbindAll()
+                                                pendingCode = code
                                             }
                                         })
                                     }
@@ -279,6 +279,60 @@ fun QrScannerScreen(
                     }
                 }
             }
+            if (pendingCode != null) {
+                AlertDialog(
+                    onDismissRequest = { pendingCode = null },
+                    title = { Text("Código detetado") },
+                    text = { Text(pendingCode!!) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            val code = pendingCode!!
+                            val resolved = resolveCodeForNav(code)
+                            pendingCode = null
+                            startScanner = false
+                            onCodeScanned(resolved)
+                            navController.navigate("payment/${resolved}")
+                            cameraProviderRef?.unbindAll()
+                        }) { Text("Confirmar") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            pendingCode = null
+                            scannedText = ""
+                            startScanner = true
+                        }) { Text("Continuar a escanear") }
+                    }
+                )
+            }
         }
     }
+}
+
+private fun resolveCodeForNav(input: String): String {
+    val s = input.trim()
+    val qIdx = s.indexOf('?')
+    if (s.startsWith("bumb://")) {
+        val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
+        for (part in query.split('&')) {
+            val eq = part.indexOf('=')
+            val key = if (eq >= 0) part.substring(0, eq) else part
+            val valStr = if (eq >= 0) part.substring(eq + 1) else ""
+            if (key.equals("code", ignoreCase = true)) {
+                return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
+            }
+        }
+        return ""
+    }
+    if (s.startsWith("http://") || s.startsWith("https://")) {
+        val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
+        for (part in query.split('&')) {
+            val eq = part.indexOf('=')
+            val key = if (eq >= 0) part.substring(0, eq) else part
+            val valStr = if (eq >= 0) part.substring(eq + 1) else ""
+            if (key.equals("code", ignoreCase = true)) {
+                return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
+            }
+        }
+    }
+    return s
 }

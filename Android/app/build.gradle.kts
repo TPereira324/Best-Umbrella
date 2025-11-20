@@ -145,6 +145,8 @@ dependencies {
     androidTestImplementation(libs.mockwebserver.v530)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("com.google.zxing:core:3.5.3")
 }
 
 // Force Gradle to use a Java 17 toolchain for this module

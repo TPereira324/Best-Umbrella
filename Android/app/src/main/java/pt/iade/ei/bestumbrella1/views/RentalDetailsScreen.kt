@@ -39,6 +39,8 @@ fun RentalDetailsScreen(
         }
     }
     val priceStr = remember(price) { NumberFormat.getCurrencyInstance(Locale("pt", "PT")).format(price) }
+    val baseFee = 0.30
+    val baseFeeStr = remember(baseFee) { NumberFormat.getCurrencyInstance(Locale("pt", "PT")).format(baseFee) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -117,8 +119,8 @@ fun RentalDetailsScreen(
                         Spacer(Modifier.height(12.dp))
                         HorizontalDivider(thickness = 1.dp, color = Color(0xFFBBDEFB))
                         Spacer(Modifier.height(8.dp))
-                        Text("Preço de desbloqueio", fontWeight = FontWeight.Bold, color = Color.Black)
-                        Text(priceStr, color = Color(0xFF1B5E20), fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                        Text("Desbloqueio", fontWeight = FontWeight.Bold, color = Color.Black)
+                        Text(baseFeeStr, color = Color(0xFF1B5E20), fontSize = 22.sp, fontWeight = FontWeight.Bold)
                     }
                 }
 

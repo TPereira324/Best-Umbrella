@@ -221,8 +221,3 @@ Os protótipos desenvolvidos no Figma incluem:
 O **Best Umbrella** apresenta uma solução tecnológica simples e sustentável para um problema real das cidades.
 Com um modelo escalável, baixo custo de implementação e experiência fluida para o utilizador, o projeto está preparado para crescer e apoiar uma mobilidade mais inteligente e consciente.
 
----
-
-Se quiseres, posso também gerar:
-📄 **versão PDF**, 🎞️ **PowerPoint**, 🖼️ **diagrama ER**, 🌐 **versão para GitHub com badges**.
-É só pedir!

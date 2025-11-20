@@ -73,6 +73,102 @@ O utilizador acede ao perfil e vê todos os alugueres com datas, locais e custos
 
 ---
 
+
+## **Enquadramento das Unidades Curriculares**
+
+###**Programação de Dispositivos Móveis**
+
+O desenvolvimento da aplicação Best Umbrella foi realizado em Kotlin utilizando Jetpack Compose como framework principal.
+Foram aplicados conhecimentos como:
+
+Criação de interfaces intuitivas e responsivas
+
+Navegação entre ecrãs
+
+Integração com APIs REST
+
+Gestão de dados locais e estados
+
+O objetivo foi construir uma experiência de utilizador fluida, simples e eficiente para permitir o acesso rápido às funcionalidades: mapa interativo, scanner, meteorologia, histórico e perfil.
+
+### **Programação Orientada por Objetos**
+
+O Back-End do Best Umbrella foi desenvolvido em Java, utilizando o framework Spring Boot, estabelecendo a ligação entre o front-end e a base de dados.
+Foram implementados:
+
+Arquitetura REST, garantindo uma API modular e simples de consumir
+
+Padrão MVC, separando lógica, dados e apresentação
+
+Princípios de POO, como encapsulamento, herança e modularidade
+
+Utilização de UML para modelar o sistema
+
+Estes conceitos permitiram uma estrutura limpa, escalável e de fácil manutenção.
+
+ ### **Bases de Dados**
+
+O armazenamento de dados utiliza MySQL, com uma estrutura relacional que garante integridade e segurança.
+Foram utilizados conceitos como:
+
+Tabelas e relacionamentos
+
+Chaves primárias e estrangeiras
+
+Consultas SQL otimizadas
+
+Garantia de integridade referencial
+
+A organização das entidades (como utilizadores, guarda-chuvas, alugueres, estações, casas de banho, entre outras) assegura um funcionamento eficiente do sistema.
+
+### **Matemática Discreta**
+
+Os conceitos de teoria de conjuntos foram aplicados na estruturação das relações entre entidades, como a ligação entre casas de banho, localizações e outras tabelas da aplicação.
+Essa abordagem permitiu:
+
+Melhor consistência nos dados
+
+Estruturas de dados coerentes
+
+Facilidade na modelação das relações
+
+Contribuindo para um sistema fiável e sem ambiguidades.
+
+Projeto de Desenvolvimento Móvel
+
+Esta unidade curricular foi essencial para a organização e evolução do projeto.
+Foram utilizadas ferramentas como:
+
+ClickUp para organização e gestão de tarefas
+
+Planeamento por etapas
+
+Reuniões de acompanhamento
+
+Feedbacks contínuos de design e funcionalidade
+
+Aqui também foram desenvolvidas competências como trabalho em equipa, resolução de problemas e gestão do tempo.
+
+### **Competências Comunicacionais**
+
+A comunicação foi uma parte crucial no desenvolvimento do Best Umbrella.
+Foram aplicadas técnicas de:
+
+Apresentação clara de ideias
+
+Comunicação entre membros da equipa
+
+Interação com potenciais utilizadores
+
+Coleta e análise de feedback
+
+Estas competências garantiram que o projeto evoluísse alinhado às necessidades reais dos utilizadores
+
+
+
+
+----
+
 ## **Requisitos**
 
 ### **Funcionais**
@@ -90,142 +186,6 @@ O utilizador acede ao perfil e vê todos os alugueres com datas, locais e custos
 * Encriptação de dados sensíveis.
 * Interface rápida, intuitiva e acessível.
 * Base de dados relacional e escalável.
-
----
-
-# **Base de Dados**
-
-A base de dados do **Best Umbrella** foi implementada em **MySQL**, organizada segundo um modelo relacional sólido que garante integridade, desempenho e suporte completo às funcionalidades da aplicação.
-O sistema inclui gestão de utilizadores, guarda-chuvas, localização, alugueres, multas, notificações e histórico de eventos.
-
----
-
-## **Entidades Principais**
-
-### 🟦 **1. Utilizador** (`utilizador`)
-
-Armazena informações dos utilizadores:
-
-* Nome, email, password, telefone
-* Data de registo
-* Rating
-
-**Relacionamentos:**
-
-* Alugueres (UGEM)
-* Multas
-* Notificações
-
----
-
-### 🟧 **2. Guarda-Chuva** (`guardachuva`)
-
-Cada guarda-chuva contém:
-
-* Número identificador
-* Data de registo
-* Cor (FK → `cor`)
-* Tipo (FK → `tipo`)
-
-**Relacionado com:**
-
-* Movimentos entre estações (GE)
-* Alugueres (UGEM)
-
----
-
-### 🟥 **3. Localização**
-
-Sistema geográfico dividido em três níveis:
-
-* **Cidade** (`cidade`)
-* **Zona** (`zona`, FK → cidade)
-* **Estação** (`estacao`, FK → zona)
-
-  * Nome, latitude, longitude, capacidade
-
----
-
-### 🟩 **4. Movimentação de Guarda-Chuvas — GE** (`ge`)
-
-Regista entrada e saída de cada guarda-chuva em cada estação:
-
-* Data de entrada
-* Data de saída
-* Guarda-chuva (FK)
-* Estação (FK)
-
----
-
-### 🟨 **5. Aluguer — UGEM** (`ugem`)
-
-Regista o aluguer feito pelo utilizador:
-
-* Data de início
-* Data de fim
-* Guarda-chuva (FK)
-* Utilizador (FK)
-
----
-
-### 🟥 **6. Multas — `multa`**
-
-Inclui:
-
-* Utilizador (FK)
-* Data de emissão e vencimento
-* Motivo
-* Valor
-
----
-
-### 🟪 **7. Ligação entre Aluguer e Multa — MUGEM** (`mugem`)
-
-Liga cada multa ao aluguer que a originou.
-
----
-
-### 🟫 **8. Histórico de Eventos — UGEME** (`ugeme`)
-
-Regista eventos ocorridos durante o aluguer:
-
-* Estado
-* Tipo de evento (início, fim, multa aplicada, etc.)
-* Data/hora (timestamp automático)
-
----
-
-### 🟦 **9. Estado do Guarda-Chuva — `estado`**
-
-Regista estados associados a eventos específicos (FK → `ugeme`).
-
----
-
-### 🟪 **10. Notificações — `notificacao`**
-
-Representa notificações enviadas ao utilizador, como:
-
-* Alertas meteorológicos
-* Confirmações
-* Avisos
-
-Contém mensagem, timestamp e FK → utilizador.
-
----
-
-## **Resumo do Modelo Relacional**
-
-| Categoria                | Tabelas                 |
-| ------------------------ | ----------------------- |
-| Localização              | cidade, zona, estacao   |
-| Guarda-chuva             | guardachuva, cor, tipo  |
-| Movimentos               | ge                      |
-| Utilizadores e Alugueres | utilizador, ugem, ugeme |
-| Multas                   | multa, mugem            |
-| Notificações             | notificacao             |
-| Estado                   | estado                  |
-
-O modelo implementa todas as foreign keys necessárias para manter integridade referencial entre as entidades.
 
 ---
 

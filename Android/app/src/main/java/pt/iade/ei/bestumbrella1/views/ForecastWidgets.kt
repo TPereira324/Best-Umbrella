@@ -37,10 +37,20 @@ fun HourChip(
         ) {
             Icon(icon, contentDescription = null, tint = tint)
             androidx.compose.foundation.layout.Column {
-                Text(hourText, style = MaterialTheme.typography.labelMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(
+                    hourText,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(tempText, style = MaterialTheme.typography.bodyMedium, color = Color.Black)
-                    Text(popText, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF1976D2), fontWeight = FontWeight.Bold)
+                    Text(
+                        popText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF1976D2),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }

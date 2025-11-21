@@ -45,17 +45,35 @@ fun FilterBar(
         FilterChip(
             selected = current == StationFilter.ALL,
             onClick = { onChange(StationFilter.ALL) },
-            label = { Text("Todas ($totalCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+            label = {
+                Text(
+                    "Todas ($totalCount)",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         )
         FilterChip(
             selected = current == StationFilter.AVAILABLE,
             onClick = { onChange(StationFilter.AVAILABLE) },
-            label = { Text("Disponíveis ($availableCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+            label = {
+                Text(
+                    "Disponíveis ($availableCount)",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         )
         FilterChip(
             selected = current == StationFilter.NEARBY,
             onClick = { onChange(StationFilter.NEARBY) },
-            label = { Text("Próximas ($nearbyCount)", color = Color.Black, fontWeight = FontWeight.Bold) }
+            label = {
+                Text(
+                    "Próximas ($nearbyCount)",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         )
     }
 }
@@ -72,8 +90,21 @@ fun StationBottomSheet(station: Station) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(station.name, style = MaterialTheme.typography.titleLarge, color = Color.Black, fontWeight = FontWeight.Bold)
-            AssistChip(onClick = {}, label = { Text("${station.available} disponíveis", color = Color.Black, fontWeight = FontWeight.Bold) })
+            Text(
+                station.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
+            AssistChip(
+                onClick = {},
+                label = {
+                    Text(
+                        "${station.available} disponíveis",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                })
         }
 
         Spacer(Modifier.padding(12.dp))
@@ -84,7 +115,12 @@ fun StationBottomSheet(station: Station) {
         )
 
         Spacer(Modifier.padding(16.dp))
-        Text("Informações da Estação", style = MaterialTheme.typography.titleMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+        Text(
+            "Informações da Estação",
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(Modifier.padding(8.dp))
         Card(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp)) {
@@ -98,7 +134,12 @@ fun StationBottomSheet(station: Station) {
                     Text("24 horas", color = Color.Black)
                 }
                 Spacer(Modifier.padding(8.dp))
-                Text("⚠️ Multa aplicada após 24h", color = Color.Red, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
+                Text(
+                    "⚠️ Multa aplicada após 24h",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold
+                )
                 Spacer(Modifier.padding(8.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("€ Tarifa", color = Color.Black, fontWeight = FontWeight.Bold)

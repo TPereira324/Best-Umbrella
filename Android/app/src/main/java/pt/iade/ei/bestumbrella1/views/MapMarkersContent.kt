@@ -1,6 +1,5 @@
 package pt.iade.ei.bestumbrella1.views
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,11 +11,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -29,11 +27,12 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import java.util.Locale
+import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.views.map.Station
-import pt.iade.ei.bestumbrella1.views.map.StationFilter
 import pt.iade.ei.bestumbrella1.views.map.StationBottomSheet
+import pt.iade.ei.bestumbrella1.views.map.StationFilter
 import pt.iade.ei.bestumbrella1.views.map.umbrellaMarkerIcon
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +43,8 @@ fun MapMarkersContent(
     onSelectStation: (Station?) -> Unit,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val sessionManager = pt.iade.ei.bestumbrella1.di.AppModule.provideSessionManager(context)
     var hasLocationPermission by remember { mutableStateOf(false) }
     val locationPermissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
@@ -88,7 +89,8 @@ fun MapMarkersContent(
     )
 
     androidx.compose.runtime.LaunchedEffect(focusStation) {
-        val target = focusStation?.let { name -> stations.find { it.name.equals(name, ignoreCase = true) } }
+        val target =
+            focusStation?.let { name -> stations.find { it.name.equals(name, ignoreCase = true) } }
         if (target != null) {
             cameraPositionState.position = CameraPosition.fromLatLngZoom(target.location, 16.5f)
             onSelectStation(target)
@@ -157,14 +159,15 @@ fun MapMarkersContent(
             Button(
                 onClick = {
                     onSelectStation(null)
-                    navController.navigate("payment")
+                    scope.launch { sessionManager.startRental("MAP") }
+                    navController.navigate("map")
                 },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF0D47A1),
+                    containerColor = Color(0xFF1976D2),
                     contentColor = Color.White
                 )
             ) {

@@ -8,8 +8,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness3
@@ -65,7 +65,10 @@ fun SunAnimatedIcon(size: Dp) {
         Icons.Default.WbSunny,
         contentDescription = null,
         tint = Color(0xFFFFC107),
-        modifier = Modifier.size(size).rotate(rotation).scale(scale)
+        modifier = Modifier
+            .size(size)
+            .rotate(rotation)
+            .scale(scale)
     )
 }
 
@@ -154,6 +157,8 @@ fun MoonAnimatedIcon(size: Dp) {
         Icons.Default.Brightness3,
         contentDescription = null,
         tint = Color(0xFF1976D2),
-        modifier = Modifier.size(size).scale(scale)
+        modifier = Modifier
+            .size(size)
+            .scale(scale)
     )
 }

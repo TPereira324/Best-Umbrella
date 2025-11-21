@@ -19,10 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
-import pt.iade.ei.bestumbrella1.BuildConfig
 import pt.iade.ei.bestumbrella1.models.SessionManager
-import pt.iade.ei.bestumbrella1.models.UmbrellaData
 import java.util.Locale
 
 @Composable
@@ -31,7 +28,12 @@ fun UsageTimerFab(h: Int, m: Int, s: Int, onClick: () -> Unit, modifier: Modifie
         onClick = onClick,
         containerColor = Color(0xFF1976D2),
         contentColor = Color.White,
-        icon = { androidx.compose.material3.Icon(Icons.Default.History, contentDescription = null) },
+        icon = {
+            androidx.compose.material3.Icon(
+                Icons.Default.History,
+                contentDescription = null
+            )
+        },
         text = { androidx.compose.material3.Text("Terminar (%02d:%02d:%02d)".format(h, m, s)) },
         modifier = modifier
     )
@@ -43,7 +45,12 @@ fun ScannerFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
         onClick = onClick,
         containerColor = Color(0xFF1976D2),
         contentColor = Color.White,
-        icon = { androidx.compose.material3.Icon(Icons.Default.QrCodeScanner, contentDescription = "Scanner") },
+        icon = {
+            androidx.compose.material3.Icon(
+                Icons.Default.QrCodeScanner,
+                contentDescription = "Scanner"
+            )
+        },
         text = { androidx.compose.material3.Text("Scanner") },
         modifier = modifier
     )
@@ -81,22 +88,24 @@ fun RentalEndSheet(
                 onClick = {
                     onDismiss()
                     val valueStr = String.format(Locale.US, "%.2f", amount)
-                    if (BuildConfig.PAYPAL_TEST_MODE) {
-                        kotlinx.coroutines.GlobalScope.launch { sessionManager.stopRental() }
-                        navController.navigate("map")
-                    } else {
-                        navController.navigate("paypalCheckout/${valueStr}/${rentalQr}/end")
-                    }
+                    navController.navigate("payment/${rentalQr}/${valueStr}")
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
             ) {
-                androidx.compose.material3.Icon(Icons.Default.Payment, contentDescription = null, tint = Color.White)
+                androidx.compose.material3.Icon(
+                    Icons.Default.Payment,
+                    contentDescription = null,
+                    tint = Color.White
+                )
                 Spacer(Modifier.height(0.dp))
                 Text("Pagar e terminar", color = Color.White)
             }
             Spacer(Modifier.height(8.dp))
-            androidx.compose.material3.OutlinedButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
+            androidx.compose.material3.OutlinedButton(
+                onClick = onDismiss,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text("Cancelar")
             }
         }

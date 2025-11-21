@@ -5,41 +5,70 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Payment
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.navigation.compose.rememberNavController
-import java.util.Locale
-import pt.iade.ei.bestumbrella1.BuildConfig
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import pt.iade.ei.bestumbrella1.BuildConfig
 import pt.iade.ei.bestumbrella1.di.AppModule
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentScreen(navController: NavController, qrCode: String) {
+fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: Double? = null) {
     var balance by remember { mutableStateOf(0.00) }
-    var amountText by remember { mutableStateOf(TextFieldValue("")) }
+    var amountText by remember(amountPrefill) {
+        val initial = amountPrefill?.let { TextFieldValue(String.format(Locale.US, "%.2f", it)) }
+            ?: TextFieldValue("")
+        mutableStateOf(initial)
+    }
     var showCheckout by remember { mutableStateOf(false) }
     var paymentMessage by remember { mutableStateOf<String?>(null) }
     val hasClientId = remember { BuildConfig.PAYPAL_CLIENT_ID.isNotBlank() }
     val testMode = remember { BuildConfig.PAYPAL_TEST_MODE }
     val context = LocalContext.current
-    val sessionManager = remember { pt.iade.ei.bestumbrella1.di.AppModule.provideSessionManager(context) }
+    val sessionManager =
+        remember { pt.iade.ei.bestumbrella1.di.AppModule.provideSessionManager(context) }
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -103,7 +132,12 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                             )
                             Spacer(Modifier.height(8.dp))
                         }
-                        Text("Saldo atual:", style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Saldo atual:",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
                         Text(
                             "€${"%.2f".format(balance)}",
                             style = MaterialTheme.typography.titleLarge,
@@ -116,7 +150,13 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                         OutlinedTextField(
                             value = amountText,
                             onValueChange = { amountText = it },
-                            label = { Text("Valor a pagar (€)", color = Color.Black, fontWeight = FontWeight.Bold) },
+                            label = {
+                                Text(
+                                    "Valor a pagar (€)",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -130,8 +170,9 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                                     if (hasClientId) {
                                         val valueStr = String.format(Locale.US, "%.2f", value)
                                         val q = qrCode.ifBlank { "" }
+                                        val action = if (q.isBlank()) "start" else "end"
                                         paymentMessage = null
-                                        navController.navigate("paypalCheckout/${valueStr}/${q}/start")
+                                        navController.navigate("paypalCheckout/${valueStr}/${q}/${action}")
                                     } else {
                                         paymentMessage = "Client ID do PayPal não configurado."
                                     }
@@ -145,9 +186,17 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                             ),
                             enabled = hasClientId
                         ) {
-                            Icon(Icons.Default.Payment, contentDescription = null, tint = Color.White)
+                            Icon(
+                                Icons.Default.Payment,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
                             Spacer(Modifier.width(8.dp))
-                            Text("Pagar com PayPal", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(
+                                "Pagar com PayPal",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
 
                         if (testMode) {
@@ -156,18 +205,35 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                                 onClick = {
                                     val value = amountText.text.toDoubleOrNull()
                                     if (value != null && value > 0) {
-                                        scope.launch { sessionManager.startRental(qrCode) }
-                                        navController.navigate("map")
+                                        if (qrCode.isBlank()) {
+                                            scope.launch { sessionManager.startRental("") }
+                                            navController.navigate("map")
+                                        } else {
+                                            scope.launch { sessionManager.stopRental() }
+                                            navController.navigate("map")
+                                        }
                                     } else {
                                         paymentMessage = "Insira um valor válido para testar."
                                     }
                                 },
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF1B5E20))
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color(
+                                        0xFF1B5E20
+                                    )
+                                )
                             ) {
-                                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF1B5E20))
+                                Icon(
+                                    Icons.Default.CheckCircle,
+                                    contentDescription = null,
+                                    tint = Color(0xFF1B5E20)
+                                )
                                 Spacer(Modifier.width(8.dp))
-                                Text("Testar sem PayPal", fontWeight = FontWeight.Bold, color = Color(0xFF1B5E20))
+                                Text(
+                                    "Testar sem PayPal",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1B5E20)
+                                )
                             }
                         }
 
@@ -176,13 +242,17 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
                         if (paymentMessage != null) {
                             Text(
                                 paymentMessage!!,
-                                color = if (paymentMessage!!.contains("sucesso", ignoreCase = true)) Color(0xFF4CAF50) else MaterialTheme.colorScheme.error,
+                                color = if (paymentMessage!!.contains(
+                                        "sucesso",
+                                        ignoreCase = true
+                                    )
+                                ) Color(0xFF4CAF50) else MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold
                             )
                         }
 
-                        
+
                     }
                 }
             }
@@ -190,7 +260,13 @@ fun PaymentScreen(navController: NavController, qrCode: String) {
     }
 }
 
-private data class PayPalResult(val status: String, val orderID: String? = null, val message: String? = null, val name: String? = null, val debugId: String? = null)
+private data class PayPalResult(
+    val status: String,
+    val orderID: String? = null,
+    val message: String? = null,
+    val name: String? = null,
+    val debugId: String? = null
+)
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -265,7 +341,15 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
                             val msg = json.optString("message")
                             val name = json.optString("name")
                             val debugId = json.optString("debug_id")
-                            onResult(PayPalResult(status = status, orderID = orderID, message = msg, name = name, debugId = debugId))
+                            onResult(
+                                PayPalResult(
+                                    status = status,
+                                    orderID = orderID,
+                                    message = msg,
+                                    name = name,
+                                    debugId = debugId
+                                )
+                            )
                         } catch (e: Exception) {
                             onResult(PayPalResult(status = "error", message = e.message))
                         }
@@ -294,14 +378,25 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PayPalCheckoutScreen(navController: NavController, amount: Double, qrCode: String, action: String = "start") {
+fun PayPalCheckoutScreen(
+    navController: NavController,
+    amount: Double,
+    qrCode: String,
+    action: String = "start"
+) {
     val context = LocalContext.current
     val sessionManager = remember { AppModule.provideSessionManager(context) }
     val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Checkout PayPal", color = Color.Black, fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        "Checkout PayPal",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
@@ -325,7 +420,9 @@ fun PayPalCheckoutScreen(navController: NavController, amount: Double, qrCode: S
         ) {
             var errorMessage by remember { mutableStateOf<String?>(null) }
             Column(
-                modifier = Modifier.fillMaxSize().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 PayPalCheckoutWebView(
@@ -333,7 +430,7 @@ fun PayPalCheckoutScreen(navController: NavController, amount: Double, qrCode: S
                     onResult = { result ->
                         when (result.status) {
                             "success" -> {
-                                when(action.lowercase(Locale.ROOT)) {
+                                when (action.lowercase(Locale.ROOT)) {
                                     "end" -> scope.launch { sessionManager.stopRental() }
                                     else -> scope.launch { sessionManager.startRental(qrCode) }
                                 }
@@ -343,6 +440,7 @@ fun PayPalCheckoutScreen(navController: NavController, amount: Double, qrCode: S
                                     launchSingleTop = true
                                 }
                             }
+
                             "error" -> {
                                 val name = result.name ?: "Erro"
                                 val dbg = result.debugId?.let { " (debug_id: ${it})" } ?: ""

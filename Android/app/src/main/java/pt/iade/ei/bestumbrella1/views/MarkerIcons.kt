@@ -1,9 +1,9 @@
 package pt.iade.ei.bestumbrella1.views.map
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.google.android.gms.maps.model.BitmapDescriptor

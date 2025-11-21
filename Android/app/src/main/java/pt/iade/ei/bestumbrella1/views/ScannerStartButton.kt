@@ -14,9 +14,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ScannerStartButton(onStartClick: () -> Unit) {
-    Button(onClick = onStartClick) {
-        Icon(Icons.Default.CameraAlt, contentDescription = null, tint = Color.Black)
+    Button(
+        onClick = onStartClick,
+        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF1976D2),
+            contentColor = Color.White
+        )
+    ) {
+        Icon(Icons.Default.CameraAlt, contentDescription = null, tint = Color.White)
         Spacer(Modifier.width(8.dp))
-        Text("Iniciar Scanner", color = Color.Black)
+        Text("Iniciar Scanner", color = Color.White)
     }
 }

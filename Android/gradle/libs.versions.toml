@@ -4,7 +4,9 @@ barcodeScanning = "17.3.0"
 cameraCamera2Version = "1.5.0"
 cameraLifecycle = "1.5.0"
 cameraView = "1.5.0"
+coilCompose = "2.7.0"
 converterGsonVersion = "2.9.0"
+core = "3.5.4"
 datastorePreferences = "1.1.7"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
@@ -43,7 +45,9 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
  
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson-v290 = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGsonVersion" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

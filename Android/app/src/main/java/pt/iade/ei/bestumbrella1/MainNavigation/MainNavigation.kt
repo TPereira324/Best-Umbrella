@@ -19,7 +19,6 @@ import pt.iade.ei.bestumbrella1.views.HistoryScreen
 import pt.iade.ei.bestumbrella1.views.ProfileScreen
 import pt.iade.ei.bestumbrella1.views.PaymentScreen
 import pt.iade.ei.bestumbrella1.views.RentalDetailsScreen
-import pt.iade.ei.bestumbrella1.views.UsersAdminScreen
 import pt.iade.ei.bestumbrella1.views.WeatherScreen
 
 @Composable
@@ -73,10 +72,15 @@ fun MainNavigation(navController: NavHostController) {
                 onCodeScanned = { code -> navController.navigate("rentalDetails/$code") }
             )
         }
+        composable("qrscannerMap") {
+            QrScannerScreen(
+                navController = navController,
+                onCodeScanned = { _ -> navController.navigate("map") }
+            )
+        }
         
         composable("history") { HistoryScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
-        composable("adminUsers") { UsersAdminScreen(navController) }
         composable("weather") { WeatherScreen(navController) }
         composable("payment") { PaymentScreen(navController, qrCode = "") }
         composable("paymentMap") { PaymentScreen(navController, qrCode = "MAP") }
@@ -86,7 +90,8 @@ fun MainNavigation(navController: NavHostController) {
         }
         composable("payment/{qrCode}/{amount}") { backStackEntry ->
             val qrCode = backStackEntry.arguments?.getString("qrCode") ?: ""
-            PaymentScreen(navController, qrCode)
+            val amount = backStackEntry.arguments?.getString("amount")?.toDoubleOrNull()
+            PaymentScreen(navController, qrCode, amount)
         }
         composable("paypalCheckout/{amount}/{qrCode}") { backStackEntry ->
             val amount = backStackEntry.arguments?.getString("amount")?.toDoubleOrNull() ?: 0.0

@@ -7,7 +7,7 @@
 
 ##  Identificação
 - **Grupo:** G03  
-- **Elementos:** Fábio Texeira, Feleciano Barata, Márcio Quintas, Joybeth Mateus e Taha-Wur Pereira.   
+- **Elementos:** Fábio Texeira, Feleciano Barata e Taha-Wur Pereira.   
 - **Nome do Projeto:** Best Umbrella  
 
 ---

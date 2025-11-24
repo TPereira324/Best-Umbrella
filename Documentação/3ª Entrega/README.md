@@ -168,7 +168,183 @@ Estas competências garantiram que o projeto evoluísse alinhado às necessidade
 
 
 ----
+## Documentação da API REST 
 
+A API REST do Best Umbrella é responsável pela comunicação entre a aplicação mobile, o servidor Back-End (Spring Boot) e a base de dados MySQL.
+Gere dados relacionados com utilizadores, pontos de aluguer, guarda-chuvas, alugueres, notificações e histórico de utilização.
+
+ **Base URL da API**
+https://api.bestumbrella.pt/api/v1
+
+### Endpoints de Utilizador (/utilizadores)
+ Criar Utilizador
+
+POST /utilizadores
+
+Request
+{
+  "nome": "João Silva",
+  "email": "joao@gmail.com",
+  "password": "1234"
+}
+
+Response
+{
+  "id": 1,
+  "nome": "João Silva",
+  "email": "joao@gmail.com"
+}
+
+Login
+
+POST /utilizadores/login
+
+Request
+{
+  "email": "joao@gmail.com",
+  "password": "1234"
+}
+
+Response
+{
+  "token": "jwt-token-aqui",
+  "userId": 1
+}
+
+Obter Perfil
+
+GET /utilizadores/{id}
+
+Response
+{
+  "id": 1,
+  "nome": "João Silva",
+  "email": "joao@gmail.com",
+  "historicoAluguer": []
+}
+
+### 2. Endpoints de Guarda-Chuva (/guardachuva)
+Listar guarda-chuvas
+
+GET /guardachuva
+
+Response
+[
+  {
+    "id": 5,
+    "estado": "disponivel",
+    "pontoId": 2
+  }
+]
+
+ Detalhes de um guarda-chuva
+
+GET /guardachuva/{id}
+
+Atualizar estado
+
+PUT /guardachuva/{id}/estado
+
+Request
+{
+  "estado": "danificado"
+}
+
+### 3. Endpoints de Pontos de Aluguer (/pontos)
+Listar todos os pontos
+
+GET /pontos
+
+Response
+[
+  {
+    "id": 10,
+    "nome": "Oriente Green Campus",
+    "latitude": 38.768,
+    "longitude": -9.1,
+    "capacidade": 20
+  }
+]
+
+ Detalhes de um ponto
+
+GET /pontos/{id}
+
+### 4. Endpoints de Aluguer (/aluguer)
+Criar um aluguer (via QR Code)
+
+POST /aluguer
+
+Request
+{
+  "utilizadorId": 1,
+  "guardaChuvaId": 5
+}
+
+Response
+{
+  "aluguerId": 20,
+  "dataInicio": "2025-11-20T12:30:00"
+}
+
+ Finalizar aluguer
+
+PUT /aluguer/{id}/devolver
+
+Request
+{
+  "pontoEntregaId": 3
+}
+
+Response
+{
+  "status": "concluido",
+  "dataFim": "2025-11-20T13:00:00"
+}
+
+Histórico de alugueres do utilizador
+
+GET /aluguer/utilizador/{userId}
+
+### 5. Endpoints de Notificações (/notificacoes)
+Enviar notificação
+
+POST /notificacoes
+
+Request
+{
+  "utilizadorId": 1,
+  "mensagem": "Chuva prevista às 15h. Prepare o seu guarda-chuva!"
+}
+
+Listar notificações
+
+GET /notificacoes/utilizador/{id}
+
+### 6. Estrutura das Respostas da API
+Resposta de Sucesso
+{
+  "status": "success",
+  "data": {},
+  "timestamp": "2025-11-21T10:30:00"
+}
+
+Resposta de Erro
+{
+  "status": "error",
+  "message": "Guarda-chuva não encontrado",
+  "errorCode": 404
+}
+
+### 7. Autenticação
+
+A API utiliza JWT (JSON Web Token) para proteger endpoints.
+
+O token deve ser enviado nos headers:
+Authorization: Bearer <token>
+
+
+---
 ## **Requisitos**
 
 ### **Funcionais**

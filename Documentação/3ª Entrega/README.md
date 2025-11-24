@@ -211,179 +211,257 @@ Gere dados relacionados com utilizadores, pontos de aluguer, guarda-chuvas, alug
  **Base URL da API**
 https://api.bestumbrella.pt/api/v1
 
-### 1.Endpoints de Utilizador (/utilizadores)
- Criar Utilizador
-
-POST /utilizadores
-
-Request
-{
-  "nome": "João Silva",
-  "email": "joao@gmail.com",
-  "password": "1234"
-}
-
-Response
-{
-  "id": 1,
-  "nome": "João Silva",
-  "email": "joao@gmail.com"
-}
-
-Login
-
-POST /utilizadores/login
-
-Request
-{
-  "email": "joao@gmail.com",
-  "password": "1234"
-}
-
-Response
-{
-  "token": "jwt-token-aqui",
-  "userId": 1
-}
-
-Obter Perfil
-
-GET /utilizadores/{id}
-
-Response
-{
-  "id": 1,
-  "nome": "João Silva",
-  "email": "joao@gmail.com",
-  "historicoAluguer": []
-}
-
-
----
-### 2. Endpoints de Guarda-Chuva (/guardachuva)
-Listar guarda-chuvas
-
-GET /guardachuva
-
-Response
-[
-  {
-    "id": 5,
-    "estado": "disponivel",
-    "pontoId": 2
-  }
-]
-
- Detalhes de um guarda-chuva
-
-GET /guardachuva/{id}
-
-Atualizar estado
-
-PUT /guardachuva/{id}/estado
-
-Request
-{
-  "estado": "danificado"
-}
-
----
-### 3. Endpoints de Pontos de Aluguer (/pontos)
-Listar todos os pontos
-
-GET /pontos
-
-Response
-[
-  {
-    "id": 10,
-    "nome": "Oriente Green Campus",
-    "latitude": 38.768,
-    "longitude": -9.1,
-    "capacidade": 20
-  }
-]
-
- Detalhes de um ponto
-
-GET /pontos/{id}
+### 1. Endpoints de Utilizador
+- Criar Utilizador
+    - `POST /api/auth/register`
+    - Request
+      {
+      "nome": "João Silva",
+      "email": "joao@gmail.com",
+      "password": "1234",
+      "telefone": "910000000"
+      }
+    - Response (exemplo)
+      {
+      "utilizadorId": 1,
+      "nome": "João Silva",
+      "email": "joao@gmail.com",
+      "telefone": "910000000",
+      "dataRegisto": "2025-11-24T10:15:30",
+      "rating": 4.7,
+      "alugueres": [],
+      "notificacoes": [],
+      "alertaChuvaAtivo": false,
+      "alertaCidade": null,
+      "alertaLat": null,
+      "alertaLon": null
+      }
+- Login
+    - `POST /api/auth/login`
+    - Request
+      {
+      "email": "joao@gmail.com",
+      "password": "1234"
+      }
+    - Response (exemplo)
+      {
+      "utilizadorId": 1,
+      "nome": "João Silva",
+      "email": "joao@gmail.com",
+      "telefone": "910000000",
+      "dataRegisto": "2025-11-21T09:00:00",
+      "rating": 4.7,
+      "alugueres": [
+      {
+      "aluguerId": 20,
+      "dataInicio": "2025-11-20T12:30:00",
+      "dataFim": null,
+      "custo": 0.0,
+      "estado": null,
+      "guardaChuvaId": 5,
+      "pontoInicioId": 2,
+      "pontoFimId": null
+      }
+      ],
+      "notificacoes": [],
+      "alertaChuvaAtivo": true,
+      "alertaCidade": "Lisboa",
+      "alertaLat": null,
+      "alertaLon": null
+      }
+- Obter Perfil
+    - `GET /api/utilizadores/{id}`
+    - Response (exemplo)
+      {
+      "utilizadorId": 1,
+      "nome": "João Silva",
+      "email": "joao@gmail.com",
+      "telefone": "910000000",
+      "dataRegisto": "2025-10-01T08:00:00",
+      "rating": 4.9,
+      "alugueres": [
+      {
+      "aluguerId": 18,
+      "dataInicio": "2025-11-10T09:00:00",
+      "dataFim": "2025-11-10T10:15:00",
+      "custo": 0.0,
+      "estado": null,
+      "guardaChuvaId": 4,
+      "pontoInicioId": 1,
+      "pontoFimId": 3
+      }
+      ],
+      "notificacoes": [
+      {
+      "notificacaoId": 7,
+      "mensagem": "Chuva prevista às 15h",
+      "tipo": "ALERTA_CHUVA",
+      "dataEnvio": "2025-11-20T13:00:00",
+      "estado": "ENTREGUE"
+      }
+      ],
+      "alertaChuvaAtivo": true,
+      "alertaCidade": "Lisboa",
+      "alertaLat": null,
+      "alertaLon": null
+      }
 
 ---
-### 4. Endpoints de Aluguer (/aluguer)
-Criar um aluguer (via QR Code)
-
-POST /aluguer
-
-Request
-{
-  "utilizadorId": 1,
-  "guardaChuvaId": 5
-}
-
-Response
-{
-  "aluguerId": 20,
-  "dataInicio": "2025-11-20T12:30:00"
-}
-
- Finalizar aluguer
-
-PUT /aluguer/{id}/devolver
-
-Request
-{
-  "pontoEntregaId": 3
-}
-
-Response
-{
-  "status": "concluido",
-  "dataFim": "2025-11-20T13:00:00"
-}
-
-Histórico de alugueres do utilizador
-
-GET /aluguer/utilizador/{userId}
+### 2. Endpoints de Guarda-Chuva
+- Listar guarda-chuvas
+    - `GET /api/guardachuvas`
+    - Suporta filtro opcional: `GET /api/guardachuvas?estado=DISPONIVEL`
+    - Response (exemplo)
+      [
+      {
+      "guardaChuvaId": 5,
+      "codigoQr": "GC-00005",
+      "corId": 2,
+      "tipoId": 1,
+      "dataRegisto": "2025-09-15T11:20:00",
+      "pontoId": 2,
+      "alugueres": []
+      }
+      ]
+- Detalhes de um guarda-chuva
+    - `GET /api/guardachuvas/{id}`
+    - Response (exemplo)
+      {
+      "guardaChuvaId": 5,
+      "codigoQr": "GC-00005",
+      "corId": 2,
+      "tipoId": 1,
+      "dataRegisto": "2025-09-15T11:20:00",
+      "pontoId": 2,
+      "alugueres": [
+      {
+      "aluguerId": 20,
+      "dataInicio": "2025-11-20T12:30:00",
+      "dataFim": null,
+      "custo": 0.0,
+      "estado": null,
+      "guardaChuvaId": 5,
+      "pontoInicioId": 2,
+      "pontoFimId": null
+      }
+      ]
+      }
+- Obter por código QR
+    - `GET /api/guardachuvas/codigo/{codigoQr}`
+    - QR PNG: `GET /api/guardachuvas/codigo/{codigoQr}/qrcode?size=256`
+    - Response `qrcode` (PNG)
+        - `Content-Type: image/png` com o QR gerado
+- Criar/Atualizar
+    - `POST /api/guardachuvas`
+    - `PUT /api/guardachuvas/{id}`
 
 ---
-### 5. Endpoints de Notificações (/notificacoes)
-Enviar notificação
+### 3. Endpoints de Pontos de Aluguer
+- Listar todos os pontos
+    - `GET /api/pontos-de-aluguer`
+    - Response (exemplo)
+      [
+      {
+      "pontoId": 10,
+      "nome": "Oriente Green Campus",
+      "latitude": 38.768,
+      "longitude": -9.100,
+      "capacidade": 20,
+      "tipo": "CAMPUS",
+      "quantidade": 6
+      }
+      ]
+- Detalhes de um ponto
+    - `GET /api/pontos-de-aluguer/{id}`
+    - Response (exemplo)
+      {
+      "pontoId": 10,
+      "nome": "Oriente Green Campus",
+      "latitude": 38.768,
+      "longitude": -9.100,
+      "capacidade": 20,
+      "tipo": "CAMPUS",
+      "quantidade": 6
+      }
 
-POST /notificacoes
+---
+### 4. Endpoints de Aluguer
+- Iniciar aluguer
+    - `POST /api/alugueres/start`
+    - Parâmetros: `utilizadorId`, `guardaChuvaId`, `pontoInicioId`
+    - Response (exemplo)
+      {
+      "aluguerId": 20,
+      "utilizadorId": 1,
+      "guardaChuvaId": 5,
+      "pontoInicioId": 2,
+      "pontoFimId": null,
+      "dataInicio": "2025-11-20T12:30:00",
+      "dataFim": null,
+      "custo": 0.10,
+      "estado": null
+      }
+- Iniciar via QR Code
+    - `POST /api/alugueres/start-by-qr`
+    - Parâmetros: `utilizadorId`, `codigoQr` (ou `qr`), `pontoInicioId`
+    - Response (exemplo)
+      {
+      "aluguerId": 21,
+      "utilizadorId": 1,
+      "guardaChuvaId": 6,
+      "pontoInicioId": 2,
+      "pontoFimId": null,
+      "dataInicio": "2025-11-24T12:00:00",
+      "dataFim": null,
+      "custo": 0.0,
+      "estado": null
+      }
+- Finalizar aluguer
+    - `POST /api/alugueres/{aluguerId}/end`
+    - Parâmetros: `pontoFimId`
+    - Response (exemplo)
+      {
+      "aluguerId": 20,
+      "utilizadorId": 1,
+      "guardaChuvaId": 5,
+      "pontoInicioId": 2,
+      "pontoFimId": 3,
+      "dataInicio": "2025-11-20T12:30:00",
+      "dataFim": "2025-11-20T13:00:00",
+      "custo": 0.0,
+      "estado": null
+      }
 
-Request
-{
-  "utilizadorId": 1,
-  "mensagem": "Chuva prevista às 15h. Prepare o seu guarda-chuva!"
-}
-
-Listar notificações
-
-GET /notificacoes/utilizador/{id}
+---
+### 5. Endpoints de Notificações
+- Alerta de chuva (gera notificação automática)
+    - `POST /api/notificacoes/alerta-chuva`
+    - Parâmetros: `utilizadorId` e localização (`city` ou `lat`/`lon`)
+    - Response (exemplo)
+      {
+      "notificacaoId": 12,
+      "mensagem": "Chuva prevista às 15h. Prepare o seu guarda-chuva!",
+      "tipo": "ALERTA_CHUVA",
+      "dataEnvio": "2025-11-24T10:30:00",
+      "estado": "ENTREGUE"
+      }
+    - Caso não haja chuva: `"Sem chuva no local indicado. Nada a notificar."`
+- Stream de notificações (SSE)
+    - `GET /api/notificacoes/stream?utilizadorId={id}`
+    - Exemplo de evento SSE
+      data: {"notificacaoId":13,"mensagem":"Chuva moderada em 30min","tipo":"ALERTA_CHUVA","dataEnvio":"2025-11-24T11:00:00","estado":"ENTREGUE"}
+- Notificações do utilizador
+    - Incluídas em `GET /api/utilizadores/{id}` no campo `notificacoes`
 
 ---
 ### 6. Estrutura das Respostas da API
-Resposta de Sucesso
-{
-  "status": "success",
-  "data": {},
-  "timestamp": "2025-11-21T10:30:00"
-}
-
-Resposta de Erro
-{
-  "status": "error",
-  "message": "Guarda-chuva não encontrado",
-  "errorCode": 404
-}
+- As respostas devolvem DTOs diretamente, com códigos HTTP apropriados (`200`, `201`, `400`, `401`, `404`).
+- Não há wrapper padrão `status/data/timestamp`.
 
 ---
 ### 7. Autenticação
-
-A API utiliza JWT (JSON Web Token) para proteger endpoints.
-
-O token deve ser enviado nos headers:
-Authorization: Bearer <token>
+- Neste modo (beta/demonstração), os endpoints estão abertos e não requerem autenticação.
+- Não é necessário enviar `Authorization: Bearer ...`.
 
 ---
 ## **Requisitos**

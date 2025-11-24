@@ -84,7 +84,6 @@ Este modelo poderá ser expandido com novas entidades, como notificações perso
 
 ---
 
-
 ## Modelo de Pagamento  
 
 Para garantir uma experiência simples, rápida e segura, o **Best Umbrella** aposta em métodos de pagamento digitais amplamente utilizados e fáceis de integrar.  
@@ -107,6 +106,8 @@ O **depósito reembolsável** é o elemento-chave do sistema:
 
 Este método cria um equilíbrio entre confiança no utilizador e proteção da infraestrutura, tornando o sistema justo e eficiente.  
 
+---
+
 ## **Enquadramento das Unidades Curriculares**
 
 ### **Programação de Dispositivos Móveis**
@@ -123,6 +124,7 @@ Integração com APIs REST
 Gestão de dados locais e estados
 
 O objetivo foi construir uma experiência de utilizador fluida, simples e eficiente para permitir o acesso rápido às funcionalidades: mapa interativo, scanner, meteorologia, histórico e perfil.
+
 ---
 ### **Programação Orientada por Objetos**
 
@@ -138,6 +140,7 @@ Princípios de POO, como encapsulamento, herança e modularidade
 Utilização de UML para modelar o sistema
 
 Estes conceitos permitiram uma estrutura limpa, escalável e de fácil manutenção.
+
 ---
  ### **Bases de Dados**
 
@@ -153,6 +156,7 @@ Consultas SQL otimizadas
 Garantia de integridade referencial
 
 A organização das entidades (como utilizadores, guarda-chuvas, alugueres, estações, casas de banho, entre outras) assegura um funcionamento eficiente do sistema.
+
 ---
 ### **Matemática Discreta**
 
@@ -181,6 +185,7 @@ Reuniões de acompanhamento
 Feedbacks contínuos de design e funcionalidade
 
 Aqui também foram desenvolvidas competências como trabalho em equipa, resolução de problemas e gestão do tempo.
+
 ---
 ### **Competências Comunicacionais**
 
@@ -365,7 +370,8 @@ Resposta de Erro
   "message": "Guarda-chuva não encontrado",
   "errorCode": 404
 }
----
+
+
 ### 7. Autenticação
 
 A API utiliza JWT (JSON Web Token) para proteger endpoints.

@@ -134,7 +134,7 @@ Facilidade na modelação das relações
 
 Contribuindo para um sistema fiável e sem ambiguidades.
 
-Projeto de Desenvolvimento Móvel
+### **Projeto de Desenvolvimento Móvel**
 
 Esta unidade curricular foi essencial para a organização e evolução do projeto.
 Foram utilizadas ferramentas como:

@@ -176,7 +176,7 @@ Gere dados relacionados com utilizadores, pontos de aluguer, guarda-chuvas, alug
  **Base URL da API**
 https://api.bestumbrella.pt/api/v1
 
-### Endpoints de Utilizador (/utilizadores)
+### 1.Endpoints de Utilizador (/utilizadores)
  Criar Utilizador
 
 POST /utilizadores

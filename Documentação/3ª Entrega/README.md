@@ -258,6 +258,8 @@ Response
   "historicoAluguer": []
 }
 
+
+---
 ### 2. Endpoints de Guarda-Chuva (/guardachuva)
 Listar guarda-chuvas
 
@@ -285,6 +287,7 @@ Request
   "estado": "danificado"
 }
 
+---
 ### 3. Endpoints de Pontos de Aluguer (/pontos)
 Listar todos os pontos
 
@@ -305,6 +308,7 @@ Response
 
 GET /pontos/{id}
 
+---
 ### 4. Endpoints de Aluguer (/aluguer)
 Criar um aluguer (via QR Code)
 
@@ -341,6 +345,7 @@ Histórico de alugueres do utilizador
 
 GET /aluguer/utilizador/{userId}
 
+---
 ### 5. Endpoints de Notificações (/notificacoes)
 Enviar notificação
 
@@ -356,6 +361,7 @@ Listar notificações
 
 GET /notificacoes/utilizador/{id}
 
+---
 ### 6. Estrutura das Respostas da API
 Resposta de Sucesso
 {
@@ -371,7 +377,7 @@ Resposta de Erro
   "errorCode": 404
 }
 
-
+---
 ### 7. Autenticação
 
 A API utiliza JWT (JSON Web Token) para proteger endpoints.
@@ -402,13 +408,13 @@ Authorization: Bearer <token>
 
 ## **Mockups**
 
-Os protótipos desenvolvidos no Figma incluem:
+Os protótipos desenvolvidos incluem:
 
 * Mapa interativo
 * Ecrã de reserva
 * Scanner de QR Code
 * Histórico detalhado
-* Notificações inteligentes
+* Perfil
 <img width="2245" height="1587" alt="Image" src="https://github.com/user-attachments/assets/6a2e99f3-5614-4225-a6dc-b95b1317d18c" />
 
 ---

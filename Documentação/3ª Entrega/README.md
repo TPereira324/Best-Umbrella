@@ -123,7 +123,7 @@ Integração com APIs REST
 Gestão de dados locais e estados
 
 O objetivo foi construir uma experiência de utilizador fluida, simples e eficiente para permitir o acesso rápido às funcionalidades: mapa interativo, scanner, meteorologia, histórico e perfil.
-
+---
 ### **Programação Orientada por Objetos**
 
 O Back-End do Best Umbrella foi desenvolvido em Java, utilizando o framework Spring Boot, estabelecendo a ligação entre o front-end e a base de dados.
@@ -138,7 +138,7 @@ Princípios de POO, como encapsulamento, herança e modularidade
 Utilização de UML para modelar o sistema
 
 Estes conceitos permitiram uma estrutura limpa, escalável e de fácil manutenção.
-
+---
  ### **Bases de Dados**
 
 O armazenamento de dados utiliza MySQL, com uma estrutura relacional que garante integridade e segurança.
@@ -153,7 +153,7 @@ Consultas SQL otimizadas
 Garantia de integridade referencial
 
 A organização das entidades (como utilizadores, guarda-chuvas, alugueres, estações, casas de banho, entre outras) assegura um funcionamento eficiente do sistema.
-
+---
 ### **Matemática Discreta**
 
 Os conceitos de teoria de conjuntos foram aplicados na estruturação das relações entre entidades, como a ligação entre casas de banho, localizações e outras tabelas da aplicação.
@@ -181,7 +181,7 @@ Reuniões de acompanhamento
 Feedbacks contínuos de design e funcionalidade
 
 Aqui também foram desenvolvidas competências como trabalho em equipa, resolução de problemas e gestão do tempo.
-
+---
 ### **Competências Comunicacionais**
 
 A comunicação foi uma parte crucial no desenvolvimento do Best Umbrella.
@@ -196,9 +196,6 @@ Interação com potenciais utilizadores
 Coleta e análise de feedback
 
 Estas competências garantiram que o projeto evoluísse alinhado às necessidades reais dos utilizadores
-
-
-
 
 ----
 ## Documentação da API REST 
@@ -368,14 +365,13 @@ Resposta de Erro
   "message": "Guarda-chuva não encontrado",
   "errorCode": 404
 }
-
+---
 ### 7. Autenticação
 
 A API utiliza JWT (JSON Web Token) para proteger endpoints.
 
 O token deve ser enviado nos headers:
 Authorization: Bearer <token>
-
 
 ---
 ## **Requisitos**

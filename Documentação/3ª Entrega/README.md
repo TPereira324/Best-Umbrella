@@ -72,7 +72,40 @@ A API meteorológica envia uma notificação quando a chuva se aproxima, sugerin
 O utilizador acede ao perfil e vê todos os alugueres com datas, locais e custos.
 
 ---
+##  Modelo de Domínio  
 
+ modelo inicial é composto por quatro entidades principais que estruturam o sistema:  
+- **Utilizador**, que possui identificação única, nome, email, password encriptada e um rating associado.  
+- **GuardaChuva**, identificado por um estado e localização, sendo registado em diferentes pontos da cidade.  
+- **Aluguer**, que guarda toda a informação relativa ao processo, como as datas de início e fim, custo e associação ao utilizador.  
+-  **Ponto de Aluguer**, que representa o local físico e o parceiro responsável pelo guarda-chuva.  
+
+Este modelo poderá ser expandido com novas entidades, como notificações personalizadas e sistema de fidelização.  
+
+---
+
+
+## Modelo de Pagamento  
+
+Para garantir uma experiência simples, rápida e segura, o **Best Umbrella** aposta em métodos de pagamento digitais amplamente utilizados e fáceis de integrar.  
+
+### Método de Pagamento Disponível  
+- **PayPal** → opção internacionalmente reconhecida, ideal para turistas e utilizadores que preferem não utilizar cartões locais.  
+
+### Modelos de Utilização  
+- **Pay-per-use (pagar por utilização):** o utilizador paga apenas pelo tempo de utilização do guarda-chuva (ex.: 1€ por 24h).  
+- **Depósito reembolsável:** um valor de caução (ex.: 5€) é bloqueado no momento do aluguer e libertado assim que o guarda-chuva é devolvido corretamente. Caso não haja devolução, o depósito cobre o custo de reposição.  
+
+- **Campanhas promocionais:** descontos e primeiros minutos grátis, em colaboração com parceiros locais (universidades, cafés, centros comerciais).  
+
+### Depósito de Segurança  
+O **depósito reembolsável** é o elemento-chave do sistema:  
+1. O valor da caução é bloqueado no PayPal no momento da reserva.  
+2. O utilizador recolhe o guarda-chuva e utiliza-o normalmente.  
+3. Quando faz a devolução via QR Code, o sistema liberta automaticamente o depósito.  
+4. Se não devolver no prazo definido, o valor é cobrado como penalização, garantindo sustentabilidade ao serviço.  
+
+Este método cria um equilíbrio entre confiança no utilizador e proteção da infraestrutura, tornando o sistema justo e eficiente.  
 
 ## **Enquadramento das Unidades Curriculares**
 

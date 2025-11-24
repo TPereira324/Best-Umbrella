@@ -374,7 +374,7 @@ Os protótipos desenvolvidos no Figma incluem:
 * Scanner de QR Code
 * Histórico detalhado
 * Notificações inteligentes
-
+<img width="2245" height="1587" alt="Image" src="https://github.com/user-attachments/assets/6a2e99f3-5614-4225-a6dc-b95b1317d18c" />
 ![Image](https://github.com/user-attachments/assets/da434d7e-8a2b-47da-880e-97e8dc918fb3)
 ![Image](https://github.com/user-attachments/assets/98d4cba2-d12b-4394-b8dc-d8993901a6e7)
 ![Image](https://github.com/user-attachments/assets/b76acc17-3db9-41ba-b754-77c04f79d93b)

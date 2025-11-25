@@ -2,28 +2,17 @@ package pt.iade.ei.bestumbrella1.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import pt.iade.ei.bestumbrella1.BuildConfig
-import pt.iade.ei.bestumbrella1.data.weather.WeatherRepository
-import pt.iade.ei.bestumbrella1.models.SessionManager
+import pt.iade.ei.bestumbrella1.model.SessionManager
 import pt.iade.ei.bestumbrella1.network.AluguerDto
 import pt.iade.ei.bestumbrella1.network.ApiService
 import pt.iade.ei.bestumbrella1.network.Daily
 import pt.iade.ei.bestumbrella1.network.Hourly
 import pt.iade.ei.bestumbrella1.network.OpenWeatherForecastResponse
 import pt.iade.ei.bestumbrella1.network.OpenWeatherOneCallResponse
-import pt.iade.ei.bestumbrella1.network.ReturnResponse
-import pt.iade.ei.bestumbrella1.network.UpdateProfileRequest
-import pt.iade.ei.bestumbrella1.network.UserPreferences
 import pt.iade.ei.bestumbrella1.network.UserProfileResponse
 import pt.iade.ei.bestumbrella1.network.UserRequest
 import pt.iade.ei.bestumbrella1.network.UserResponse
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
-import java.io.File
 
 class Repository(private val apiService: ApiService, private val sessionManager: SessionManager) {
     private val weatherRepo = WeatherRepository()
@@ -150,112 +139,6 @@ class Repository(private val apiService: ApiService, private val sessionManager:
         }
     }
 
-    suspend fun updateUserProfile(
-        name: String?,
-        preferences: UserPreferences?
-    ): Result<UserResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val token = sessionManager.getAuthToken()
-                if (token.isNullOrEmpty()) {
-                    return@withContext Result.failure(Exception("Usuário não autenticado"))
-                }
-
-                val request = UpdateProfileRequest(name, preferences)
-                val response = apiService.updateUserProfile("Bearer $token", request)
-                if (response.isSuccessful) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(
-                        Exception(
-                            "Falha ao atualizar perfil: ${
-                                response.errorBody()?.string()
-                            }"
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    }
-
-    suspend fun getAllUsers(): Result<List<UserProfileResponse>> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val token = sessionManager.getAuthToken()
-                if (token.isNullOrEmpty()) {
-                    return@withContext Result.failure(Exception("Usuário não autenticado"))
-                }
-
-                val response = apiService.getAllUsers("Bearer $token")
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(
-                        Exception(
-                            "Falha ao obter utilizadores: ${
-                                response.errorBody()?.string()
-                            }"
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    }
-
-    suspend fun submitUmbrellaReturn(
-        imageFile: File,
-        umbrellaId: String,
-        notes: String
-    ): Result<ReturnResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val token = sessionManager.getAuthToken()
-                if (token.isNullOrEmpty()) {
-                    return@withContext Result.failure(Exception("Usuário não autenticado"))
-                }
-
-                val imageRequestBody = imageFile.asRequestBody("image/jpeg".toMediaType())
-                val imagePart =
-                    MultipartBody.Part.createFormData("image", imageFile.name, imageRequestBody)
-                val umbrellaIdBody: RequestBody =
-                    umbrellaId.toRequestBody("text/plain".toMediaType())
-                val notesBody: RequestBody = notes.toRequestBody("text/plain".toMediaType())
-
-                val response = apiService.submitReturn(
-                    token = "Bearer $token",
-                    image = imagePart,
-                    umbrellaId = umbrellaIdBody,
-                    notes = notesBody
-                )
-
-                if (response.isSuccessful && response.body() != null) {
-                    val body = response.body()!!
-                    val origin = BuildConfig.API_BASE_URL.removeSuffix("/")
-                        .removeSuffix("/api")
-                    val full =
-                        if (!body.imageUrl.isNullOrBlank() && body.imageUrl!!.startsWith("/")) {
-                            origin + body.imageUrl
-                        } else body.imageUrl
-                    val adjusted = pt.iade.ei.bestumbrella1.network.ReturnResponse(
-                        success = body.success,
-                        message = body.message,
-                        returnId = body.returnId,
-                        imageUrl = full
-                    )
-                    Result.success(adjusted)
-                } else {
-                    Result.failure(Exception("Falha ao submeter devolução: HTTP ${response.code()} ${response.message()}"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    }
-
     private fun resolveQrCode(input: String): String {
         val s = input.trim()
         val qIdx = s.indexOf('?')
@@ -297,7 +180,7 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                     ?: return@withContext Result.failure(Exception("ID de usuário inválido"))
                 val code = resolveQrCode(scanned)
                 val pontoId =
-                    pt.iade.ei.bestumbrella1.models.UmbrellaData.findByQrCode(code)?.pontoId ?: 1
+                    pt.iade.ei.bestumbrella1.model.UmbrellaData.findByQrCode(code)?.pontoId ?: 1
                 val response = apiService.startByQr(
                     utilizadorId = userId,
                     codigoQr = code,

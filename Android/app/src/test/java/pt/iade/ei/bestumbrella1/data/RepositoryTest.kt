@@ -8,7 +8,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import pt.iade.ei.bestumbrella1.models.SessionManager
+import pt.iade.ei.bestumbrella1.model.SessionManager
 import pt.iade.ei.bestumbrella1.network.ApiService
 import pt.iade.ei.bestumbrella1.network.UserRequest
 import pt.iade.ei.bestumbrella1.network.UserResponse

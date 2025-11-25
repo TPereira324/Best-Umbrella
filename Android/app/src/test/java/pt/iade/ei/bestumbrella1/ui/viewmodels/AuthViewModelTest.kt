@@ -3,7 +3,6 @@ package pt.iade.ei.bestumbrella1.ui.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
 import io.mockk.coVerify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import pt.iade.ei.bestumbrella1.data.Repository
 import pt.iade.ei.bestumbrella1.network.UserResponse
-import pt.iade.ei.bestumbrella1.models.SessionManager
+import pt.iade.ei.bestumbrella1.model.SessionManager
 import pt.iade.ei.bestumbrella1.viewmodels.AuthViewModel
 import pt.iade.ei.bestumbrella1.network.UserProfileResponse
 import pt.iade.ei.bestumbrella1.network.UserPreferences

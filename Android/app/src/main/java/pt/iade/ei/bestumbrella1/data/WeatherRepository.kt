@@ -1,21 +1,24 @@
-package pt.iade.ei.bestumbrella1.data.weather
+package pt.iade.ei.bestumbrella1.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pt.iade.ei.bestumbrella1.BuildConfig
+import pt.iade.ei.bestumbrella1.network.Daily
+import pt.iade.ei.bestumbrella1.network.DailyTemp
+import pt.iade.ei.bestumbrella1.network.ForecastItem
+import pt.iade.ei.bestumbrella1.network.Hourly
 import pt.iade.ei.bestumbrella1.network.OpenWeatherCurrentResponse
 import pt.iade.ei.bestumbrella1.network.OpenWeatherForecastResponse
 import pt.iade.ei.bestumbrella1.network.OpenWeatherOneCallResponse
 import pt.iade.ei.bestumbrella1.network.OpenWeatherRetrofit
-import pt.iade.ei.bestumbrella1.network.ForecastItem
-import pt.iade.ei.bestumbrella1.network.Hourly
-import pt.iade.ei.bestumbrella1.network.Daily
-import pt.iade.ei.bestumbrella1.network.DailyTemp
 import pt.iade.ei.bestumbrella1.network.Weather
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
 
 class WeatherRepository {
-    suspend fun getOneCallForecast(latitude: Double, longitude: Double): Result<OpenWeatherOneCallResponse> {
+    suspend fun getOneCallForecast(
+        latitude: Double,
+        longitude: Double
+    ): Result<OpenWeatherOneCallResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = OpenWeatherRetrofit.api.getOneCall(
@@ -37,7 +40,10 @@ class WeatherRepository {
         }
     }
 
-    suspend fun getFiveDayForecast(latitude: Double, longitude: Double): Result<OpenWeatherForecastResponse> {
+    suspend fun getFiveDayForecast(
+        latitude: Double,
+        longitude: Double
+    ): Result<OpenWeatherForecastResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = OpenWeatherRetrofit.api.getFiveDayForecast(
@@ -72,7 +78,8 @@ class WeatherRepository {
             val max = items.mapNotNull { it.main.tempMax }.maxOrNull() ?: temps.maxOrNull() ?: 0.0
             val dt = items.firstOrNull()?.dt ?: 0L
             val weather: List<Weather> = items.firstOrNull()?.weather ?: emptyList()
-            val popAvg = items.mapNotNull { it.precipitationProbability }.average().takeIf { !it.isNaN() }
+            val popAvg =
+                items.mapNotNull { it.precipitationProbability }.average().takeIf { !it.isNaN() }
             Daily(
                 dt = dt,
                 sunrise = null,

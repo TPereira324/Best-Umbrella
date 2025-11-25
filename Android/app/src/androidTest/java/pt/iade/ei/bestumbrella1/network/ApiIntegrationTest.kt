@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import pt.iade.ei.bestumbrella1.data.Repository
-import pt.iade.ei.bestumbrella1.models.SessionManager
+import pt.iade.ei.bestumbrella1.model.SessionManager
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

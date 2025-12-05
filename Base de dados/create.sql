@@ -1,103 +1,137 @@
-create table guardachuva (
-gchuva_id int not null auto_increment,
-gchuva_num VARCHAR(60) not null, 		    
- gchuva_datareg Date not null,
-    gchuva_cor_id INT,
-	gchuva_tipo_id INT,
-	primary key (gchuva_id)	
-
-);
-		     		     
-create table cor (
-	cor_id int not null auto_increment,
-	cor_name VARCHAR(40) not null, 	
-	primary key (cor_id)
-);
-
-
-create table tipo (
-	tip_id int not null auto_increment,
-	tip_name VARCHAR(40) not null, 
-	primary key (tip_id)
-);
-
 
 create table cidade (
-	cid_id int not null auto_increment,
-	cid_name VARCHAR(40) not null, 					
-	primary key (cid_id)
+
+cid_id int not null auto_increment,
+cid_name VARCHAR(40) not null, 					
+primary key (cid_id)
+
 );
 
+create table cor (
 
+cor_id int not null auto_increment,
+cor_name VARCHAR(40) not null, 	
+primary key (cor_id)
 
-
-create table zona (
-zon_id int not null auto_increment,
-zon_name VARCHAR(40) not null,
-zon_cid_id INT not null,
-primary key (zon_id)
 );
 
 
 create table estacao (
+
 est_id int not null auto_increment,
-est_name VARCHAR(40) not null,
+est_name VARCHAR(255) not null,
 est_zon_id INT not null,
 est_lat DOUBLE,
 est_long DOUBLE,
 est_cap INT,
 primary key (est_id)
+	
 );
 
 
+create table estado  (
+
+estado_id INT not null auto_increment,
+estado_name VARCHAR(255),
+est_ugeme_id INT not null,
+primary key (estado_id)
+
+);
+
 create table ge (
+
 ge_id int not null auto_increment,
 ge_datein date not null,
 ge_datout date,
 ge_gchuva_id INT not null,
 ge_est_id INT not null,
 primary key (ge_id)
+
+);
+
+
+create table guardachuva (
+
+gchuva_id int not null auto_increment,
+gchuva_num VARCHAR(60) not null, 		    
+gchuva_datareg Date not null,
+gchuva_cor_id INT,
+gchuva_tipo_id INT,
+primary key (gchuva_id)	
+
+);
+
+
+create table mugem (			
+
+mugem_id INT not null auto_increment,
+mugem_ugem_id INT not null,
+mugem_mul_id INT not null,
+primary key (mugem_id)
+					
+);
+
+
+CREATE TABLE multa (
+
+mul_id INT NOT NULL AUTO_INCREMENT,
+mul_ut_id INT NOT NULL,
+mul_dataem DATE NOT NULL,
+mul_dataven DATE NOT NULL,
+mul_moeda VARCHAR(255),
+ mul_mot VARCHAR(255),
+ mul_valor DECIMAL(10,2),
+ PRIMARY KEY (mul_id)
+	
+);
+
+
+CREATE TABLE notificacao (
+ 
+not_id INT NOT NULL AUTO_INCREMENT,
+ ut_not_id INT NOT NULL,
+ not_msg VARCHAR(255),
+ dataenv DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (not_id)
 );
 
 
 
+create table tipo (
+
+tip_id int not null auto_increment,
+tip_name VARCHAR(40) not null, 
+primary key (tip_id)
+
+);
+
 
 create table ugem (
+
 ugem_id int not null auto_increment,
 ugem_datein date not null,
 ugem_datout date,
 ugem_gchuva_id INT not null,
 ugem_ut_id INT not null,
 primary key (ugem_id)
-);
-
-
-
-
-
-CREATE TABLE multa (
- mul_id INT NOT NULL AUTO_INCREMENT,
- mul_ut_id INT NOT NULL,
-mul_dataem DATE NOT NULL,
-mul_dataven DATE NOT NULL,
- mul_moeda VARCHAR(255),
- mul_mot VARCHAR(255),
- mul_valor DECIMAL(10,2),
- PRIMARY KEY (mul_id)
-);
-
-
-create table mugem (			
-mugem_id INT not null auto_increment,
-mugem_ugem_id INT not null,
-mugem_mul_id INT not null,
-primary key (mugem_id)
-					
-
 
 );
+
+
+CREATE TABLE ugeme (
+
+ugeme_id INT NOT NULL AUTO_INCREMENT,
+ugeme_ugem_id INT NOT NULL,
+ ugeme_estado VARCHAR(255),
+ugeme_evento VARCHAR(100),
+ugeme_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (ugeme_id)
+
+);
+
 
 create table utilizador (
+
 ut_id int not null auto_increment,
 ut_name VARCHAR(255),
 ut_email VARCHAR (255),
@@ -106,35 +140,16 @@ ut_telefone VARCHAR (255),
 ut_datareg DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ut_rating DOUBLE,
 primary key (ut_id)
+
 );
 
+create table zona (
 
+zon_id int not null auto_increment,
+zon_name VARCHAR(40) not null,
+zon_cid_id INT not null,
+primary key (zon_id)
 
-
-
-CREATE TABLE notificacao (
-    not_id INT NOT NULL AUTO_INCREMENT,
-    ut_not_id INT NOT NULL,
-    not_msg VARCHAR(255),
-    dataenv DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (not_id)
-);
-
-CREATE TABLE ugeme (
-    ugeme_id INT NOT NULL AUTO_INCREMENT,
-    ugeme_ugem_id INT NOT NULL,
-    ugeme_estado VARCHAR(255),
-    ugeme_evento VARCHAR(100),
-    ugeme_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (ugeme_id)
-);
-
-
-create table estado  (
-					estado_id INT not null auto_increment,
-					estado_name VARCHAR(255),
-					est_ugeme_id INT not null,
-					primary key (estado_id)
 );
 
 

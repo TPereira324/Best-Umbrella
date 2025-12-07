@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.data.Repository
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
-import pt.iade.ei.bestumbrella1.network.Hourly
-import pt.iade.ei.bestumbrella1.network.Daily
-import pt.iade.ei.bestumbrella1.network.Alert
+import pt.iade.ei.bestumbrella1.model.Hourly
+import pt.iade.ei.bestumbrella1.model.Daily
+import pt.iade.ei.bestumbrella1.model.Alert
 
 class WeatherController(private val repository: Repository) : ViewModel() {
 

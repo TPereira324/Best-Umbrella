@@ -5,10 +5,10 @@ import kotlinx.coroutines.withContext
 import pt.iade.ei.bestumbrella1.model.SessionManager
 import pt.iade.ei.bestumbrella1.network.AluguerDto
 import pt.iade.ei.bestumbrella1.network.ApiService
-import pt.iade.ei.bestumbrella1.network.Daily
-import pt.iade.ei.bestumbrella1.network.Hourly
-import pt.iade.ei.bestumbrella1.network.OpenWeatherForecastResponse
-import pt.iade.ei.bestumbrella1.network.OpenWeatherOneCallResponse
+import pt.iade.ei.bestumbrella1.model.Daily
+import pt.iade.ei.bestumbrella1.model.Hourly
+import pt.iade.ei.bestumbrella1.model.OpenWeatherForecastResponse
+import pt.iade.ei.bestumbrella1.model.OpenWeatherOneCallResponse
 import pt.iade.ei.bestumbrella1.network.UserProfileResponse
 import pt.iade.ei.bestumbrella1.network.UserRequest
 import pt.iade.ei.bestumbrella1.network.UserResponse

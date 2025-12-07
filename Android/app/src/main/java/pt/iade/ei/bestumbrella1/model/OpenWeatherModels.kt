@@ -1,4 +1,4 @@
-package pt.iade.ei.bestumbrella1.network
+package pt.iade.ei.bestumbrella1.model
 
 import com.google.gson.annotations.SerializedName
 

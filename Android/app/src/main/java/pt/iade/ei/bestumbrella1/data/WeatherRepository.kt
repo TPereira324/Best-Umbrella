@@ -3,15 +3,15 @@ package pt.iade.ei.bestumbrella1.data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pt.iade.ei.bestumbrella1.BuildConfig
-import pt.iade.ei.bestumbrella1.network.Daily
-import pt.iade.ei.bestumbrella1.network.DailyTemp
-import pt.iade.ei.bestumbrella1.network.ForecastItem
-import pt.iade.ei.bestumbrella1.network.Hourly
-import pt.iade.ei.bestumbrella1.network.OpenWeatherCurrentResponse
-import pt.iade.ei.bestumbrella1.network.OpenWeatherForecastResponse
-import pt.iade.ei.bestumbrella1.network.OpenWeatherOneCallResponse
+import pt.iade.ei.bestumbrella1.model.Daily
+import pt.iade.ei.bestumbrella1.model.DailyTemp
+import pt.iade.ei.bestumbrella1.model.ForecastItem
+import pt.iade.ei.bestumbrella1.model.Hourly
+import pt.iade.ei.bestumbrella1.model.OpenWeatherCurrentResponse
+import pt.iade.ei.bestumbrella1.model.OpenWeatherForecastResponse
+import pt.iade.ei.bestumbrella1.model.OpenWeatherOneCallResponse
 import pt.iade.ei.bestumbrella1.network.OpenWeatherRetrofit
-import pt.iade.ei.bestumbrella1.network.Weather
+import pt.iade.ei.bestumbrella1.model.Weather
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
 
 class WeatherRepository {

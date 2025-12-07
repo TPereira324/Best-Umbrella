@@ -1,5 +1,8 @@
 package pt.iade.ei.bestumbrella1.network
 
+import pt.iade.ei.bestumbrella1.model.OpenWeatherCurrentResponse
+import pt.iade.ei.bestumbrella1.model.OpenWeatherForecastResponse
+import pt.iade.ei.bestumbrella1.model.OpenWeatherOneCallResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

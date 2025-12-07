@@ -18,6 +18,6 @@ Toda a documentação detalhada encontra-se na pasta documentação incluindo:
 ##  Tecnologias  
 - Kotlin (Android)  
 - Spring Boot (Backend)  
-- PostgreSQL/MySQL (Base de Dados)  
+- MySQL (Base de Dados)  
 - Figma (Design)  
 - GitHub / ClickUp / Discord (Gestão de Projeto)  

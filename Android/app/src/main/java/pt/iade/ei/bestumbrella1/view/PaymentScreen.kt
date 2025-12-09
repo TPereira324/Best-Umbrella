@@ -279,7 +279,7 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
         <html>
         <head>
           <meta name=viewport content="width=device-width, initial-scale=1" />
-          <script src="https://www.paypal.com/sdk/js?client-id=${BuildConfig.PAYPAL_CLIENT_ID}&currency=EUR&disable-funding=card&locale=pt_PT"></script>
+          <script src="https://www.paypal.com/sdk/js?client-id=${BuildConfig.PAYPAL_CLIENT_ID}&currency=EUR&intent=capture&disable-funding=card&locale=pt_PT"></script>
           <style> body { font-family: sans-serif; margin: 0; padding: 16px; } </style>
         </head>
         <body>
@@ -294,7 +294,8 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
                   purchase_units: [{ amount: { value: amount } }]
                 }).catch(function(err){
                   const e = (typeof err === 'object' ? err : { message: String(err) });
-                  PayPalAndroid.postMessage(JSON.stringify({ status: 'error', name: e.name, message: String(err), debug_id: e.debug_id }));
+                  PayPalAndroid.postMessage(JSON.stringify({ status: 'error', name: e.name, message: String(err), debug_id: e && (e.debug_id || e.debugId) }));
+                  throw err;
                 });
               },
               onApprove: function(data, actions) {

@@ -65,7 +65,6 @@ fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: D
     var showCheckout by remember { mutableStateOf(false) }
     var paymentMessage by remember { mutableStateOf<String?>(null) }
     val hasClientId = remember { BuildConfig.PAYPAL_CLIENT_ID.isNotBlank() }
-    val testMode = remember { BuildConfig.PAYPAL_TEST_MODE }
     val context = LocalContext.current
     val sessionManager =
         remember { AppModule.provideSessionManager(context) }
@@ -199,43 +198,7 @@ fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: D
                             )
                         }
 
-                        if (testMode) {
-                            Spacer(Modifier.height(12.dp))
-                            OutlinedButton(
-                                onClick = {
-                                    val value = amountText.text.toDoubleOrNull()
-                                    if (value != null && value > 0) {
-                                        if (qrCode.isBlank()) {
-                                            scope.launch { sessionManager.startRental("") }
-                                            navController.navigate("map")
-                                        } else {
-                                            scope.launch { sessionManager.stopRental() }
-                                            navController.navigate("map")
-                                        }
-                                    } else {
-                                        paymentMessage = "Insira um valor válido para testar."
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = Color(
-                                        0xFF1B5E20
-                                    )
-                                )
-                            ) {
-                                Icon(
-                                    Icons.Default.CheckCircle,
-                                    contentDescription = null,
-                                    tint = Color(0xFF1B5E20)
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Text(
-                                    "Testar sem PayPal",
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1B5E20)
-                                )
-                            }
-                        }
+                        
 
                         Spacer(Modifier.height(16.dp))
 

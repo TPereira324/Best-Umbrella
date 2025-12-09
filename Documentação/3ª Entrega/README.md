@@ -493,6 +493,7 @@ Os protótipos desenvolvidos incluem:
 * Scanner de QR Code
 * Histórico detalhado
 * Perfil
+* Tempo
 <img width="2245" height="1587" alt="Image" src="https://github.com/user-attachments/assets/a7728921-c320-4aa5-9044-bde23f4a7e09" />
 ---
 

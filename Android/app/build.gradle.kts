@@ -3,18 +3,15 @@
 import java.io.File
 import java.util.Properties
 
-// Ler propriedades locais (local.properties) para credenciais que não devem ser commitadas
 val localProps = Properties().apply {
     val localFile = File(rootProject.projectDir, "local.properties")
     if (localFile.exists()) {
         localFile.inputStream().use { load(it) }
     }
 }
-val paypalClientId: String = localProps.getProperty("PAYPAL_CLIENT_ID") ?: ""
-// Chave da OpenWeather: usa a de local.properties ou cai no valor fornecido
+val paypalClientId: String = localProps.getProperty("PAYPAL_CLIENT_ID") ?: "AbWHZSjRti6nJOR1llh1bJjDj2GUklE1xT3BeYq4JRlwTKQYz9Ohf8fVUrTe2SwRW0NatLa"
 val weatherApiKey: String = localProps.getProperty("WEATHER_API_KEY") ?: "7d7353b5a696a31078211f46891b389e"
-val paypalTestMode: String = localProps.getProperty("PAYPAL_TEST_MODE") ?: "false"
-
+ 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -37,10 +34,8 @@ android {
          buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
 
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"$paypalClientId\"")
-         buildConfigField("boolean", "PAYPAL_TEST_MODE", paypalTestMode)
          buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
 
-        // Suporte a emuladores x86_64 e dispositivos ARM
         ndk {
             abiFilters.clear()
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
@@ -54,13 +49,13 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            // Remove recursos não usados para reduzir tamanho do APK
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+        
     }
 
     compileOptions {
@@ -76,11 +71,8 @@ android {
         compose = true
     }
 
-   
     packaging {
-        // Mantém todas as arquiteturas compatíveis para rodar em emuladores x86_64
         jniLibs {
-            // Sem exclusões de x86/x86_64
         }
         resources {
             excludes += setOf(
@@ -94,15 +86,13 @@ android {
                 "META-INF/ASL2.0",
                 "META-INF/INDEX.LIST"
             )
-           
+            
             pickFirsts += setOf(
                 "META-INF/io.netty.versions.properties"
             )
         }
     }
 }
-
-// (sem toolchain explícito)
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -149,7 +139,6 @@ dependencies {
     implementation(libs.core)
 }
 
-// Force Gradle to use a Java 17 toolchain for this module
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))

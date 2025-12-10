@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -35,10 +34,10 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapMarkersContent(
-    navController: NavController,
     focusStation: String? = null,
     selectedStation: Station?,
     onSelectStation: (Station?) -> Unit,
+    onReserved: () -> Unit,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
@@ -75,16 +74,18 @@ fun MapMarkersContent(
     }
 
     var currentFilter by remember { mutableStateOf(StationFilter.ALL) }
-    val stations = remember {
-        listOf(
-            Station("IADE", LatLng(38.7818, -9.10251), 3, 6),
-            Station("Parque das Nações", LatLng(38.76800, -9.09400), 6, 10),
-            Station("Metro Moscavide", LatLng(38.77639, -9.10169), 8, 10),
-            Station("Metro Oriente", LatLng(38.76784, -9.09935), 4, 8),
-            Station("Terreiro do Paço", LatLng(38.70667, -9.13528), 10, 15),
-            Station("Baixa-Chiado", LatLng(38.71056, -9.14000), 8, 12),
-            Station("Marquês de Pombal", LatLng(38.724686, -9.150442), 12, 20),
-            Station("Rossio", LatLng(38.713718, -9.139681), 7, 12),
+    var stations by remember {
+        mutableStateOf(
+            listOf(
+                Station("IADE", LatLng(38.7818, -9.10251), 3, 6),
+                Station("Parque das Nações", LatLng(38.76800, -9.09400), 6, 10),
+                Station("Metro Moscavide", LatLng(38.77639, -9.10169), 8, 10),
+                Station("Metro Oriente", LatLng(38.76784, -9.09935), 4, 8),
+                Station("Terreiro do Paço", LatLng(38.70667, -9.13528), 10, 15),
+                Station("Baixa-Chiado", LatLng(38.71056, -9.14000), 8, 12),
+                Station("Marquês de Pombal", LatLng(38.724686, -9.150442), 12, 20),
+                Station("Rossio", LatLng(38.713718, -9.139681), 7, 12),
+            )
         )
     }
 
@@ -165,9 +166,14 @@ fun MapMarkersContent(
             androidx.compose.foundation.layout.Spacer(Modifier.height(16.dp))
             Button(
                 onClick = {
-                    onSelectStation(null)
                     scope.launch { sessionManager.startRental("MAP") }
-                    navController.navigate("map")
+                    val updatedList = stations.map {
+                        if (it.name == station.name && it.available > 0) it.copy(available = it.available - 1) else it
+                    }
+                    stations = updatedList
+                    updatedList.find { it.name == station.name } ?: station
+                    onReserved()
+                    onSelectStation(null)
                 },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)

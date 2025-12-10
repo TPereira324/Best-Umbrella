@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.di.AppModule
 import pt.iade.ei.bestumbrella1.model.Station
 
@@ -77,10 +78,15 @@ fun MapScreenWithMarkers(navController: NavController, focusStation: String? = n
                 )
         ) {
             MapMarkersContent(
-                navController = navController,
                 focusStation = focusStation,
                 selectedStation = selectedStation,
-                onSelectStation = { selected -> selectedStation = selected }
+                onSelectStation = { selected -> selectedStation = selected },
+                onReserved = {
+                    scope.launch {
+                        rentalStartMs = sessionManager.getRentalStartMs()
+                        rentalQr = sessionManager.getRentalQrCode()
+                    }
+                }
             )
 
             if (rentalStartMs != null) {

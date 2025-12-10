@@ -7,6 +7,7 @@ import pt.iade.ei.bestumbrella1.network.ApiService
 import pt.iade.ei.bestumbrella1.network.RetrofitClient
 import pt.iade.ei.bestumbrella1.controllers.AuthController
 import pt.iade.ei.bestumbrella1.controllers.WeatherController
+import pt.iade.ei.bestumbrella1.controllers.PaymentController
 
 object AppModule {
 
@@ -14,6 +15,7 @@ object AppModule {
     private var sessionManager: SessionManager? = null
     private var authController: AuthController? = null
     private var weatherController: WeatherController? = null
+    private var paymentController: PaymentController? = null
 
     fun provideSessionManager(context: Context): SessionManager {
         return sessionManager ?: SessionManager(context).also {
@@ -46,10 +48,16 @@ object AppModule {
         }
     }
 
+    fun providePaymentController(context: Context): PaymentController {
+        return paymentController ?: PaymentController(provideSessionManager(context)).also {
+            paymentController = it
+        }
+    }
 
     fun clearInstances() {
         repository = null
         authController = null
         weatherController = null
+        paymentController = null
     }
 }

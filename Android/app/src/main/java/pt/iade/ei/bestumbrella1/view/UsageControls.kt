@@ -64,14 +64,16 @@ fun RentalEndSheet(
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val paymentController = pt.iade.ei.bestumbrella1.di.AppModule.providePaymentController(context)
     val totalSeconds = (elapsedMs / 1000).toInt()
     val hDisp = totalSeconds / 3600
     val mDisp = (totalSeconds % 3600) / 60
     val sDisp = totalSeconds % 60
-    val minutesRounded = (((elapsedMs + 59999L) / 60000L).toInt()).coerceAtLeast(1)
+    (((elapsedMs + 59999L) / 60000L).toInt()).coerceAtLeast(1)
     val baseFee = 0.30
     val ratePerMin = 0.15
-    val amount = kotlin.math.round((baseFee + minutesRounded * ratePerMin) * 100) / 100.0
+    val amount = paymentController.computeAmount(elapsedMs)
 
     ModalBottomSheet(sheetState = sheetState, onDismissRequest = onDismiss) {
         androidx.compose.foundation.layout.Column(Modifier.padding(16.dp)) {

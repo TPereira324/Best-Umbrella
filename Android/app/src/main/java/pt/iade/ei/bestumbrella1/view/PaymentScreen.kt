@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
-import pt.iade.ei.bestumbrella1.BuildConfig
 import pt.iade.ei.bestumbrella1.di.AppModule
 import java.util.Locale
 
@@ -62,8 +61,9 @@ fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: D
     }
     var showCheckout by remember { mutableStateOf(false) }
     var paymentMessage by remember { mutableStateOf<String?>(null) }
-    val hasClientId = remember { BuildConfig.PAYPAL_CLIENT_ID.isNotBlank() }
     val context = LocalContext.current
+    val paymentController = remember { AppModule.providePaymentController(context) }
+    val hasClientId = remember { paymentController.hasClientId() }
     remember { AppModule.provideSessionManager(context) }
     rememberCoroutineScope()
 
@@ -230,7 +230,13 @@ private data class PayPalResult(
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Unit) {
+private fun PayPalCheckoutWebView(
+    amount: Double,
+    clientId: String,
+    apiBaseUrl: String,
+    serverBaseUrl: String,
+    onResult: (PayPalResult) -> Unit
+) {
     val conf = LocalConfiguration.current
     val webHeight = (conf.screenHeightDp.dp * 0.85f)
     val html = remember(amount) {
@@ -239,13 +245,13 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
         <html>
         <head>
           <meta name=viewport content="width=device-width, initial-scale=1" />
-          <script src="https://www.paypal.com/sdk/js?client-id=${BuildConfig.PAYPAL_CLIENT_ID}&currency=EUR&intent=capture&disable-funding=card&locale=pt_PT"></script>
+          <script src="https://www.paypal.com/sdk/js?client-id=${clientId}&currency=EUR&intent=capture&disable-funding=card&locale=pt_PT"></script>
           <style> body { font-family: sans-serif; margin: 0; padding: 16px; } </style>
         </head>
         <body>
           <div id="paypal-button-container"></div>
           <script>
-            const API_BASE = '${BuildConfig.API_BASE_URL}';
+            const API_BASE = '${apiBaseUrl}';
             const amount = '${valueStr}';
             paypal.Buttons({
               style: { shape: 'pill', color: 'blue', layout: 'vertical', label: 'paypal' },
@@ -281,7 +287,7 @@ private fun PayPalCheckoutWebView(amount: Double, onResult: (PayPalResult) -> Un
         """.trimIndent()
     }
 
-    val serverBaseUrl = remember { BuildConfig.API_BASE_URL.replace("api/", "") }
+
 
     AndroidView(
         modifier = Modifier
@@ -346,7 +352,7 @@ fun PayPalCheckoutScreen(
     action: String = "start"
 ) {
     val context = LocalContext.current
-    val sessionManager = remember { AppModule.provideSessionManager(context) }
+    val paymentController = remember { AppModule.providePaymentController(context) }
     val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
@@ -388,13 +394,13 @@ fun PayPalCheckoutScreen(
             ) {
                 PayPalCheckoutWebView(
                     amount = amount,
+                    clientId = paymentController.clientId(),
+                    apiBaseUrl = paymentController.apiBaseUrl(),
+                    serverBaseUrl = paymentController.serverBaseUrl(),
                     onResult = { result ->
                         when (result.status) {
                             "success" -> {
-                                when (action.lowercase(Locale.ROOT)) {
-                                    "end" -> scope.launch { sessionManager.stopRental() }
-                                    else -> scope.launch { sessionManager.startRental(qrCode) }
-                                }
+                                scope.launch { paymentController.onPayPalSuccess(action, qrCode) }
                                 val goTo = if (qrCode.isBlank()) "profile" else "map"
                                 navController.navigate(goTo) {
                                     popUpTo(goTo) { inclusive = false }
@@ -403,10 +409,11 @@ fun PayPalCheckoutScreen(
                             }
 
                             "error" -> {
-                                val name = result.name ?: "Erro"
-                                val dbg = result.debugId?.let { " (debug_id: ${it})" } ?: ""
-                                val msg = result.message ?: "desconhecido"
-                                errorMessage = "${name}: ${msg}${dbg}"
+                                errorMessage = paymentController.formatError(
+                                    result.name,
+                                    result.message,
+                                    result.debugId
+                                )
                             }
                         }
                     }

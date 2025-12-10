@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import pt.iade.ei.bestumbrella1.model.SessionManager
 import java.util.Locale
 
 @Composable
@@ -62,8 +61,7 @@ fun RentalEndSheet(
     navController: NavController,
     rentalQr: String,
     elapsedMs: Long,
-    onDismiss: () -> Unit,
-    sessionManager: SessionManager
+    onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val totalSeconds = (elapsedMs / 1000).toInt()

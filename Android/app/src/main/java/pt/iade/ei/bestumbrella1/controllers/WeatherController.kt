@@ -19,8 +19,8 @@ class WeatherController(private val repository: Repository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String> = _error as LiveData<String>
 
     private val _hourly = MutableLiveData<List<Hourly>>()
     val hourly: LiveData<List<Hourly>> = _hourly

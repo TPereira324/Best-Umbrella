@@ -1,9 +1,10 @@
 package pt.iade.ei.bestumbrella1.data
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pt.iade.ei.bestumbrella1.model.SessionManager
-import pt.iade.ei.bestumbrella1.network.AluguerDto
 import pt.iade.ei.bestumbrella1.network.ApiService
 import pt.iade.ei.bestumbrella1.model.Daily
 import pt.iade.ei.bestumbrella1.model.Hourly
@@ -139,6 +140,7 @@ class Repository(private val apiService: ApiService, private val sessionManager:
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun resolveQrCode(input: String): String {
         val s = input.trim()
         val qIdx = s.indexOf('?')
@@ -166,36 +168,6 @@ class Repository(private val apiService: ApiService, private val sessionManager:
             }
         }
         return s
-    }
-
-    suspend fun startRentalByQr(scanned: String): Result<AluguerDto> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val token = sessionManager.getAuthToken()
-                val userIdStr = sessionManager.getUserId()
-                if (token.isNullOrEmpty() || userIdStr.isNullOrEmpty()) {
-                    return@withContext Result.failure(Exception("Usuário não autenticado"))
-                }
-                val userId = userIdStr.toLongOrNull()
-                    ?: return@withContext Result.failure(Exception("ID de usuário inválido"))
-                val code = resolveQrCode(scanned)
-                val pontoId =
-                    pt.iade.ei.bestumbrella1.model.UmbrellaData.findByQrCode(code)?.pontoId ?: 1
-                val response = apiService.startByQr(
-                    utilizadorId = userId,
-                    codigoQr = code,
-                    qr = scanned,
-                    pontoInicioId = pontoId
-                )
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Falha ao iniciar aluguer: HTTP ${response.code()} ${response.message()}"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
     }
 
 }

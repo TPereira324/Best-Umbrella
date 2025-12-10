@@ -104,8 +104,7 @@ fun MapScreenWithMarkers(navController: NavController, focusStation: String? = n
                     navController = navController,
                     rentalQr = rentalQr!!,
                     elapsedMs = elapsedMs,
-                    onDismiss = { showEndSheet = false },
-                    sessionManager = sessionManager
+                    onDismiss = { showEndSheet = false }
                 )
             }
             if (rentalStartMs == null) {

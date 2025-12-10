@@ -3,11 +3,13 @@ package pt.iade.ei.bestumbrella1.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.util.Size
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
@@ -63,6 +65,7 @@ import androidx.navigation.compose.rememberNavController
 import java.util.concurrent.Executors
 
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("SuspiciousIndentation")
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGetImage::class)
@@ -323,6 +326,7 @@ fun QrScannerScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun resolveCodeForNav(input: String): String {
     val s = input.trim()
     val qIdx = s.indexOf('?')

@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.1"
+androidSdk = "1.3.2"
 barcodeScanning = "17.3.0"
 cameraCamera2Version = "1.5.0"
 cameraLifecycle = "1.5.0"
@@ -35,6 +36,7 @@ foundation = "1.9.3"
 runtimeLivedata = "1.9.4"
 
 [libraries]
+android-sdk = { module = "com.paypal.checkout:android-sdk", version.ref = "androidSdk" }
 androidx-camera-camera2-v130 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2Version" }
 androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCamera2Version" }
 androidx-camera-lifecycle-v130 = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }

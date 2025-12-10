@@ -37,5 +37,10 @@ class PaymentController(private val sessionManager: SessionManager) : ViewModel(
         val total = baseFee + minutesRounded * ratePerMin
         return round(total * 100) / 100.0
     }
+
+    suspend fun currentRentalAmount(): Double? {
+        val start = sessionManager.getRentalStartMs()
+        return start?.let { computeAmount(System.currentTimeMillis() - it) }
+    }
 }
 

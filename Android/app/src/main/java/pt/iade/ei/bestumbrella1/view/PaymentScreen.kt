@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -66,6 +67,15 @@ fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: D
     val hasClientId = remember { paymentController.hasClientId() }
     remember { AppModule.provideSessionManager(context) }
     rememberCoroutineScope()
+
+    LaunchedEffect(amountPrefill) {
+        if (amountPrefill == null) {
+            val v = paymentController.currentRentalAmount()
+            if (v != null) {
+                amountText = TextFieldValue(String.format(Locale.US, "%.2f", v))
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -159,6 +169,7 @@ fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: D
 
                         Spacer(Modifier.height(16.dp))
 
+                        val amountValid = amountText.text.toDoubleOrNull()?.let { it > 0 } == true
                         Button(
                             onClick = {
                                 val value = amountText.text.toDoubleOrNull()
@@ -180,7 +191,7 @@ fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: D
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF003087)
                             ),
-                            enabled = hasClientId
+                            enabled = hasClientId && amountValid
                         ) {
                             Icon(
                                 Icons.Default.Payment,

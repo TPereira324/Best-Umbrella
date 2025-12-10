@@ -70,7 +70,6 @@ fun RentalEndSheet(
     val hDisp = totalSeconds / 3600
     val mDisp = (totalSeconds % 3600) / 60
     val sDisp = totalSeconds % 60
-    (((elapsedMs + 59999L) / 60000L).toInt()).coerceAtLeast(1)
     val baseFee = 0.30
     val ratePerMin = 0.15
     val amount = paymentController.computeAmount(elapsedMs)

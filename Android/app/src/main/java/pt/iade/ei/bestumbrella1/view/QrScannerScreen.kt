@@ -242,7 +242,15 @@ fun QrScannerScreen(
                                                 ).show()
                                                 startScanner = false
                                                 val resolved = resolveCodeForNav(code)
-                                                onCodeScanned(resolved)
+                                                if (resolved.isNotBlank()) {
+                                                    onCodeScanned(resolved)
+                                                } else {
+                                                    Toast.makeText(
+                                                        ctx,
+                                                        "Código inválido",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
                                                 cameraProviderRef?.unbindAll()
                                             }
                                         })

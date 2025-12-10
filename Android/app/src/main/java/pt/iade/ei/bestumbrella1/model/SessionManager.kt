@@ -97,5 +97,16 @@ class SessionManager(context: Context) {
         return getValue(RENTAL_QR_KEY)
     }
 
+    suspend fun isRentalOngoing(): Boolean {
+        val start = getRentalStartMs()
+        val qr = getRentalQrCode()
+        return start != null && !qr.isNullOrBlank()
+    }
+
+    suspend fun rentalElapsedMs(): Long? {
+        val start = getRentalStartMs()
+        return start?.let { System.currentTimeMillis() - it }
+    }
+
 }
 

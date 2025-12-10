@@ -1,13 +1,13 @@
 package pt.iade.ei.bestumbrella1.di
 
 import android.content.Context
+import pt.iade.ei.bestumbrella1.controllers.AuthController
+import pt.iade.ei.bestumbrella1.controllers.PaymentController
+import pt.iade.ei.bestumbrella1.controllers.WeatherController
 import pt.iade.ei.bestumbrella1.data.Repository
 import pt.iade.ei.bestumbrella1.model.SessionManager
 import pt.iade.ei.bestumbrella1.network.ApiService
 import pt.iade.ei.bestumbrella1.network.RetrofitClient
-import pt.iade.ei.bestumbrella1.controllers.AuthController
-import pt.iade.ei.bestumbrella1.controllers.WeatherController
-import pt.iade.ei.bestumbrella1.controllers.PaymentController
 
 object AppModule {
 

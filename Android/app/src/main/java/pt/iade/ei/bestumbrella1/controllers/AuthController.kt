@@ -9,7 +9,10 @@ import pt.iade.ei.bestumbrella1.data.Repository
 import pt.iade.ei.bestumbrella1.model.AuthResponse
 import pt.iade.ei.bestumbrella1.model.SessionManager
 
-class AuthController(private val repository: Repository, private val sessionManager: SessionManager) : ViewModel() {
+class AuthController(
+    private val repository: Repository,
+    private val sessionManager: SessionManager
+) : ViewModel() {
 
     private val _loginResult = MutableLiveData<AuthResponse>()
     val loginResult: LiveData<AuthResponse> = _loginResult

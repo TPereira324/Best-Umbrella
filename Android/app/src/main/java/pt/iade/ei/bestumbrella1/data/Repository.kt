@@ -1,15 +1,13 @@
 package pt.iade.ei.bestumbrella1.data
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import pt.iade.ei.bestumbrella1.model.SessionManager
-import pt.iade.ei.bestumbrella1.network.ApiService
 import pt.iade.ei.bestumbrella1.model.Daily
 import pt.iade.ei.bestumbrella1.model.Hourly
 import pt.iade.ei.bestumbrella1.model.OpenWeatherForecastResponse
 import pt.iade.ei.bestumbrella1.model.OpenWeatherOneCallResponse
+import pt.iade.ei.bestumbrella1.model.SessionManager
+import pt.iade.ei.bestumbrella1.network.ApiService
 import pt.iade.ei.bestumbrella1.network.UserProfileResponse
 import pt.iade.ei.bestumbrella1.network.UserRequest
 import pt.iade.ei.bestumbrella1.network.UserResponse
@@ -138,36 +136,6 @@ class Repository(private val apiService: ApiService, private val sessionManager:
                 Result.failure(e)
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun resolveQrCode(input: String): String {
-        val s = input.trim()
-        val qIdx = s.indexOf('?')
-        if (s.startsWith("bumb://")) {
-            val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
-            for (part in query.split('&')) {
-                val eq = part.indexOf('=')
-                val key = if (eq >= 0) part.substring(0, eq) else part
-                val valStr = if (eq >= 0) part.substring(eq + 1) else ""
-                if (key.equals("code", ignoreCase = true)) {
-                    return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
-                }
-            }
-            return ""
-        }
-        if (s.startsWith("http://") || s.startsWith("https://")) {
-            val query = if (qIdx >= 0) s.substring(qIdx + 1) else ""
-            for (part in query.split('&')) {
-                val eq = part.indexOf('=')
-                val key = if (eq >= 0) part.substring(0, eq) else part
-                val valStr = if (eq >= 0) part.substring(eq + 1) else ""
-                if (key.equals("code", ignoreCase = true)) {
-                    return java.net.URLDecoder.decode(valStr, Charsets.UTF_8)
-                }
-            }
-        }
-        return s
     }
 
 }

@@ -63,7 +63,6 @@ fun ProfileScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     var userEmail by remember { mutableStateOf<String?>(null) }
     var userName by remember { mutableStateOf<String?>(null) }
-    var isAdmin by remember { mutableStateOf(false) }
     var profileBitmap by remember { mutableStateOf<Bitmap?>(null) }
     val imagePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->

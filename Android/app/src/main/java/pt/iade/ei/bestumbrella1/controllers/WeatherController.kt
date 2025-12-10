@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.data.Repository
-import pt.iade.ei.bestumbrella1.network.WeatherResponse
-import pt.iade.ei.bestumbrella1.model.Hourly
-import pt.iade.ei.bestumbrella1.model.Daily
 import pt.iade.ei.bestumbrella1.model.Alert
+import pt.iade.ei.bestumbrella1.model.Daily
+import pt.iade.ei.bestumbrella1.model.Hourly
+import pt.iade.ei.bestumbrella1.network.WeatherResponse
 
 class WeatherController(private val repository: Repository) : ViewModel() {
 
@@ -79,7 +79,9 @@ class WeatherController(private val repository: Repository) : ViewModel() {
                     }
                 )
 
-                if ((_alerts.value ?: emptyList()).isEmpty() && (_daily.value ?: emptyList()).isNotEmpty()) {
+                if ((_alerts.value ?: emptyList()).isEmpty() && (_daily.value
+                        ?: emptyList()).isNotEmpty()
+                ) {
                     _error.value = null
                 }
             } catch (e: Exception) {

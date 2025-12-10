@@ -10,8 +10,8 @@ import pt.iade.ei.bestumbrella1.model.Hourly
 import pt.iade.ei.bestumbrella1.model.OpenWeatherCurrentResponse
 import pt.iade.ei.bestumbrella1.model.OpenWeatherForecastResponse
 import pt.iade.ei.bestumbrella1.model.OpenWeatherOneCallResponse
-import pt.iade.ei.bestumbrella1.network.OpenWeatherRetrofit
 import pt.iade.ei.bestumbrella1.model.Weather
+import pt.iade.ei.bestumbrella1.network.OpenWeatherRetrofit
 import pt.iade.ei.bestumbrella1.network.WeatherResponse
 
 class WeatherRepository {

@@ -90,19 +90,9 @@ fun PaymentScreen(navController: NavController, qrCode: String, amountPrefill: D
         },
         bottomBar = { if (!showCheckout) AppBottomNavigationBar(navController) }
     ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF2196F3).copy(alpha = 0.8f),
-                            Color(0xFFE3F2FD)
-                        )
-                    )
-                )
-        ) {
+        AppGradientBackground(topAlpha = 0.8f, modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -442,5 +432,4 @@ fun PayPalCheckoutScreen(
         }
     }
 }
-
 

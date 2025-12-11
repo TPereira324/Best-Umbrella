@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -58,15 +59,35 @@ fun LoginScreen(
 
     val context = LocalContext.current
     val authController = remember { AppModule.provideAuthController(context) }
+    val sessionManager = rememberSessionManager()
     rememberCoroutineScope()
     val loginResult by authController.loginResult.observeAsState()
     val isLoading by authController.isLoading.observeAsState(false)
     val errorState by authController.error.observeAsState()
 
+    LaunchedEffect(Unit) {
+        if (sessionManager.isLoggedIn()) {
+            onLoginSuccess()
+        } else {
+            sessionManager.getEmail()?.let { saved ->
+                if (saved.isNotBlank()) email = saved
+            }
+        }
+    }
+
+    LaunchedEffect(loginResult) {
+        val res = loginResult
+        if (res != null && res.success == true) {
+            onLoginSuccess()
+        }
+    }
+
     AppGradientBackground(topAlpha = 0.7f, modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp), contentAlignment = Alignment.Center
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier

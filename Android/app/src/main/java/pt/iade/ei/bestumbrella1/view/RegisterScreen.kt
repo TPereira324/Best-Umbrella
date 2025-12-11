@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -67,10 +68,19 @@ fun RegisterScreen(
     val errorState by authController.error.observeAsState()
     rememberCoroutineScope()
 
+    LaunchedEffect(registerResult) {
+        val res = registerResult
+        if (res != null && res.success == true) {
+            onRegisterSuccess()
+        }
+    }
+
     AppGradientBackground(topAlpha = 0.7f, modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp), contentAlignment = Alignment.Center
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier

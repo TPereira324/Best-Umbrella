@@ -33,7 +33,7 @@ fun UsageTimerFab(h: Int, m: Int, s: Int, onClick: () -> Unit, modifier: Modifie
                 contentDescription = null
             )
         },
-        text = { androidx.compose.material3.Text("Terminar (%02d:%02d:%02d)".format(h, m, s)) },
+        text = { Text("Terminar (%02d:%02d:%02d)".format(h, m, s)) },
         modifier = modifier
     )
 }
@@ -50,7 +50,7 @@ fun ScannerFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
                 contentDescription = "Scanner"
             )
         },
-        text = { androidx.compose.material3.Text("Scanner") },
+        text = { Text("Scanner") },
         modifier = modifier
     )
 }

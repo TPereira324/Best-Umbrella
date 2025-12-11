@@ -67,10 +67,10 @@ fun RegisterScreen(
     val errorState by authController.error.observeAsState()
     rememberCoroutineScope()
 
-    AppGradientBackground(topAlpha = 0.7f, modifier = Modifier
-        .fillMaxSize()
-        .padding(24.dp)) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    AppGradientBackground(topAlpha = 0.7f, modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp), contentAlignment = Alignment.Center) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier

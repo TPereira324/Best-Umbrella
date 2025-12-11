@@ -58,15 +58,15 @@ INSERT INTO estacao (est_name, est_zon_id, est_lat, est_long, est_cap) VALUES
 ('Marquês de Pombal', 7, 38.724686, -9.150442, 12);
 
 -- Inserir dados na tabela guardachuva
-INSERT INTO guardachuva (gchuva_num, gchuva_datareg, gchuva_cor_id, gchuva_tipo_id) VALUES
-('QR001', CURDATE(), 1, 1),  -- Azul, Automático
-('QR002', CURDATE(), 2, 2),  -- Vermelho, Compacto
-('QR003', CURDATE(), 3, 1),  -- Preto, Automático
-('QR004', CURDATE(), 4, 3),  -- Amarelo, Manual
-('QR005', CURDATE(), 5, 2),  -- Roxo, Compacto
-('QR006', CURDATE(), 6, 1),  -- Cinza, Automático
-('QR007', CURDATE(), 7, 1),  -- Verde, Automático
-('QR008', CURDATE(), 8, 2);  -- Branco, Compacto
+INSERT INTO guardachuva (gchuva_num, gchuva_datareg, gchuva_cor_id, gchuva_tipo_id, est_id) VALUES
+('QR001', CURDATE(), 1, 1, 1),  -- Azul, Automático, Estação IADE
+('QR002', CURDATE(), 2, 2, 2),  -- Vermelho, Compacto, Estação Parque das Nações
+('QR003', CURDATE(), 3, 1, 3),  -- Preto, Automático, Estação Metro Moscavide
+('QR004', CURDATE(), 4, 3, 4),  -- Amarelo, Manual, Estação Metro Oriente
+('QR005', CURDATE(), 5, 2, 5),  -- Roxo, Compacto, Estação Terreiro do Paço
+('QR006', CURDATE(), 6, 1, 6),  -- Cinza, Automático, Estação Rossio
+('QR007', CURDATE(), 7, 1, 7),  -- Verde, Automático, Estação Baixa-Chiado
+('QR008', CURDATE(), 8, 2, 8);  -- Branco, Compacto, Estação Marquês de Pombal
 
 -- Inserir dados na tabela ge (Guardachuvas em Estação)
 INSERT INTO ge (ge_datein, ge_datout, ge_gchuva_id, ge_est_id) VALUES
@@ -79,13 +79,13 @@ INSERT INTO ge (ge_datein, ge_datout, ge_gchuva_id, ge_est_id) VALUES
 (CURDATE(), NULL, 7, 7),
 (CURDATE(), NULL, 8, 8);
 
--- Inserir dados na tabela ugem (Utilizador-Guardachuva Emprestimo)
-INSERT INTO ugem (ugem_datein, ugem_datout, ugem_gchuva_id, ugem_ut_id) VALUES
-('2024-01-15', '2024-01-20', 3, 2),  -- Joybeth usou guardachuva 3
-('2024-01-16', NULL, 1, 3),         -- Márcio usando guardachuva 1
-('2024-01-17', '2024-01-18', 5, 4),  -- Feleciano usou guardachuva 5
-('2024-01-18', NULL, 2, 5),         -- Fábio usando guardachuva 2
-(CURDATE(), NULL, 6, 6);            -- Moira usando guardachuva 6
+-- Inserir dados na tabela ugem 
+INSERT INTO ugem (ugem_datein, ugem_datout, ugem_gchuva_id, ugem_ut_id, ugem_chuva_id, ponto_fim_est_id) VALUES
+('2024-01-15', '2024-01-20', 3, 2, 3, 2),  -- Joybeth usou guardachuva 3
+('2024-01-16', NULL, 1, 3, 1, NULL),      -- Márcio usando guardachuva 1
+('2024-01-17', '2024-01-18', 5, 4, 5, 4),  -- Feleciano usou guardachuva 5
+('2024-01-18', NULL, 2, 5, 2, NULL),      -- Fábio usando guardachuva 2
+(CURDATE(), NULL, 6, 6, 6, NULL);         -- Moira usando guardachuva 6
 
 -- Inserir dados na tabela multa
 INSERT INTO multa (mul_ut_id, mul_dataem, mul_dataven, mul_moeda, mul_mot, mul_valor) VALUES
@@ -93,7 +93,7 @@ INSERT INTO multa (mul_ut_id, mul_dataem, mul_dataven, mul_moeda, mul_mot, mul_v
 (4, '2024-01-19', '2024-02-19', 'EUR', 'Danos no equipamento', 10.00),
 (6, '2024-01-22', '2024-02-22', 'EUR', 'Perda do guardachuva', 15.00);
 
--- Inserir dados na tabela mugem (Multa-UGEM relação)
+-- Inserir dados na tabela mugem 
 INSERT INTO mugem (mugem_ugem_id, mugem_mul_id) VALUES
 (1, 1),  -- Multa 1 associada ao empréstimo 1
 (3, 2),  -- Multa 2 associada ao empréstimo 3
@@ -107,7 +107,7 @@ INSERT INTO notificacao (ut_not_id, not_msg) VALUES
 (3, 'Lembrete: O seu empréstimo termina em breve'),
 (5, 'Obrigado por usar o nosso serviço!');
 
--- Inserir dados na tabela ugeme (Eventos do UGEM)
+-- Inserir dados na tabela ugeme 
 INSERT INTO ugeme (ugeme_ugem_id, ugeme_estado, ugeme_evento, ugeme_data) VALUES
 (1, 'Iniciado', 'inicio_aluguer', '2024-01-15 10:00:00'),
 (1, 'Finalizado', 'fim_aluguer', '2024-01-20 14:30:00'),

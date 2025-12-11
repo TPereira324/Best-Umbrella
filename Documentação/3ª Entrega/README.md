@@ -306,6 +306,21 @@ https://api.bestumbrella.pt/api/v1
       "alertaLon": null
       }
 
+- Listar Utilizadores
+    - `GET /api/utilizadores`
+- Atualizar Utilizador
+    - `PUT /api/utilizadores/{id}`
+- Atualizar Nome
+    - `PATCH /api/utilizadores/{id}/nome`
+- Remover Utilizador
+    - `DELETE /api/utilizadores/{id}`
+- Alerta de Chuva (ativar/desativar)
+    - `PUT /api/utilizadores/{id}/alerta-chuva?ativo={true|false}`
+- Definir Cidade para Alertas
+    - `PUT /api/utilizadores/{id}/alerta-local/cidade?cidade={Lisboa}`
+- Definir Coordenadas para Alertas
+    - `PUT /api/utilizadores/{id}/alerta-local/coords?lat={38.72}&lon={-9.14}`
+
 ---
 ### 2. Endpoints de Guarda-Chuva
 - Listar guarda-chuvas
@@ -351,9 +366,16 @@ https://api.bestumbrella.pt/api/v1
     - QR PNG: `GET /api/guardachuvas/codigo/{codigoQr}/qrcode?size=256`
     - Response `qrcode` (PNG)
         - `Content-Type: image/png` com o QR gerado
+    - Formato do conteúdo do QR: `bumb://rent?code={codigoQr}` (deep link usado pelo app)
+    - Tamanho suportado: `size` entre 128 e 1024
 - Criar/Atualizar
     - `POST /api/guardachuvas`
     - `PUT /api/guardachuvas/{id}`
+
+- Disponíveis
+    - `GET /api/guardachuvas/disponiveis`
+- Apagar
+    - `DELETE /api/guardachuvas/{id}`
 
 ---
 ### 3. Endpoints de Pontos de Aluguer
@@ -386,6 +408,10 @@ https://api.bestumbrella.pt/api/v1
 
 ---
 ### 4. Endpoints de Aluguer
+- Listar alugueres
+    - `GET /api/alugueres`
+- Detalhes de aluguer
+    - `GET /api/alugueres/{id}`
 - Iniciar aluguer
     - `POST /api/alugueres/start`
     - Parâmetros: `utilizadorId`, `guardaChuvaId`, `pontoInicioId`
@@ -454,9 +480,140 @@ https://api.bestumbrella.pt/api/v1
     - Incluídas em `GET /api/utilizadores/{id}` no campo `notificacoes`
 
 ---
+### 6. Endpoints de Multas
+- Listar multas
+    - `GET /api/multas`
+- Detalhes de multa
+    - `GET /api/multas/{id}`
+- Multas por utilizador
+    - `GET /api/multas/utilizador/{utilizadorId}`
+- Multas por aluguer
+    - `GET /api/multas/aluguer/{aluguerId}`
+- Criar multa (entidade)
+    - `POST /api/multas`
+- Criar multa atrelada (parâmetros)
+    - `POST /api/multas/atrelada?aluguerId={id}&valor={num}&motivo={str}&descricao={str?}&moeda={str?}`
+- Pagar multa
+    - `POST /api/multas/{id}/pagar`
+- Cancelar multa
+    - `POST /api/multas/{id}/cancelar`
+
+---
+### 7. Endpoints de Meteorologia
+- Meteorologia atual por cidade
+    - `GET /api/weather/current?city={Lisboa}`
+- Meteorologia atual por coordenadas
+    - `GET /api/weather/current?lat={38.72}&lon={-9.14}`
+
+---
+### 8. Endpoints de PayPal
+- Client ID
+    - `GET /api/paypal/client-id`
+- Configuração
+    - `GET /api/paypal/config`
+- Criar ordem (GET)
+    - `GET /api/paypal/order?value={5.00}&currency={EUR}`
+- Criar ordem (POST)
+    - `POST /api/paypal/order?value={5.00}&currency={EUR}`
+- Capturar ordem
+    - `POST /api/paypal/capture/{orderId}`
+
+---
+### 9. Endpoints de Devoluções
+- Upload de comprovativo de devolução (imagem)
+    - `POST /api/returns` (multipart form-data: `image`, `umbrellaId`, `notes?`)
+- Ver imagem do retorno
+    - `GET /api/returns/{returnId}/image`
+- Download da imagem
+    - `GET /api/returns/{returnId}/image/download`
+
+---
+### 10. Compatibilidade (Legacy Auth)
+- Registo (legacy)
+    - `POST /users/register`
+- Login (legacy)
+    - `POST /users/login`
+
+---
 ### 6. Estrutura das Respostas da API
 - As respostas devolvem DTOs diretamente, com códigos HTTP apropriados (`200`, `201`, `400`, `401`, `404`).
 - Não há wrapper padrão `status/data/timestamp`.
+
+---
+### Coleção Postman
+- Workspace: https://yamato-senpai-3229407.postman.co/workspace/F%C3%A1bio-R%C3%B3mulo's-Workspace~c0171720-da33-4f2d-833a-12f60ed09ea5/collection/49238303-8a76d9c9-13b3-4fbb-88d6-685db93f5052?action=share&source=copy-link&creator=49238303
+
+---
+## Resumo de Endpoints (sem respostas)
+
+### Utilizadores
+- POST `/api/auth/register`
+- POST `/api/auth/login`
+- GET `/api/utilizadores`
+- GET `/api/utilizadores/{id}`
+- POST `/api/utilizadores`
+- PUT `/api/utilizadores/{id}`
+- PATCH `/api/utilizadores/{id}/nome`
+- DELETE `/api/utilizadores/{id}`
+- PUT `/api/utilizadores/{id}/alerta-chuva?ativo={true|false}`
+- PUT `/api/utilizadores/{id}/alerta-local/cidade?cidade={cidade}`
+- PUT `/api/utilizadores/{id}/alerta-local/coords?lat={lat}&lon={lon}`
+
+### Guarda-Chuvas
+- GET `/api/guardachuvas`
+- GET `/api/guardachuvas?estado=DISPONIVEL`
+- GET `/api/guardachuvas/{id}`
+- GET `/api/guardachuvas/codigo/{codigoQr}`
+- GET `/api/guardachuvas/codigo/{codigoQr}/qrcode?size={128..1024}`
+- GET `/api/guardachuvas/disponiveis`
+- POST `/api/guardachuvas`
+- PUT `/api/guardachuvas/{id}`
+- DELETE `/api/guardachuvas/{id}`
+
+### Pontos de Aluguer
+- GET `/api/pontos-de-aluguer`
+- GET `/api/pontos-de-aluguer/{id}`
+
+### Alugueres
+- GET `/api/alugueres`
+- GET `/api/alugueres/{id}`
+- POST `/api/alugueres/start`
+- POST `/api/alugueres/start-by-qr`
+- POST `/api/alugueres/{aluguerId}/end`
+
+### Notificações
+- POST `/api/notificacoes/alerta-chuva`
+- GET `/api/notificacoes/stream?utilizadorId={id}`
+
+### Multas
+- GET `/api/multas`
+- GET `/api/multas/{id}`
+- GET `/api/multas/utilizador/{utilizadorId}`
+- GET `/api/multas/aluguer/{aluguerId}`
+- POST `/api/multas`
+- POST `/api/multas/atrelada`
+- POST `/api/multas/{id}/pagar`
+- POST `/api/multas/{id}/cancelar`
+
+### Weather
+- GET `/api/weather/current?city={cidade}`
+- GET `/api/weather/current?lat={lat}&lon={lon}`
+
+### PayPal
+- GET `/api/paypal/client-id`
+- GET `/api/paypal/config`
+- GET `/api/paypal/order?value={valor}&currency={moeda}`
+- POST `/api/paypal/order?value={valor}&currency={moeda}`
+- POST `/api/paypal/capture/{orderId}`
+
+### Devoluções
+- POST `/api/returns`
+- GET `/api/returns/{returnId}/image`
+- GET `/api/returns/{returnId}/image/download`
+
+### Legacy Auth
+- POST `/users/register`
+- POST `/users/login`
 
 ---
 ### 7. Autenticação

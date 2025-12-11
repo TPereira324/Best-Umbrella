@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -39,9 +40,9 @@ fun MapMarkersContent(
     onSelectStation: (Station?) -> Unit,
     onReserved: () -> Unit,
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
-    val sessionManager = pt.iade.ei.bestumbrella1.di.AppModule.provideSessionManager(context)
+    val sessionManager = rememberSessionManager()
     var hasLocationPermission by remember { mutableStateOf(false) }
     val locationPermissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
@@ -74,20 +75,8 @@ fun MapMarkersContent(
     }
 
     var currentFilter by remember { mutableStateOf(StationFilter.ALL) }
-    var stations by remember {
-        mutableStateOf(
-            listOf(
-                Station("IADE", LatLng(38.7818, -9.10251), 3, 6),
-                Station("Parque das Nações", LatLng(38.76800, -9.09400), 6, 10),
-                Station("Metro Moscavide", LatLng(38.77639, -9.10169), 8, 10),
-                Station("Metro Oriente", LatLng(38.76784, -9.09935), 4, 8),
-                Station("Terreiro do Paço", LatLng(38.70667, -9.13528), 10, 15),
-                Station("Baixa-Chiado", LatLng(38.71056, -9.14000), 8, 12),
-                Station("Marquês de Pombal", LatLng(38.724686, -9.150442), 12, 20),
-                Station("Rossio", LatLng(38.713718, -9.139681), 7, 12),
-            )
-        )
-    }
+    val stationsRepo = rememberStationsRepository()
+    var stations by remember { mutableStateOf(stationsRepo.getStations()) }
 
     androidx.compose.runtime.LaunchedEffect(focusStation) {
         val target =
@@ -112,24 +101,11 @@ fun MapMarkersContent(
         uiSettings = uiSettings
     ) {
         val center = cameraPositionState.position.target
-        fun distanceKm(a: LatLng, b: LatLng): Double {
-            val R = 6371.0
-            val dLat = Math.toRadians(b.latitude - a.latitude)
-            val dLon = Math.toRadians(b.longitude - a.longitude)
-            val lat1 = Math.toRadians(a.latitude)
-            val lat2 = Math.toRadians(b.latitude)
-            val aa =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(
-                    dLon / 2
-                ) * Math.sin(dLon / 2)
-            val c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa))
-            return R * c
-        }
 
         val filtered = when (currentFilter) {
             StationFilter.ALL -> stations
             StationFilter.AVAILABLE -> stations.filter { it.available > 0 }
-            StationFilter.NEARBY -> stations.sortedBy { distanceKm(it.location, center) }.take(5)
+            StationFilter.NEARBY -> stationsRepo.nearbyStations(center)
         }
         filtered.forEach { station ->
             val snippet = "Disponíveis: ${station.available}/${station.total}\n" +

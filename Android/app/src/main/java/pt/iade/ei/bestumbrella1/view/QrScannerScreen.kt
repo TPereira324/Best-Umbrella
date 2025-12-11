@@ -3,17 +3,18 @@ package pt.iade.ei.bestumbrella1.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.util.Size
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -51,7 +51,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +62,7 @@ import androidx.navigation.compose.rememberNavController
 import java.util.concurrent.Executors
 
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("SuspiciousIndentation")
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGetImage::class)
@@ -112,217 +112,213 @@ fun QrScannerScreen(
 
     }
 
-    Scaffold(
-        bottomBar = { AppBottomNavigationBar(navController) }) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color(0xFF90CAF9), Color.White)
-                    )
+    AppScreenScaffold(navController) {
+        if (!startScanner || !hasCameraPermission) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Scanner QR",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
-        ) {
-            if (!startScanner || !hasCameraPermission) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(30.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Spacer(Modifier.height(50.dp))
+                Text(
+                    "Escaneie o código QR do guarda-chuva para desbloquear",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Black
+                )
+                Spacer(Modifier.height(50.dp))
+                Icon(
+                    Icons.Default.QrCodeScanner,
+                    contentDescription = null,
+                    modifier = Modifier.size(96.dp),
+                    tint = Color.Black
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    "Pronto para escanear",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+                Text(
+                    "Toque no botão abaixo para ativar a câmera",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+                Spacer(Modifier.height(35.dp))
+                Button(
+                    onClick = {
+                        if (hasCameraPermission) {
+                            scannedText = ""
+                            startScanner = true
+                        } else {
+                            shouldStartAfterPermission = true
+                            launcher.launch(Manifest.permission.CAMERA)
+                        }
+                    }, colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF1976D2), contentColor = Color.White
+                    )
                 ) {
+                    Icon(Icons.Default.CameraAlt, contentDescription = null, tint = Color.White)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Iniciar Scanner", color = Color.White)
+                }
+                Spacer(Modifier.height(12.dp))
 
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "Scanner QR",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                    )
-                    Spacer(Modifier.height(50.dp))
-                    Text(
-                        "Escaneie o código QR do guarda-chuva para desbloquear",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Black
-                    )
-                    Spacer(Modifier.height(50.dp))
-                    Icon(
-                        Icons.Default.QrCodeScanner,
-                        contentDescription = null,
-                        modifier = Modifier.size(96.dp),
-                        tint = Color.Black
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        "Pronto para escanear",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                    )
-                    Text(
-                        "Toque no botão abaixo para ativar a câmera",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Black,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                    )
-                    Spacer(Modifier.height(35.dp))
-                    Button(
-                        onClick = {
-                            if (hasCameraPermission) {
-                                scannedText = ""
-                                startScanner = true
-                            } else {
-                                shouldStartAfterPermission = true
-                                launcher.launch(Manifest.permission.CAMERA)
+                Spacer(Modifier.height(50.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            "Como usar:",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text("1. Dirija-se a uma estação", color = Color.Black)
+                        Text("2. Toque em \"Iniciar Scanner\"", color = Color.Black)
+                        Text("3. Aponte a câmera para o código QR", color = Color.Black)
+                        Text("4. Aguarde o desbloqueio automático", color = Color.Black)
+                    }
+                }
+            }
+        }
+
+        if (startScanner && hasCameraPermission) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                AndroidView(
+                    modifier = Modifier.fillMaxSize(), factory = { ctx ->
+                        val previewView = PreviewView(ctx)
+                        previewView.scaleType = PreviewView.ScaleType.FILL_CENTER
+                        previewView.implementationMode =
+                            PreviewView.ImplementationMode.COMPATIBLE
+                        val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
+
+                        cameraProviderFuture.addListener({
+                            val provider = cameraProviderFuture.get()
+                            cameraProviderRef = provider
+                            val preview = androidx.camera.core.Preview.Builder().build().also {
+                                it.setSurfaceProvider(previewView.surfaceProvider)
                             }
-                        }, colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF1976D2), contentColor = Color.White
-                        )
-                    ) {
-                        Icon(Icons.Default.CameraAlt, contentDescription = null, tint = Color.White)
-                        Spacer(Modifier.width(8.dp))
-                        Text("Iniciar Scanner", color = Color.White)
-                    }
-                    Spacer(Modifier.height(12.dp))
 
-                    Spacer(Modifier.height(50.dp))
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                "Como usar:",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = Color.Black
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            Text("1. Dirija-se a uma estação", color = Color.Black)
-                            Text("2. Toque em \"Iniciar Scanner\"", color = Color.Black)
-                            Text("3. Aponte a câmera para o código QR", color = Color.Black)
-                            Text("4. Aguarde o desbloqueio automático", color = Color.Black)
-                        }
-                    }
-                }
-            }
-
-            if (startScanner && hasCameraPermission) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    AndroidView(
-                        modifier = Modifier.fillMaxSize(), factory = { ctx ->
-                            val previewView = PreviewView(ctx)
-                            previewView.scaleType = PreviewView.ScaleType.FILL_CENTER
-                            previewView.implementationMode =
-                                PreviewView.ImplementationMode.COMPATIBLE
-                            val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
-
-                            cameraProviderFuture.addListener({
-                                val provider = cameraProviderFuture.get()
-                                cameraProviderRef = provider
-                                val preview = androidx.camera.core.Preview.Builder().build().also {
-                                    it.setSurfaceProvider(previewView.surfaceProvider)
-                                }
-
-                                val imageAnalyzer = ImageAnalysis.Builder()
-                                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                                    .setTargetResolution(Size(1280, 720)).build().also {
-                                        it.setAnalyzer(cameraExecutor, BarcodeAnalyser { code ->
-                                            if (scannedText != code) {
-                                                scannedText = code
-                                                Toast.makeText(
-                                                    ctx, "Código: $code", Toast.LENGTH_SHORT
-                                                ).show()
-                                                startScanner = false
-                                                val resolved = resolveCodeForNav(code)
+                            val imageAnalyzer = ImageAnalysis.Builder()
+                                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                                .setTargetResolution(Size(1280, 720)).build().also {
+                                    it.setAnalyzer(cameraExecutor, BarcodeAnalyser { code ->
+                                        if (scannedText != code) {
+                                            scannedText = code
+                                            Toast.makeText(
+                                                ctx, "Código: $code", Toast.LENGTH_SHORT
+                                            ).show()
+                                            startScanner = false
+                                            val resolved = resolveCodeForNav(code)
+                                            if (resolved.isNotBlank()) {
                                                 onCodeScanned(resolved)
-                                                cameraProviderRef?.unbindAll()
+                                            } else {
+                                                Toast.makeText(
+                                                    ctx,
+                                                    "Código inválido",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
-                                        })
-                                    }
-
-                                try {
-                                    provider.unbindAll()
-                                    val cam = provider.bindToLifecycle(
-                                        lifecycleOwner,
-                                        CameraSelector.DEFAULT_BACK_CAMERA,
-                                        preview,
-                                        imageAnalyzer
-                                    )
-                                    cameraRef = cam
-                                } catch (e: Exception) {
-                                    Log.e("QR", "Erro na câmara: ${e.message}")
+                                            cameraProviderRef?.unbindAll()
+                                        }
+                                    })
                                 }
-                            }, ContextCompat.getMainExecutor(ctx))
 
-                            previewView
-                        })
-
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(280.dp)
-                                .align(Alignment.Center)
-                                .border(
-                                    width = 3.dp,
-                                    color = Color.White,
-                                    shape = RoundedCornerShape(16.dp)
+                            try {
+                                provider.unbindAll()
+                                val cam = provider.bindToLifecycle(
+                                    lifecycleOwner,
+                                    CameraSelector.DEFAULT_BACK_CAMERA,
+                                    preview,
+                                    imageAnalyzer
                                 )
+                                cameraRef = cam
+                            } catch (e: Exception) {
+                                Log.e("QR", "Erro na câmara: ${e.message}")
+                            }
+                        }, ContextCompat.getMainExecutor(ctx))
+
+                        previewView
+                    })
+
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(280.dp)
+                            .align(Alignment.Center)
+                            .border(
+                                width = 3.dp,
+                                color = Color.White,
+                                shape = RoundedCornerShape(16.dp)
+                            )
+                    )
+
+                    IconButton(
+                        onClick = {
+                            torchEnabled = !torchEnabled
+                            val hasFlash = cameraRef?.cameraInfo?.hasFlashUnit() == true
+                            if (hasFlash) {
+                                cameraRef?.cameraControl?.enableTorch(torchEnabled)
+                            } else {
+                                torchEnabled = false
+                                Toast.makeText(
+                                    context, "Sem flash disponível", Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }, modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (torchEnabled) Icons.Default.FlashOn else Icons.Default.FlashOff,
+                            contentDescription = "Flash",
+                            tint = Color.White
                         )
-
-                        IconButton(
-                            onClick = {
-                                torchEnabled = !torchEnabled
-                                val hasFlash = cameraRef?.cameraInfo?.hasFlashUnit() == true
-                                if (hasFlash) {
-                                    cameraRef?.cameraControl?.enableTorch(torchEnabled)
-                                } else {
-                                    torchEnabled = false
-                                    Toast.makeText(
-                                        context, "Sem flash disponível", Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }, modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(16.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (torchEnabled) Icons.Default.FlashOn else Icons.Default.FlashOff,
-                                contentDescription = "Flash",
-                                tint = Color.White
-                            )
-                        }
-
-                        IconButton(
-                            onClick = {
-                                startScanner = false
-                                cameraProviderRef?.unbindAll()
-                            }, modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(16.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Fechar",
-                                tint = Color.White
-                            )
-                        }
-
-
                     }
+
+                    IconButton(
+                        onClick = {
+                            startScanner = false
+                            cameraProviderRef?.unbindAll()
+                        }, modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Fechar",
+                            tint = Color.White
+                        )
+                    }
+
+
                 }
             }
-
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun resolveCodeForNav(input: String): String {
     val s = input.trim()
     val qIdx = s.indexOf('?')

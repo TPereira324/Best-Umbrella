@@ -97,8 +97,5 @@ class SessionManager(context: Context) {
         return getValue(RENTAL_QR_KEY)
     }
 
-    suspend fun isRentalActive(): Boolean {
-        return getRentalStartMs() != null && !getRentalQrCode().isNullOrEmpty()
-    }
 }
 

@@ -39,3 +39,46 @@ object UmbrellaData {
     fun stationNameFor(pontoId: Int): String = stationNames[pontoId] ?: "Ponto #$pontoId"
 }
 
+data class RentalEntry(
+    val date: String,
+    val from: String,
+    val to: String,
+    val cost: Double,
+    val duration: String
+)
+
+fun extractHours(duration: String): Int {
+    val regex = Regex("(\\d+)h")
+    val match = regex.find(duration)
+    return match?.groupValues?.get(1)?.toIntOrNull() ?: 0
+}
+
+fun historySortKey(dateStr: String): Long {
+    val cal = java.util.Calendar.getInstance()
+    cal.set(java.util.Calendar.SECOND, 0)
+    cal.set(java.util.Calendar.MILLISECOND, 0)
+    var hour = 0
+    var minute = 0
+    val timeMatch = Regex("(\\d{2}):(\\d{2})").find(dateStr)
+    if (timeMatch != null) {
+        hour = timeMatch.groupValues[1].toIntOrNull() ?: 0
+        minute = timeMatch.groupValues[2].toIntOrNull() ?: 0
+    }
+    when {
+        dateStr.startsWith("Hoje", ignoreCase = true) -> {}
+        dateStr.startsWith("Ontem", ignoreCase = true) -> cal.add(
+            java.util.Calendar.DAY_OF_MONTH,
+            -1
+        )
+
+        dateStr.startsWith("Há", ignoreCase = true) -> {
+            val d =
+                Regex("Há\\s+(\\d+)\\s+dias").find(dateStr)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+            cal.add(java.util.Calendar.DAY_OF_MONTH, -d)
+        }
+    }
+    cal.set(java.util.Calendar.HOUR_OF_DAY, hour)
+    cal.set(java.util.Calendar.MINUTE, minute)
+    return cal.timeInMillis
+}
+

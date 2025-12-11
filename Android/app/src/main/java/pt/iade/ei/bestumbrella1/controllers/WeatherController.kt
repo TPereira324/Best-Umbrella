@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.data.Repository
-import pt.iade.ei.bestumbrella1.network.WeatherResponse
-import pt.iade.ei.bestumbrella1.model.Hourly
-import pt.iade.ei.bestumbrella1.model.Daily
 import pt.iade.ei.bestumbrella1.model.Alert
+import pt.iade.ei.bestumbrella1.model.Daily
+import pt.iade.ei.bestumbrella1.model.Hourly
+import pt.iade.ei.bestumbrella1.network.WeatherResponse
 
 class WeatherController(private val repository: Repository) : ViewModel() {
 
@@ -19,8 +21,8 @@ class WeatherController(private val repository: Repository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String> = _error as LiveData<String>
 
     private val _hourly = MutableLiveData<List<Hourly>>()
     val hourly: LiveData<List<Hourly>> = _hourly
@@ -79,7 +81,9 @@ class WeatherController(private val repository: Repository) : ViewModel() {
                     }
                 )
 
-                if ((_alerts.value ?: emptyList()).isEmpty() && (_daily.value ?: emptyList()).isNotEmpty()) {
+                if ((_alerts.value ?: emptyList()).isEmpty() && (_daily.value
+                        ?: emptyList()).isNotEmpty()
+                ) {
                     _error.value = null
                 }
             } catch (e: Exception) {
@@ -88,5 +92,22 @@ class WeatherController(private val repository: Repository) : ViewModel() {
                 _isLoading.value = false
             }
         }
+    }
+
+    private var autoRefreshJob: Job? = null
+
+    fun startAutoRefresh(latitude: Double, longitude: Double) {
+        autoRefreshJob?.cancel()
+        autoRefreshJob = viewModelScope.launch {
+            while (true) {
+                getWeatherForecast(latitude, longitude)
+                delay(5 * 60 * 1000)
+            }
+        }
+    }
+
+    fun stopAutoRefresh() {
+        autoRefreshJob?.cancel()
+        autoRefreshJob = null
     }
 }

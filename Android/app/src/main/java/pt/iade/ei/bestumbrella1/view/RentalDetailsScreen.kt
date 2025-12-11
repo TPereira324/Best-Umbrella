@@ -1,8 +1,6 @@
 package pt.iade.ei.bestumbrella1.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,8 +33,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import pt.iade.ei.bestumbrella1.model.UmbrellaData
-import java.text.NumberFormat
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,21 +42,12 @@ fun RentalDetailsScreen(
 ) {
     val umbrella = remember(qrCode) { UmbrellaData.findByQrCode(qrCode) }
     val stationName = umbrella?.let { UmbrellaData.stationNameFor(it.pontoId) } ?: "Desconhecido"
-    val price = remember(umbrella, qrCode) {
-        when (umbrella?.tipo?.lowercase(Locale.ROOT)) {
-            "automático" -> 3.49
-            "compacto" -> 2.99
-            "manual" -> 2.49
-            else -> 2.99
-        }
-    }
-    val priceStr =
-        remember(price) { NumberFormat.getCurrencyInstance(Locale("pt", "PT")).format(price) }
-    val baseFee = 0.30
-    val baseFeeStr =
-        remember(baseFee) { NumberFormat.getCurrencyInstance(Locale("pt", "PT")).format(baseFee) }
     val context = androidx.compose.ui.platform.LocalContext.current
-    val sessionManager = pt.iade.ei.bestumbrella1.di.AppModule.provideSessionManager(context)
+    val paymentController = pt.iade.ei.bestumbrella1.di.AppModule.providePaymentController(context)
+    remember(umbrella, qrCode) { paymentController.priceForType(umbrella?.tipo) }
+    val baseFee = 0.30
+    val sessionManager = rememberSessionManager()
+    val baseFeeStr = remember(baseFee) { paymentController.formatCurrency(baseFee) }
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     Scaffold(
         topBar = {
@@ -77,19 +63,9 @@ fun RentalDetailsScreen(
 
         }
     ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF2196F3),
-                            Color(0xFFE3F2FD).copy(alpha = 0.7f)
-                        )
-                    )
-                )
-        ) {
+        AppGradientBackground(topAlpha = 0.7f, modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -139,10 +115,7 @@ fun RentalDetailsScreen(
                             color = Color.Black
                         )
                         val qrUrl = remember(qrCode) {
-                            val base =
-                                pt.iade.ei.bestumbrella1.BuildConfig.API_BASE_URL.removeSuffix("/")
-                            val origin = base.removeSuffix("/api")
-                            "$origin/api/guardachuvas/codigo/${umbrella?.codigoQr ?: qrCode}/qrcode?size=256"
+                            paymentController.qrUrlFor(umbrella?.codigoQr ?: qrCode, 256)
                         }
                         AsyncImage(
                             model = qrUrl,

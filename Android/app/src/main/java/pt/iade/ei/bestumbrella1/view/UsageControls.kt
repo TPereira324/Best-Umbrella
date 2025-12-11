@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import pt.iade.ei.bestumbrella1.model.SessionManager
 import java.util.Locale
 
 @Composable
@@ -34,7 +33,7 @@ fun UsageTimerFab(h: Int, m: Int, s: Int, onClick: () -> Unit, modifier: Modifie
                 contentDescription = null
             )
         },
-        text = { androidx.compose.material3.Text("Terminar (%02d:%02d:%02d)".format(h, m, s)) },
+        text = { Text("Terminar (%02d:%02d:%02d)".format(h, m, s)) },
         modifier = modifier
     )
 }
@@ -51,7 +50,7 @@ fun ScannerFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
                 contentDescription = "Scanner"
             )
         },
-        text = { androidx.compose.material3.Text("Scanner") },
+        text = { Text("Scanner") },
         modifier = modifier
     )
 }
@@ -62,18 +61,18 @@ fun RentalEndSheet(
     navController: NavController,
     rentalQr: String,
     elapsedMs: Long,
-    onDismiss: () -> Unit,
-    sessionManager: SessionManager
+    onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val paymentController = pt.iade.ei.bestumbrella1.di.AppModule.providePaymentController(context)
     val totalSeconds = (elapsedMs / 1000).toInt()
     val hDisp = totalSeconds / 3600
     val mDisp = (totalSeconds % 3600) / 60
     val sDisp = totalSeconds % 60
-    val minutesRounded = (((elapsedMs + 59999L) / 60000L).toInt()).coerceAtLeast(1)
     val baseFee = 0.30
     val ratePerMin = 0.15
-    val amount = kotlin.math.round((baseFee + minutesRounded * ratePerMin) * 100) / 100.0
+    val amount = paymentController.computeAmount(elapsedMs)
 
     ModalBottomSheet(sheetState = sheetState, onDismissRequest = onDismiss) {
         androidx.compose.foundation.layout.Column(Modifier.padding(16.dp)) {

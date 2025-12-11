@@ -16,6 +16,7 @@ object AppModule {
     private var authController: AuthController? = null
     private var weatherController: WeatherController? = null
     private var paymentController: PaymentController? = null
+    private var stationsRepository: pt.iade.ei.bestumbrella1.data.StationsRepository? = null
 
     fun provideSessionManager(context: Context): SessionManager {
         return sessionManager ?: SessionManager(context).also {
@@ -54,10 +55,17 @@ object AppModule {
         }
     }
 
+    fun provideStationsRepository(): pt.iade.ei.bestumbrella1.data.StationsRepository {
+        return stationsRepository ?: pt.iade.ei.bestumbrella1.data.StationsRepository().also {
+            stationsRepository = it
+        }
+    }
+
     fun clearInstances() {
         repository = null
         authController = null
         weatherController = null
         paymentController = null
+        stationsRepository = null
     }
 }

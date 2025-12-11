@@ -1,5 +1,7 @@
 package pt.iade.ei.bestumbrella1.MainNavigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,6 +23,7 @@ import pt.iade.ei.bestumbrella1.view.RegisterScreen
 import pt.iade.ei.bestumbrella1.view.RentalDetailsScreen
 import pt.iade.ei.bestumbrella1.view.WeatherScreen
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun MainNavigation(navController: NavHostController) {
     val context = LocalContext.current

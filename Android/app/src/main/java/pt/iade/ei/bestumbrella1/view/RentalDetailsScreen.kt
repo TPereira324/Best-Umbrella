@@ -63,9 +63,11 @@ fun RentalDetailsScreen(
 
         }
     ) { padding ->
-        AppGradientBackground(topAlpha = 0.7f, modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)) {
+        AppGradientBackground(
+            topAlpha = 0.7f, modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()

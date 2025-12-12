@@ -1,4 +1,4 @@
-package com.best_umbrella.backend.controller;
+package com.best_umbrella.backend.controllers;
 
 import com.best_umbrella.backend.dto.OpenWeatherDto;
 import com.best_umbrella.backend.service.OpenWeatherService;

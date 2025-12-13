@@ -11,7 +11,7 @@ val localProps = Properties().apply {
 }
 val paypalClientId: String = localProps.getProperty("PAYPAL_CLIENT_ID") ?: "AbWHZSjRti6nJOR1llh1bJjDj2GUklE1xT3BeYq4JRlwTKQYz9Ohf8fVUrTe2SwRW0NatLa"
 val weatherApiKey: String = localProps.getProperty("WEATHER_API_KEY") ?: "7d7353b5a696a31078211f46891b389e"
- 
+val apiBaseUrl: String = localProps.getProperty("API_BASE_URL") ?: "http://10.0.2.2:8080/api/"
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -31,14 +31,28 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
          
-         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
-
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"$paypalClientId\"")
          buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
 
         ndk {
             abiFilters.clear()
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
+        }
+    }
+
+    flavorDimensions += "env"
+    productFlavors {
+        create("emu") {
+            dimension = "env"
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+        }
+        create("usb") {
+            dimension = "env"
+            buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:8080/api/\"")
+        }
+        create("wifi") {
+            dimension = "env"
+            buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
         }
     }
 

@@ -31,8 +31,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
          
-         buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
-
          buildConfigField("String", "PAYPAL_CLIENT_ID", "\"$paypalClientId\"")
          buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
 

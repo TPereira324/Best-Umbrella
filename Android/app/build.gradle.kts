@@ -42,6 +42,22 @@ android {
         }
     }
 
+    flavorDimensions += "env"
+    productFlavors {
+        create("emu") {
+            dimension = "env"
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+        }
+        create("usb") {
+            dimension = "env"
+            buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:8080/api/\"")
+        }
+        create("wifi") {
+            dimension = "env"
+            buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
+        }
+    }
+
     buildFeatures {
         buildConfig = true
     }

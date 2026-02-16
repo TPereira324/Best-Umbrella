@@ -1,4 +1,4 @@
-#  Best Umbrella  
+#  Best Umbrella.  
 
 Este repositório contém o projeto **Best Umbrella**, desenvolvido no âmbito da Unidade Curricular de Projeto de Desenvolvimento Móvel da **Universidade Europeia / IADE**.  
 
